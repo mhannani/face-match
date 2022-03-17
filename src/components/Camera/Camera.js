@@ -3,13 +3,31 @@ import classnames from 'classnames';
 
 import { detectFaces, drawResults } from '../../helpers/faceApi';
 
-import Button from '../Button/Button';
-import Gallery from '../Gallery/Gallery';
-import Results from '../Results/Results';
+// import Button from '../Button/Button';
+// import Gallery from '../Gallery/Gallery';
+// import Results from '../Results/Results';
 import Webcam from 'react-webcam';
 
 import './Camera.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+const svgIcon = () => (
+    <svg
+        width="100%"
+        height="100%"
+        className="svg"
+        viewBox="0 0 260 200"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <mask id="overlay-mask" x="0" y="0" width="100%" height="100%">
+          <rect x="0" y="0" width="100%" height="100%" fill="#fff"/>
+          <circle cx="50%" cy="50%" r="70" />
+        </mask>
+      </defs>
+      <rect x="0" y="0" width="100%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
+    </svg>
+);
 
 const Camera = ({ photoMode }) => {
   const camera = useRef();
@@ -69,8 +87,12 @@ const Camera = ({ photoMode }) => {
 
   return (
     <div className="camera">
+
       {/*<p className="scroll_down">Scroll down for results ↓</p>*/}
       <div className="camera__wrapper">
+        <div className="overlay-container">
+          {svgIcon()}
+        </div>
         <Webcam audio={false} ref={camera} width="100%" height="auto" />
         <canvas className={classnames('webcam-overlay', photoMode && 'webcam-overlay--hidden')} ref={cameraCanvas} />
       </div>
