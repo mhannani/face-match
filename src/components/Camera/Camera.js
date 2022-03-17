@@ -22,7 +22,7 @@ const svgIcon = () => (
       <defs>
         <mask id="overlay-mask" x="0" y="0" width="100%" height="100%">
           <rect x="0" y="0" width="100%" height="100%" fill="#fff"/>
-          <circle cx="50%" cy="50%" r="70" />
+          <ellipse id="ellipse-mask" cx="50%" cy="45%" rx="60" ry="85" />
         </mask>
       </defs>
       <rect x="0" y="0" width="100%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
