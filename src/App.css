@@ -1,11 +1,11 @@
 .App {
-  background-color: #3d9970;
+  /*background-color: #c9c9c9;*/
   min-height: 100vh;
 }
 
-.App header {
-  background: white;
-}
+/*.App header {*/
+/*  background: white;*/
+/*}*/
 
 .App__header {
   display: flex;
@@ -17,13 +17,13 @@
   height: 4em;
 }
 
-.App__switcher {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 22px;
-}
+/*.App__switcher {*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  align-items: center;*/
+/*  font-size: 22px;*/
+/*}*/
 
-.App__switcher-switch {
-  margin: 0 0.25rem;
-}
+/*.App__switcher-switch {*/
+/*  margin: 0 0.25rem;*/
+/*}*/
