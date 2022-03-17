@@ -87,7 +87,6 @@ const Camera = ({ photoMode }) => {
 
   return (
     <div className="camera">
-
       {/*<p className="scroll_down">Scroll down for results ↓</p>*/}
       <div className="camera__wrapper">
         <div className="overlay-container">

@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 
-import { loadModels } from './helpers/faceApi';
-import { createFaLibrary } from './helpers/icons';
+import Content from './components/Content/Content'
+import {Button} from '@mui/material'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Switch from 'react-switch';
-import Camera from './components/Camera/Camera';
+import {useRef} from "react";
 
 import './App.css';
 // createFaLibrary();
-loadModels();
+
+
 function App() {
-  const [mode, setMode] = useState(false); //true = photo mode; false = video mode
+  const notistackRef = useRef();
 
   return (
-    <div className="App">
-      <header>
-        {/*<div className="App__header">*/}
-          <div className="App__switcher">
-
-          </div>
-        {/*</div>*/}
-      </header>
-      <Camera photoMode={mode} />
-    </div>
+  <SnackbarProvider ref={notistackRef} action={(key) => (
+      <Button
+          onClick={() => notistackRef.current.closeSnackbar(key)}
+          style={{ color: '#fff', fontSize: '20px' }}
+      >
+          ✖
+      </Button>
+    )} maxSnack={3}>
+    <Content/>
+  </SnackbarProvider>
   );
 }
 
