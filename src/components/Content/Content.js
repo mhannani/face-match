@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import Switch from 'react-switch';
 import Camera from '../Camera/Camera';
 // import { createFaLibrary } from './helpers/icons';
@@ -12,7 +11,7 @@ const Content = ()=>{
     const [mode, setMode] = useState(false); //true = photo mode; false = video mode
 
     loadModels().then(()=>{
-        enqueueSnackbar('🎈🎈 ML models loaded successfully🎈🎈 !', { variant: 'success' })
+        enqueueSnackbar('ML models loaded successfully !', { variant: 'success' })
     });
 
     return(

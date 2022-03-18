@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { SnackbarProvider, useSnackbar } from 'notistack';
+import React from 'react';
+import { SnackbarProvider } from 'notistack';
 
 import Content from './components/Content/Content'
 import {Button} from '@mui/material'

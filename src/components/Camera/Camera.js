@@ -41,8 +41,9 @@ const Camera = ({ photoMode }) => {
   const getFaces = async () => {
     if (camera.current !== null) {
       const faces = await detectFaces(camera.current.video);
+      console.log(faces)
       await drawResults(camera.current.video, cameraCanvas.current, faces, 'box');
-      setResults(faces);
+      // setResults(faces);
     }
   };
 
@@ -55,6 +56,7 @@ const Camera = ({ photoMode }) => {
       const ticking = setInterval(async () => {
         await getFaces();
       }, 80);
+
       return () => {
         clearOverlay(cameraCanvas);
         clearInterval(ticking);
@@ -69,15 +71,18 @@ const Camera = ({ photoMode }) => {
   const capture = () => {
     const imgSrc = camera.current.getScreenshot();
     const newPhotos = [...photos, imgSrc];
+    console.log(newPhotos)
     setPhotos(newPhotos);
     setPhoto(imgSrc);
     setShowGallery(true);
   };
+
   const reset = () => {
     setPhoto(undefined);
     setPhotos([]);
     setShowGallery(false);
   };
+
   const deleteImage = (target) => {
     const newPhotos = photos.filter((photo) => {
       return photo !== target;
@@ -87,6 +92,7 @@ const Camera = ({ photoMode }) => {
 
   return (
     <div className="camera">
+      {/*<button onClick={()=>{capture()}}>Capture</button>*/}
       {/*<p className="scroll_down">Scroll down for results ↓</p>*/}
       <div className="camera__wrapper">
         <div className="overlay-container">
@@ -95,7 +101,6 @@ const Camera = ({ photoMode }) => {
         <Webcam audio={false} ref={camera} width="100%" height="auto" />
         <canvas className={classnames('webcam-overlay', photoMode && 'webcam-overlay--hidden')} ref={cameraCanvas} />
       </div>
-
       {/*{photoMode ? (*/}
       {/*  <>*/}
       {/*    <div className="camera__button-container">*/}
