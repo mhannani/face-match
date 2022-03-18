@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import classnames from 'classnames';
 
 import { detectFaces, drawResults } from '../../helpers/faceApi';
-
+import {useSnackbar} from "notistack";
 // import Button from '../Button/Button';
 // import Gallery from '../Gallery/Gallery';
 // import Results from '../Results/Results';
@@ -32,6 +32,7 @@ const svgIcon = () => (
 const Camera = ({ photoMode }) => {
   const camera = useRef();
   const cameraCanvas = useRef();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [photo, setPhoto] = useState(undefined);
   const [showGallery, setShowGallery] = useState(false);
@@ -39,11 +40,41 @@ const Camera = ({ photoMode }) => {
   const [results, setResults] = useState([]);
 
   const getFaces = async () => {
+    let is_within_ellipse = true
     if (camera.current !== null) {
       const faces = await detectFaces(camera.current.video);
-      console.log(faces)
-      await drawResults(camera.current.video, cameraCanvas.current, faces, 'box');
+      if(Object.keys(faces).length === 0){
+        // console.log('No faces here!')
+        // enqueueSnackbar('Please put your face within the ellipse.', { variant: 'info' })
+      }
+      else{
+
+        // console.log(faces[0]._box._x, faces[0]._box._x, faces[0]._box._y, faces[0]._box._y)
+        // console.log('faces here!')
+        if(faces[0]._box._x > 40 && faces[0]._box._x < 140 && faces[0]._box._y > 40 && faces[0]._box._y < 140){
+          await drawResults(camera.current.video, cameraCanvas.current, faces, 'box');
+        }
+
+        // enqueueSnackbar('Please put your face within the ellipse.', { variant: 'info' })
+
+      }
+      // clearOverlay(cameraCanvas)
+      // console.log(faces[0]._box._x, faces[0]._box._y)
+
+      // clearOverlay(cameraCanvas)
+
+      // if(faces[0]._box._x > 90 && faces[0]._box._x < 140 && faces[0]._box._y > 90 && faces[0]._box._y < 130){
+      //
+      // }
+      // else{
+      //   is_within_ellipse = true
+      //   clearOverlay(cameraCanvas)
+      //   enqueueSnackbar('Please put your face within the ellipse.', { variant: 'info' })
+      // }
+
       // setResults(faces);
+
+      return is_within_ellipse
     }
   };
 
@@ -55,7 +86,7 @@ const Camera = ({ photoMode }) => {
     if (!photoMode && camera !== null) {
       const ticking = setInterval(async () => {
         await getFaces();
-      }, 80);
+      }, 10);
 
       return () => {
         clearOverlay(cameraCanvas);
