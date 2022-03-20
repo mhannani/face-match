@@ -7,8 +7,10 @@ import {useSnackbar} from "notistack";
 // import Gallery from '../Gallery/Gallery';
 // import Results from '../Results/Results';
 import Webcam from 'react-webcam';
+import {setFaceAsDetected} from "../../store/faceSlice";
 
 import './Camera.css';
+import {useDispatch} from "react-redux";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const svgIcon = () => (
     <svg
@@ -32,12 +34,13 @@ const svgIcon = () => (
 const Camera = ({ photoMode }) => {
   const camera = useRef();
   const cameraCanvas = useRef();
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch()
 
   const [photo, setPhoto] = useState(undefined);
   const [showGallery, setShowGallery] = useState(false);
   const [photos, setPhotos] = useState([]);
-  const [results, setResults] = useState([]);
+  // const [results, setResults] = useState([]);
 
   const getFaces = async () => {
     let is_within_ellipse = true
@@ -53,6 +56,7 @@ const Camera = ({ photoMode }) => {
         // console.log('faces here!')
         if(faces[0]._box._x > 40 && faces[0]._box._x < 140 && faces[0]._box._y > 40 && faces[0]._box._y < 140){
           await drawResults(camera.current.video, cameraCanvas.current, faces, 'box');
+          dispatch(setFaceAsDetected())
         }
 
         // enqueueSnackbar('Please put your face within the ellipse.', { variant: 'info' })
