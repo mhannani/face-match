@@ -110,7 +110,7 @@ const Camera = ({ photoMode }) => {
 
       const imgSrc = camera.current.getScreenshot();
       dispatch(setScreenShotsPath(imgSrc))
-      capture = undefined;
+      capture = () =>{};
       return imgSrc
 
     // const newPhotos = [...photos, imgSrc];
@@ -145,7 +145,6 @@ const Camera = ({ photoMode }) => {
         <Webcam audio={false} ref={camera} width="100%" height="auto" />
         <canvas className={classnames('webcam-overlay', photoMode && 'webcam-overlay--hidden')} ref={cameraCanvas} />
       </div>
-
 
       {
         screenshot_path ?
