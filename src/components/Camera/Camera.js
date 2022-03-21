@@ -7,10 +7,10 @@ import {useSnackbar} from "notistack";
 // import Gallery from '../Gallery/Gallery';
 // import Results from '../Results/Results';
 import Webcam from 'react-webcam';
-import {setFaceAsDetected} from "../../store/faceSlice";
+import {setFaceAsDetected, setScreenShotsPath} from "../../store/faceSlice";
 
 import './Camera.css';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const svgIcon = () => (
     <svg
@@ -32,6 +32,7 @@ const svgIcon = () => (
 );
 
 const Camera = ({ photoMode }) => {
+  const screenshot_path = useSelector((state) => state.face.screenshot_path)
   const camera = useRef();
   const cameraCanvas = useRef();
   // const { enqueueSnackbar } = useSnackbar();
@@ -56,6 +57,8 @@ const Camera = ({ photoMode }) => {
         // console.log('faces here!')
         if(faces[0]._box._x > 40 && faces[0]._box._x < 140 && faces[0]._box._y > 40 && faces[0]._box._y < 140){
           await drawResults(camera.current.video, cameraCanvas.current, faces, 'box');
+          capture()
+
           dispatch(setFaceAsDetected())
         }
 
@@ -103,13 +106,19 @@ const Camera = ({ photoMode }) => {
 
   const toggleGallery = () => setShowGallery(!showGallery);
 
-  const capture = () => {
-    const imgSrc = camera.current.getScreenshot();
-    const newPhotos = [...photos, imgSrc];
-    console.log(newPhotos)
-    setPhotos(newPhotos);
-    setPhoto(imgSrc);
-    setShowGallery(true);
+  let capture = () => {
+
+      const imgSrc = camera.current.getScreenshot();
+      dispatch(setScreenShotsPath(imgSrc))
+      capture = undefined;
+      return imgSrc
+
+    // const newPhotos = [...photos, imgSrc];
+    // console.log(imgSrc)
+    // setPhotos(newPhotos);
+    // setPhoto(imgSrc);
+    // setShowGallery(true);
+
   };
 
   const reset = () => {
@@ -136,6 +145,19 @@ const Camera = ({ photoMode }) => {
         <Webcam audio={false} ref={camera} width="100%" height="auto" />
         <canvas className={classnames('webcam-overlay', photoMode && 'webcam-overlay--hidden')} ref={cameraCanvas} />
       </div>
+
+
+      {
+        screenshot_path ?
+            <div>
+              <img src = {screenshot_path} alt={'screenshot'}/>
+            </div>:
+            <div>
+              <div>No captured frame. Move your face please</div>
+            </div>
+      }
+
+      {/*<img src={} alt=""/>*/}
       {/*{photoMode ? (*/}
       {/*  <>*/}
       {/*    <div className="camera__button-container">*/}

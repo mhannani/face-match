@@ -1,28 +1,25 @@
-import React, {useState} from "react";
+import React from "react";
 import FaceDetectionEllipse from '../FaceDetectionEllipse/FaceDetectionEllipse'
 import FaceDetectionAntiSpoofing from '../FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing'
-
-
 import "./content.css"
 
 import {useDispatch, useSelector} from "react-redux";
-import {Button} from "@mui/material";
-import {canCheckLiveness} from "../../store/faceSlice";
 
-const Content = ()=>{
+
+const Content = () => {
     const face_detected = useSelector((state) => state.face.face_detected)
     const do_liveness = useSelector((state) => state.face.do_liveness)
     const dispatch = useDispatch()
 
     return(
         <div className={'App'}>
-            {/*<header>*/}
-            {/*    <div className="App__header">*/}
-            {/*        <div className="App__switcher">*/}
-            {/*            <h2>Face detection</h2>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</header>*/}
+            <header>
+                <div className="App__header">
+                    <div className="App__switcher">
+                        <h2>Face detection</h2>
+                    </div>
+                </div>
+            </header>
             <div style={{color: '#2ac92a', fontWeight: 700, marginBottom: '10px'}}>
                 Checks:
             </div>
@@ -36,13 +33,10 @@ const Content = ()=>{
 
                 <br/>
             </div>
+
             {
                 (face_detected && do_liveness) ? <FaceDetectionAntiSpoofing/> :<FaceDetectionEllipse/>
             }
-
-
-            {/*<FaceDetectionAntiSpoofing/>*/}
-            {/*<FaceDetectionEllipse/>*/}
         </div>
     )
 }

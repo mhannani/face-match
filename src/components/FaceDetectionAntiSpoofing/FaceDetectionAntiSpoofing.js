@@ -27,7 +27,6 @@ const FaceDetectionAntiSpoofing = () =>{
     //run camera
     async function setupCamera() {
         video = document.getElementById('video');
-        console.log(video)
         video.srcObject = await navigator.mediaDevices.getUserMedia({
             'audio': false,
             'video': { facingMode: 'user' },
@@ -124,6 +123,7 @@ const FaceDetectionAntiSpoofing = () =>{
                         else{
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             label='spoof';
+
                             // Rendering the bounding box
                             ctx.strokeStyle="red";
                             ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);

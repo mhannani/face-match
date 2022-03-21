@@ -22,6 +22,7 @@ const FaceDetectionEllipse = () =>{
                 face_detected ?  <Button variant="contained" onClick={()=>{dispatch(canCheckLiveness())}}> Do liveness Check</Button>:
                     <Button variant="contained" disabled>Do liveness Check</Button>
             }
+
             <Camera photoMode={mode} />
 
         </>
