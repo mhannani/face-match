@@ -40,3 +40,14 @@ canvas {
     bottom: 0 ;
     left: 0;
 }
+
+.results{
+    display: flex;
+
+    flex-direction: row;
+    gap: 10px
+}
+
+.results .label {
+    font-weight: 700;
+}

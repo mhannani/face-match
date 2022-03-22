@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 // import setupPage from '../../helpers/anti-spoofing'
 import * as blazeface from '@tensorflow-models/blazeface';
 import * as tf from '@tensorflow/tfjs';
@@ -29,6 +29,8 @@ const svgIcon = () => (
 const FaceDetectionAntiSpoofing = () =>{
     // const camera = useRef();
     // const cameraCanvas = useRef();
+    const [is_spoof, set_as_spoof] = useState(true)
+    const [face_detected, set_face_as_detected] = useState(false)
 
     let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
     let cmp=0;
@@ -85,9 +87,14 @@ const FaceDetectionAntiSpoofing = () =>{
 
 
         if (predictions.length===1) {
+            set_face_as_detected(true)
             cmp++
             const start = predictions[0].topLeft;
             const end = predictions[0].bottomRight;
+
+            const bbx_bottom_right_y = predictions[0].bottomRight[1]
+            const bbx_top_left_x = predictions[0].topLeft[0]
+
             const size = [end[0] - start[0], end[1] - start[1]];
 
 
@@ -127,41 +134,51 @@ const FaceDetectionAntiSpoofing = () =>{
                     if(decision.length===windows){
                         // console.log("15 frame"+labelPredict[0])
                         ctx.lineWidth = "2";
+                        if(bbx_top_left_x > 340 && bbx_top_left_x < 540 && bbx_bottom_right_y > 100 && bbx_bottom_right_y < 400){
+                            console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
+                            // console.log("bbx_top_left_x: ", bbx_top_left_x)
 
-                        if(ArrayAvg(decision)<0.1){
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            if(ArrayAvg(decision)<0.8){
+                                // set_as_spoof(false)
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                            label='Real';
-                            // Rendering the bounding box
-                            ctx.strokeStyle="green";
+                                label='Real';
+                                // Rendering the bounding box
+                                ctx.strokeStyle="green";
 
-                            ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
-                            // console.log(startNew[0], startNew[1])
-                            // console.log(label)
+                                ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
+                                // console.log(startNew[0], startNew[1])
+                                // console.log(label)
 
-                            // Drawing the label
-                            // const textWidth = ctx.measureText(label).width;
-                            // const textHeight = parseInt(font, 10); // base 10
-                            // ctx.fillRect(startNew[0], startNew[1]-textHeight, textWidth + 4, textHeight + 4);
-                            // ctx.fillText(label, startNew[0], startNew[1]);
+                                // Drawing the label
+                                // const textWidth = ctx.measureText(label).width;
+                                // const textHeight = parseInt(font, 10); // base 10
+                                // ctx.fillRect(startNew[0], startNew[1]-textHeight, textWidth + 4, textHeight + 4);
+                                // ctx.fillText(label, startNew[0], startNew[1]);
+                            }
+
+                            else{
+                                // set_as_spoof(true)
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                label='spoof';
+
+                                // Rendering the bounding box
+                                ctx.strokeStyle="red";
+                                ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
+                                console.log(startNew[0], startNew[1])
+                                //  console.log(label)
+
+                                // Drawing the label
+                                // const textWidth = ctx.measureText(label).width;
+                                const textHeight = parseInt(font, 10); // base 10
+                                // ctx.fillRect(startNew[0], startNew[1]-textHeight, textWidth + 4, textHeight + 4);
+                                // ctx.fillText(label, startNew[0], startNew[1]);
+                            }
                         }
-
                         else{
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            label='spoof';
-
-                            // Rendering the bounding box
-                            ctx.strokeStyle="red";
-                            ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
-                            console.log(startNew[0], startNew[1])
-                            //  console.log(label)
-
-                            // Drawing the label
-                            // const textWidth = ctx.measureText(label).width;
-                            const textHeight = parseInt(font, 10); // base 10
-                            // ctx.fillRect(startNew[0], startNew[1]-textHeight, textWidth + 4, textHeight + 4);
-                            // ctx.fillText(label, startNew[0], startNew[1]);
                         }
+
 
                         cmp=0;
                         decision=[];
@@ -223,14 +240,26 @@ const FaceDetectionAntiSpoofing = () =>{
         setupPage()
     })
     return(
-        <div id="main">
-            <div className="overlay-container">
-                {svgIcon()}
-            </div>
-            <video id="video" playsInline/>
-            <canvas id="output"/>
+        <div>
+            {/*{face_detected ? <div className={'results'}>*/}
+            {/*    <div>Face detected is : </div>*/}
+            {/*    {is_spoof ?*/}
+            {/*        <div className={'label label-spoof'}> spoof </div>*/}
+            {/*        :*/}
+            {/*        <div className={'label label-real'}> real </div>}*/}
+            {/*</div>: <></>}*/}
 
+            <div id="main">
+
+                <div className="overlay-container">
+                    {svgIcon()}
+                </div>
+                <video id="video" playsInline/>
+                <canvas id="output"/>
+
+            </div>
         </div>
+
         // <div className="camera__wrapper">
         //     <Webcam audio={false} className={'video'} ref={camera} width="100%" height="auto" />
         //     <canvas className={classnames('output webcam-overlay', 'webcam-overlay--hidden')} ref={cameraCanvas} />
