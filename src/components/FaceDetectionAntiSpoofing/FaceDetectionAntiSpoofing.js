@@ -5,6 +5,7 @@ import * as tf from '@tensorflow/tfjs';
 import './face_detection_anti_spoofing.css'
 import Webcam from "react-webcam";
 import classnames from "classnames";
+
 const svgIcon = () => (
     <svg
         width="100%"
@@ -26,8 +27,8 @@ const svgIcon = () => (
 );
 
 const FaceDetectionAntiSpoofing = () =>{
-    const camera = useRef();
-    const cameraCanvas = useRef();
+    // const camera = useRef();
+    // const cameraCanvas = useRef();
 
     let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
     let cmp=0;
@@ -124,10 +125,10 @@ const FaceDetectionAntiSpoofing = () =>{
                     decision.push(labelPredict[0]);
 
                     if(decision.length===windows){
-                        console.log("15 frame"+labelPredict[0])
+                        // console.log("15 frame"+labelPredict[0])
                         ctx.lineWidth = "2";
 
-                        if(ArrayAvg(decision)<0.8){
+                        if(ArrayAvg(decision)<0.1){
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                             label='Real';
