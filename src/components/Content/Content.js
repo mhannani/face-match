@@ -3,21 +3,30 @@ import React from "react";
 import FaceDetectionAntiSpoofing from '../FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing' // Uses the newest version of tfjs
 // import "./content.css"
 import {useDispatch, useSelector} from "react-redux";
+import {Alert, AlertTitle} from "@mui/material";
 
 
 const Content = () => {
+    // const face_detected = useSelector((state) => state.face.face_detected)
+    // const do_liveness = useSelector((state) => state.face.do_liveness)
     const face_detected = useSelector((state) => state.face.face_detected)
-    const do_liveness = useSelector((state) => state.face.do_liveness)
+    const is_spoof = useSelector((state) => state.face.is_spoof)
     const dispatch = useDispatch()
 
     return(
         <div className={'App'}>
             <header>
-                <div className="App__header">
-                    <div className="App__switcher">
-                        <h2>Face detection</h2>
-                    </div>
-                </div>
+                {/*<div className="App__header">*/}
+                {/*    {is_spoof ?*/}
+                {/*        <Alert severity="success">*/}
+                {/*            <AlertTitle>Real</AlertTitle>*/}
+                {/*        </Alert>*/}
+                {/*        :*/}
+                {/*        <Alert severity="warning">*/}
+                {/*            <AlertTitle>Spoof</AlertTitle>*/}
+                {/*        </Alert>*/}
+                {/*    }*/}
+                {/*</div>*/}
             </header>
             {/*<div style={{color: '#2ac92a', fontWeight: 700, marginBottom: '10px'}}>*/}
             {/*    Checks:*/}

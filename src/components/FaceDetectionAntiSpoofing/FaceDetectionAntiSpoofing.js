@@ -3,8 +3,13 @@ import React, {useEffect, useRef, useState} from 'react'
 import * as blazeface from '@tensorflow-models/blazeface';
 import * as tf from '@tensorflow/tfjs';
 import './face_detection_anti_spoofing.css'
+
 import Webcam from "react-webcam";
 import classnames from "classnames";
+import {setAsReal, setAsSpoof, reset} from "../../store/faceSlice";
+
+import {useDispatch, useSelector} from "react-redux";
+import {Alert, AlertTitle} from "@mui/material";
 
 const svgIcon = () => (
     <svg
@@ -18,32 +23,35 @@ const svgIcon = () => (
         <defs>
             <mask id="overlay-mask" x="0" y="0" width="100%" height="100%">
                 <rect x="0" y="0" width="100%" height="100%" fill="#fff"/>
-                <ellipse id="ellipse-mask" cx="50%" cy="45%" rx="60" ry="85" />
+                <ellipse id="ellipse-mask" cx="50%" cy="50%" rx="50" ry="70" />
             </mask>
         </defs>
 
-        <rect x="0" y="0" width="100%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
+        <rect x="0" y="0" width="110%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
     </svg>
 );
 
-const FaceDetectionAntiSpoofing = () =>{
+const FaceDetectionAntiSpoofing = () => {
     // const camera = useRef();
     // const cameraCanvas = useRef();
-    const [is_spoof, set_as_spoof] = useState(true)
-    const [face_detected, set_face_as_detected] = useState(false)
+
+    // const [is_spoof, set_as_spoof] = useState(true)
+    // const [face_detected, set_face_as_detected] = useState(false)
+
+    const dispatch = useDispatch()
 
     let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
     let cmp=0;
     let windows=1;
     let decision=[];
 
-    function ArrayAvg(myArray){
-        let i = 0, summ = 0, ArrayLen = myArray.length;
+    function ArrayAvg(myArray) {
+        let i = 0, sum = 0, ArrayLen = myArray.length;
 
         while (i < ArrayLen) {
-            summ = summ + myArray[i++];
+            sum = sum + myArray[i++];
         }
-        return summ / ArrayLen;
+        return sum / ArrayLen;
     }
 
     //run camera
@@ -85,9 +93,9 @@ const FaceDetectionAntiSpoofing = () =>{
         const predictions = await model.estimateFaces(
             video, returnTensors, flipHorizontal, annotateBoxes);
 
-
         if (predictions.length===1) {
-            set_face_as_detected(true)
+            // set_face_as_detected(true)
+            // set_as_spoof(true)
             cmp++
             const start = predictions[0].topLeft;
             const end = predictions[0].bottomRight;
@@ -121,7 +129,7 @@ const FaceDetectionAntiSpoofing = () =>{
                         .expandDims(0)
                         .toFloat()
                         .mul(normalizationConstant)
-                    console.log('predict', classifier.predict(tensor))
+                    // console.log('predict', classifier.predict(tensor))
                     return classifier.predict(tensor);
                 });
 
@@ -134,45 +142,51 @@ const FaceDetectionAntiSpoofing = () =>{
                     if(decision.length===windows){
                         // console.log("15 frame"+labelPredict[0])
                         ctx.lineWidth = "2";
-                        if(bbx_top_left_x > 340 && bbx_top_left_x < 540 && bbx_bottom_right_y > 100 && bbx_bottom_right_y < 400){
-                            console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
+                        if(bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400){
+                            // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
 
-                            if(ArrayAvg(decision)<0.8){
-                                // set_as_spoof(false)
+                            if( ArrayAvg(decision) < 0.8 ){
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                                 label='Real';
+
                                 // Rendering the bounding box
                                 ctx.strokeStyle="green";
-
+                                ctx.fillStyle = "rgb(10,236,40)";
                                 ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
                                 // console.log(startNew[0], startNew[1])
                                 // console.log(label)
 
                                 // Drawing the label
-                                // const textWidth = ctx.measureText(label).width;
-                                // const textHeight = parseInt(font, 10); // base 10
-                                // ctx.fillRect(startNew[0], startNew[1]-textHeight, textWidth + 4, textHeight + 4);
-                                // ctx.fillText(label, startNew[0], startNew[1]);
+                                const textWidth = ctx.measureText(label).width;
+                                const textHeight = parseInt(font, 10); // base 10
+                                ctx.fillRect(startNew[0], startNew[1]-textHeight - 5, textWidth + 4, textHeight + 2);
+                                ctx.fillStyle = "#ffffff";
+                                ctx.fillText(label, startNew[0], startNew[1] - 6);
+                                // set_as_spoof(false)
+                                // dispatch(setAsReal())
                             }
 
                             else{
-                                // set_as_spoof(true)
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                label='spoof';
-
+                                label='Spoof';
+                                ctx.fillStyle = "rgb(208,25,25)";
                                 // Rendering the bounding box
                                 ctx.strokeStyle="red";
                                 ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
-                                console.log(startNew[0], startNew[1])
+                                // console.log(startNew[0], startNew[1])
                                 //  console.log(label)
 
                                 // Drawing the label
-                                // const textWidth = ctx.measureText(label).width;
+                                const textWidth = ctx.measureText(label).width;
                                 const textHeight = parseInt(font, 10); // base 10
-                                // ctx.fillRect(startNew[0], startNew[1]-textHeight, textWidth + 4, textHeight + 4);
-                                // ctx.fillText(label, startNew[0], startNew[1]);
+                                ctx.fillRect(startNew[0], startNew[1]-textHeight - 5, textWidth + 4, textHeight + 4);
+                                ctx.fillStyle = "#ffffff";
+                                ctx.fillText(label, startNew[0], startNew[1] - 6);
+
+                                // set_as_spoof(true)
+                                // dispatch(setAsSpoof())
                             }
                         }
                         else{
@@ -214,7 +228,7 @@ const FaceDetectionAntiSpoofing = () =>{
         canvas.width = videoWidth;
         canvas.height = videoHeight;
         ctx = canvas.getContext('2d');
-        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+
 
 
         // ctx.scale(1,  rh/rw);
@@ -239,6 +253,7 @@ const FaceDetectionAntiSpoofing = () =>{
     useEffect(()=>{
         setupPage()
     })
+
     return(
         <div>
             {/*{face_detected ? <div className={'results'}>*/}
@@ -249,12 +264,14 @@ const FaceDetectionAntiSpoofing = () =>{
             {/*        <div className={'label label-real'}> real </div>}*/}
             {/*</div>: <></>}*/}
 
+
+
             <div id="main">
 
                 <div className="overlay-container">
                     {svgIcon()}
                 </div>
-                <video id="video" playsInline/>
+                <video preload="none" id="video" playsInline/>
                 <canvas id="output"/>
 
             </div>

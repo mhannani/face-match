@@ -138,8 +138,6 @@ const Camera = ({ photoMode }) => {
 
   return (
     <div className="camera">
-      {/*<button onClick={()=>{capture()}}>Capture</button>*/}
-      {/*<p className="scroll_down">Scroll down for results ↓</p>*/}
       <div className="camera__wrapper">
         <div className="overlay-container">
           {svgIcon()}
@@ -150,15 +148,15 @@ const Camera = ({ photoMode }) => {
 
       </div>
 
-      {
-        screenshot_path ?
-            <div>
-              <img src = {screenshot_path} alt={'screenshot'}/>
-            </div>:
-            <div>
-              <div>No captured frame. Move your face please</div>
-            </div>
-      }
+      {/*{*/}
+      {/*  screenshot_path ?*/}
+      {/*      <div>*/}
+      {/*        <img src = {screenshot_path} alt={'screenshot'}/>*/}
+      {/*      </div>:*/}
+      {/*      <div>*/}
+      {/*        <div>No captured frame. Move your face please</div>*/}
+      {/*      </div>*/}
+      {/*}*/}
 
       {/*<img src={} alt=""/>*/}
       {/*{photoMode ? (*/}

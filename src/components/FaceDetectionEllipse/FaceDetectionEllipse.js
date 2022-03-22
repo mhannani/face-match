@@ -28,9 +28,7 @@ const FaceDetectionEllipse = () =>{
             }
 
             <Camera photoMode={mode} />
-
         </>
-
     )
 }
 
