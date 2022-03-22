@@ -6,6 +6,7 @@ import {Button} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
 import {canCheckLiveness, reset} from "../../store/faceSlice";
 
+
 const FaceDetectionEllipse = () =>{
     const { enqueueSnackbar } = useSnackbar();
     const face_detected = useSelector((state) => state.face.face_detected)
@@ -16,7 +17,7 @@ const FaceDetectionEllipse = () =>{
         enqueueSnackbar('ML models loaded successfully !', { variant: 'success' })
     });
 
-    return(
+    return (
         <>
             {
                 face_detected ?  <div>

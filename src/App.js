@@ -14,18 +14,18 @@ function App() {
   const notistackRef = useRef();
 
   return (
-  <SnackbarProvider ref={notistackRef} action={(key) => (
-      <Button
-          onClick={() => notistackRef.current.closeSnackbar(key)}
-          style={{ color: '#fff', fontSize: '20px' }}
-      >
-          ✖
-      </Button>
-    )} maxSnack={3}>
-      <Provider store={store}>
-        <Content/>
-      </Provider>
-  </SnackbarProvider>
+      <SnackbarProvider ref={notistackRef} action={(key) => (
+          <Button
+              onClick={() => notistackRef.current.closeSnackbar(key)}
+              style={{ color: '#fff', fontSize: '20px' }}
+          >
+              ✖
+          </Button>
+        )} maxSnack={3}>
+          <Provider store={store}>
+            <Content/>
+          </Provider>
+      </SnackbarProvider>
   );
 }
 

@@ -6,6 +6,11 @@ body {
   margin: 0 auto;
   max-width: 1580px;
 
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
   font-family: 'Quicksand', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

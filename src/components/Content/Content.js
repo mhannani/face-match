@@ -1,8 +1,7 @@
 import React from "react";
-import FaceDetectionEllipse from '../FaceDetectionEllipse/FaceDetectionEllipse'
-import FaceDetectionAntiSpoofing from '../FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing'
-import "./content.css"
-
+// import FaceDetectionEllipse from '../FaceDetectionEllipse/FaceDetectionEllipse'
+import FaceDetectionAntiSpoofing from '../FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing' // Uses the newest version of tfjs
+// import "./content.css"
 import {useDispatch, useSelector} from "react-redux";
 
 
@@ -20,23 +19,26 @@ const Content = () => {
                     </div>
                 </div>
             </header>
-            <div style={{color: '#2ac92a', fontWeight: 700, marginBottom: '10px'}}>
-                Checks:
-            </div>
-            <div className={'results'}>
-                <div className={'child'}>- Face detection:
-                    {face_detected ? <h6 style={{color: '#2ac92a'}}> Face detected ! </h6>: <h6 style={{color: '#ff0000'}}> No face detected </h6>}
-                </div>
-                <div className={'child'}>- Can do liveness check ? {face_detected ?
-                    <h6 style={{color: '#2ac92a'}}> Yes </h6> : <h6 style={{color: '#ff0000'}}> Not yet </h6>}
-                </div>
+            {/*<div style={{color: '#2ac92a', fontWeight: 700, marginBottom: '10px'}}>*/}
+            {/*    Checks:*/}
+            {/*</div>*/}
+            {/*<div className={'results'}>*/}
+            {/*    <div className={'child'}>- Face detection:*/}
+            {/*        {face_detected ? <h6 style={{color: '#2ac92a'}}> Face detected ! </h6>: <h6 style={{color: '#ff0000'}}> No face detected </h6>}*/}
+            {/*    </div>*/}
+            {/*    <div className={'child'}>- Can do liveness check ? {face_detected ?*/}
+            {/*        <h6 style={{color: '#2ac92a'}}> Yes </h6> : <h6 style={{color: '#ff0000'}}> Not yet </h6>}*/}
+            {/*    </div>*/}
 
-                <br/>
-            </div>
+            {/*    <br/>*/}
+            {/*</div>*/}
 
-            {
-                (face_detected && do_liveness) ? <FaceDetectionAntiSpoofing/> :<FaceDetectionEllipse/>
-            }
+            {/*{*/}
+            {/*    (face_detected && do_liveness) ? <FaceDetectionAntiSpoofing/> :<FaceDetectionEllipse/>*/}
+            {/*}*/}
+
+            <FaceDetectionAntiSpoofing/>
+            {/*<FaceDetectionEllipse/>*/}
         </div>
     )
 }

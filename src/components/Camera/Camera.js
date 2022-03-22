@@ -11,7 +11,7 @@ import {setFaceAsDetected, setScreenShotsPath} from "../../store/faceSlice";
 
 import './Camera.css';
 import {useDispatch, useSelector} from "react-redux";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 const svgIcon = () => (
     <svg
         width="100%"
@@ -27,6 +27,7 @@ const svgIcon = () => (
           <ellipse id="ellipse-mask" cx="50%" cy="45%" rx="60" ry="85" />
         </mask>
       </defs>
+
       <rect x="0" y="0" width="100%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
     </svg>
 );
@@ -63,8 +64,8 @@ const Camera = ({ photoMode }) => {
         }
 
         // enqueueSnackbar('Please put your face within the ellipse.', { variant: 'info' })
-
       }
+
       // clearOverlay(cameraCanvas)
       // console.log(faces[0]._box._x, faces[0]._box._y)
 
@@ -93,12 +94,13 @@ const Camera = ({ photoMode }) => {
     if (!photoMode && camera !== null) {
       const ticking = setInterval(async () => {
         await getFaces();
-      }, 10);
+      }, 5);
 
       return () => {
         clearOverlay(cameraCanvas);
         clearInterval(ticking);
       };
+
     } else {
       return clearOverlay(cameraCanvas);
     }
@@ -142,8 +144,10 @@ const Camera = ({ photoMode }) => {
         <div className="overlay-container">
           {svgIcon()}
         </div>
+
         <Webcam audio={false} ref={camera} width="100%" height="auto" />
         <canvas className={classnames('webcam-overlay', photoMode && 'webcam-overlay--hidden')} ref={cameraCanvas} />
+
       </div>
 
       {
