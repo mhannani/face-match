@@ -3,13 +3,15 @@ import React, {useEffect, useRef, useState} from 'react'
 import * as blazeface from '@tensorflow-models/blazeface';
 import * as tf from '@tensorflow/tfjs';
 import './face_detection_anti_spoofing.css'
-
+import avatarpng from '../../assets/avatar.png'
 import Webcam from "react-webcam";
 import classnames from "classnames";
 import {setAsReal, setAsSpoof, reset} from "../../store/faceSlice";
 
 import {useDispatch, useSelector} from "react-redux";
-import {Alert, AlertTitle} from "@mui/material";
+import {Alert, AlertTitle, Button} from "@mui/material";
+import {useSnackbar} from "notistack";
+import {round} from "@tensorflow/tfjs";
 
 const svgIcon = () => (
     <svg
@@ -31,18 +33,35 @@ const svgIcon = () => (
     </svg>
 );
 
+const avatar = ()=>(
+    <svg xmlns="http://www.w3.org/2000/svg" id="Ebene_1" data-name="Ebene 1" viewBox="0 -47 300 400">
+        <defs>
+            {/*<style>.cls-1{fill:#d8d8d8;}</style>*/}
+        </defs>
+        <path className="cls-1" d="M300,400H.07C3,320,69,256,150,256S297.1,320,300,400Z"
+              transform="translate(-0.07 -46.46)"/>
+        <polygon className="cls-1"
+                 points="182.54 170.59 149.97 170.59 117.39 170.59 103.83 226.38 149.97 226.38 196.1 226.38 182.54 170.59"/>
+        <ellipse className="cls-1" cx="149.96" cy="93.88" rx="81.54" ry="93.88"/>
+        <ellipse className="cls-1" cx="68.43" cy="102.24" rx="20.38" ry="25.48"/>
+        <ellipse className="cls-1" cx="231.5" cy="102.24" rx="20.38" ry="25.48"/>
+    </svg>
+)
+
 const FaceDetectionAntiSpoofing = () => {
     // const camera = useRef();
     // const cameraCanvas = useRef();
 
-    // const [is_spoof, set_as_spoof] = useState(true)
+    // const [enqueue_notification, set_enqueue_notification] = useState(true)
     // const [face_detected, set_face_as_detected] = useState(false)
 
-    const dispatch = useDispatch()
+
+    const { enqueueSnackbar } = useSnackbar();
+    // const dispatch = useDispatch()
 
     let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
     let cmp=0;
-    let windows=1;
+    let windows=15;
     let decision=[];
 
     function ArrayAvg(myArray) {
@@ -81,6 +100,7 @@ const FaceDetectionAntiSpoofing = () => {
         return canvasTemp;
     }
 
+
     const renderPrediction = async () => {
         const font = "24px sans-serif";
         ctx.font = font;
@@ -114,12 +134,14 @@ const FaceDetectionAntiSpoofing = () => {
             const sizeNew = Math.max(size[0], size[1]) * scale
             const startNew = [mid[0] - (sizeNew * 0.5), mid[1] - (sizeNew * 0.5)]
 
+
+
             // Perform spoof classification (UNFINISHED!)
             if (classifySpoof){
                 // Cropping the frame and perform spoof classification
                 videoCrop = getImage(video, sizeNew, startNew);
 
-                // if the past can be done easily int the manner in the best can be done
+                // If the past can be done easily int the manner in the best can be done
                 // Predictions
                 const logits = tf.tidy(() => {
                     const normalizationConstant = 1.0 / 255.0;
@@ -131,16 +153,18 @@ const FaceDetectionAntiSpoofing = () => {
                         .mul(normalizationConstant)
                     // console.log('predict', classifier.predict(tensor))
                     return classifier.predict(tensor);
-                });
+                    }
+                );
 
 
                 const labelPredict = await logits.data();
 
                 if(cmp<=windows){
+                    // console.log('labelPrediction: ', labelPredict[0])
                     decision.push(labelPredict[0]);
 
                     if(decision.length===windows){
-                        // console.log("15 frame"+labelPredict[0])
+                        // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
                         if(bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400){
                             // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
@@ -148,8 +172,8 @@ const FaceDetectionAntiSpoofing = () => {
 
                             if( ArrayAvg(decision) < 0.8 ){
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                                label='Real';
+                                // console.log(ArrayAvg(decision))
+                                label=`Real `+ `(` + ArrayAvg(decision).toFixed(2) + `)`;
 
                                 // Rendering the bounding box
                                 ctx.strokeStyle="green";
@@ -170,7 +194,7 @@ const FaceDetectionAntiSpoofing = () => {
 
                             else{
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                label='Spoof';
+                                label='Spoof ' + `(` + ArrayAvg(decision).toFixed(2) + `)`;
                                 ctx.fillStyle = "rgb(208,25,25)";
                                 // Rendering the bounding box
                                 ctx.strokeStyle="red";
@@ -229,16 +253,6 @@ const FaceDetectionAntiSpoofing = () => {
         canvas.height = videoHeight;
         ctx = canvas.getContext('2d');
 
-
-
-        // ctx.scale(1,  rh/rw);
-        // ctx.beginPath();
-        // ctx.arc(200, 200, 180, 0, 2 * Math.PI);
-        // ctx.restore();
-        // ctx.lineWidth=4;
-        // ctx.strokeStyle="orange";
-        // ctx.stroke();
-
         //face detection
         model = await blazeface.load();
 
@@ -247,15 +261,29 @@ const FaceDetectionAntiSpoofing = () => {
         classifier = await tf.loadLayersModel('./rose_model/model.json');
 
         // classifier.summary();
-        await renderPrediction();
+        // await renderPrediction();
     };
 
+    // useEffect(()=>{
+    //     setupPage().then(()=>{
+    //         enqueueSnackbar('Performing anti-spoofing task...', { variant: 'success' })
+    //     })
+    // })
+
     useEffect(()=>{
-        setupPage()
+        setupPage().then(()=>{
+            enqueueSnackbar('Setting up environment...', { variant: 'success' })
+        })
+    })
+    const performTask = ( ()=>{
+        setupPage().then(async()=>{
+            enqueueSnackbar('Performing anti-spoofing task...', { variant: 'success' })
+            await renderPrediction();
+        })
     })
 
     return(
-        <div>
+        <div className={'container'}>
             {/*{face_detected ? <div className={'results'}>*/}
             {/*    <div>Face detected is : </div>*/}
             {/*    {is_spoof ?*/}
@@ -265,14 +293,29 @@ const FaceDetectionAntiSpoofing = () => {
             {/*</div>: <></>}*/}
 
 
+            {/*{avatar()}*/}
 
-            <div id="main">
+            <div className={'row'}>
+                <div className={'column'}>
+                    <div id="main">
+                        <div className="overlay-container">
+                            {svgIcon()}
+                        </div>
+                        <video preload="none" id="video" playsInline/>
+                        <canvas id="output"/>
 
-                <div className="overlay-container">
-                    {svgIcon()}
+                    </div>
+                    <Button variant="contained" color="success" onClick={()=> performTask()}>
+                        Perform anti-spoofing task
+                    </Button>
                 </div>
-                <video preload="none" id="video" playsInline/>
-                <canvas id="output"/>
+
+                <div className={'column'}>
+                    <div className={'row'}>
+                    <img src={avatarpng} alt={'avatar'}/>
+                    <img src={avatarpng} alt={'avatar'}/>
+                    </div>
+                </div>
 
             </div>
         </div>

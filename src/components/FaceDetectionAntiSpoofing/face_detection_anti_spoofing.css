@@ -5,13 +5,13 @@ body {
 #main {
     position: relative;
     margin-top: 20px;
+
 }
 
 #video{
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
-    /*width: auto;*/
-    /*height: auto;*/
+
 }
 canvas {
     position: absolute;
@@ -50,4 +50,21 @@ canvas {
 
 .results .label {
     font-weight: 700;
+}
+
+.container .row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-evenly;
+    gap: 20px;
+}
+
+.container .column img {
+    width: 200px;
+
+}
+
+.container .column .row{
+    gap: 20px;
 }
