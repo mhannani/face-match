@@ -284,6 +284,10 @@ const FaceDetectionAntiSpoofing = () => {
         })
     })
 
+    const take_selfies = (()=>{
+        console.log('taking screen shots')
+    })
+
     return(
         <div className={'container'}>
             {/*{face_detected ? <div className={'results'}>*/}
@@ -307,9 +311,15 @@ const FaceDetectionAntiSpoofing = () => {
                         <canvas id="output"/>
 
                     </div>
-                    <Button variant="contained" color="success" onClick={()=> performTask()}>
-                        Perform anti-spoofing task
-                    </Button>
+                    <div className={'actions'}>
+                        <Button variant="contained" color="success" sx={ { borderRadius: 0 }} onClick={()=> performTask()}>
+                            Perform anti-spoofing task
+                        </Button>
+
+                        <Button variant="contained" color="success" sx={ { borderRadius: 0 }} onClick={()=>take_selfies()}>
+                            Take Selfies
+                        </Button>
+                    </div>
                 </div>
 
                 <div className={'column'}>

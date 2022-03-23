@@ -89,3 +89,9 @@ canvas {
     justify-content: end;
     justify-items: self-start;
 }
+
+.actions{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px
+}
