@@ -1,6 +1,6 @@
-body {
-    margin: 25px;
-}
+/*body {*/
+/*    margin: 25px;*/
+/*}*/
 
 #main {
     position: relative;
@@ -57,6 +57,7 @@ canvas {
     flex-direction: row;
     align-items: baseline;
     justify-content: space-evenly;
+    flex-wrap: wrap;
     gap: 20px;
 }
 
@@ -66,5 +67,25 @@ canvas {
 }
 
 .container .column .row{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 20px;
+}
+
+.container .column .column_avatar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /*background: red;*/
+    justify-content: space-evenly;
+}
+
+.container .column .row_avatar{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: end;
+    justify-content: end;
+    justify-items: self-start;
 }

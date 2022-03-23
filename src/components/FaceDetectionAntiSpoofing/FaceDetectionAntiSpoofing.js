@@ -33,7 +33,7 @@ const svgIcon = () => (
     </svg>
 );
 
-const avatar = ()=>(
+const avatar = () => (
     <svg xmlns="http://www.w3.org/2000/svg" id="Ebene_1" data-name="Ebene 1" viewBox="0 -47 300 400">
         <defs>
             {/*<style>.cls-1{fill:#d8d8d8;}</style>*/}
@@ -54,6 +54,8 @@ const FaceDetectionAntiSpoofing = () => {
 
     // const [enqueue_notification, set_enqueue_notification] = useState(true)
     // const [face_detected, set_face_as_detected] = useState(false)
+    const dispatch = useDispatch()
+    const do_liveness = useSelector((state) => state.face.do_liveness)
 
 
     const { enqueueSnackbar } = useSnackbar();
@@ -277,7 +279,7 @@ const FaceDetectionAntiSpoofing = () => {
     })
     const performTask = ( ()=>{
         setupPage().then(async()=>{
-            enqueueSnackbar('Performing anti-spoofing task...', { variant: 'success' })
+            enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
     })
@@ -311,9 +313,16 @@ const FaceDetectionAntiSpoofing = () => {
                 </div>
 
                 <div className={'column'}>
-                    <div className={'row'}>
-                    <img src={avatarpng} alt={'avatar'}/>
-                    <img src={avatarpng} alt={'avatar'}/>
+                    <div className={'row_avatar'}>
+                        <div className={'column_avatar'}>
+                            <img className={'frame_1'} src={avatarpng} alt={'avatar'}/>
+                            <h6>SELFIE 1</h6>
+                        </div>
+
+                        <div className={'column_avatar'}>
+                            <img className={'frame_2'} src={avatarpng} alt={'avatar'}/>
+                            <h6>SELFIE 2</h6>
+                        </div>
                     </div>
                 </div>
 
