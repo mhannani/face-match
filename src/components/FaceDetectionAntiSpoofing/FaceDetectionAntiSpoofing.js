@@ -324,12 +324,13 @@ const FaceDetectionAntiSpoofing = () => {
     };
 
     const perform_anti_spoofing = async (event) => {
-        set_is_running(true)
+
         event.preventDefault();
         // console.log("event: ", thresholdValue, window)
         // console.log('perform')
 
         setupPage().then(async()=>{
+            set_is_running(true)
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
