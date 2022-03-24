@@ -158,7 +158,7 @@ const FaceDetectionAntiSpoofing = () => {
                         return classifier.predict(tensor);
                     }
                 );
-                console.log('threshold 3: ', thresholdValue)
+                // console.log('threshold 3: ', thresholdValue)
                 // console.log('window: ', window)
                 const labelPredict = await logits.data();
 
@@ -303,6 +303,8 @@ const FaceDetectionAntiSpoofing = () => {
         setupPage().then(()=>{
             enqueueSnackbar('Setting up environment...', { variant: 'success' })
         })
+
+        // return ()=>{console.log('unmounted')}
     })
 
     const performTask = ( () => {
@@ -348,7 +350,7 @@ const FaceDetectionAntiSpoofing = () => {
         set_is_running(true)
         event.preventDefault();
         // console.log("event: ", thresholdValue, window)
-        console.log('perform')
+        // console.log('perform')
 
 
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
@@ -428,16 +430,19 @@ const FaceDetectionAntiSpoofing = () => {
 
 
                             <Button variant="contained" color="success"
-                                    sx={ { borderRadius: 0 }}
-                                    type="submit"
+                                                  sx={ { borderRadius: 0 }}
+                                                  type="submit"
+                                                  disabled={is_running}
                             >
                                 Perform anti-spoofing task
 
                             </Button>
 
+
                             <Button variant="contained" color="warning"
                                     sx={ { borderRadius: 0 }}
                                     onClick={refreshPage}
+                                    disabled={!is_running}
                             >
                                 Stop task
 
