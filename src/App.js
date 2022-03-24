@@ -18,7 +18,7 @@ function App(){
               onClick={() => notistackRef.current.closeSnackbar(key)}
               style={{ color: '#fff', fontSize: '20px' }}
           > ✖ </Button>
-        )} maxSnack={3}>
+        )} maxSnack={2}>
           <Provider store={store}>
             <Content/>
           </Provider>

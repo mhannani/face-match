@@ -9,7 +9,7 @@ import './face_detection_anti_spoofing.css'
 // import {setAsReal, setAsSpoof, reset} from "../../store/faceSlice";
 import {renderPrediction, setDimension, setupPage} from '../../helpers/anti-spoofing'
 import {useDispatch, useSelector} from "react-redux";
-import {Alert, AlertTitle, Button} from "@mui/material";
+import {Alert, AlertTitle, Button, TextField, InputLabel, Form } from "@mui/material";
 import {useSnackbar} from "notistack";
 
 // import {round} from "@tensorflow/tfjs";
@@ -43,16 +43,21 @@ const FaceDetectionAntiSpoofing = () => {
     // const [face_detected, set_face_as_detected] = useState(false)
     // const dispatch = useDispatch()
     // const do_liveness = useSelector((state) => state.face.do_liveness)
+    // const [as_threshold, setThreshold] = React.useState(0.8);
+    // const [threshold, setThreshold] = React.useState(0.8);
+    const [windows, setWindows] = React.useState(15);
+    const [is_running, set_is_running] = React.useState(false)
 
-
+    const [thresholdValue, setThresholdValue] = React.useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
     // const dispatch = useDispatch()
 
 
     let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
     let cmp=0;
-    let windows=15;
+    // let windows=15;
     let decision=[];
+
 
     function ArrayAvg(myArray) {
         let i = 0, sum = 0, ArrayLen = myArray.length;
@@ -63,7 +68,7 @@ const FaceDetectionAntiSpoofing = () => {
         return sum / ArrayLen;
     }
 
-//Run camera
+    //Run camera
     async function setupCamera() {
         video = document.getElementById('video');
         video.srcObject = await navigator.mediaDevices.getUserMedia({
@@ -83,7 +88,7 @@ const FaceDetectionAntiSpoofing = () => {
         });
     }
 
-//cropped the face detected
+    //cropped the face detected
     function getImage(video, sizeImg, startImg){
         const canvasTemp = document.createElement('canvas');
         canvasTemp.height = sizeImg;
@@ -108,6 +113,8 @@ const FaceDetectionAntiSpoofing = () => {
         const predictions = await model.estimateFaces(
             video, returnTensors, flipHorizontal, annotateBoxes);
 
+
+        // console.log('threshold 1: ', thresholdValue)
         if (predictions.length===1) {
             // set_face_as_detected(true)
             // set_as_spoof(true)
@@ -130,8 +137,7 @@ const FaceDetectionAntiSpoofing = () => {
             const scale = 1.1
             const sizeNew = Math.max(size[0], size[1]) * scale
             const startNew = [mid[0] - (sizeNew * 0.5), mid[1] - (sizeNew * 0.5)]
-
-
+            // console.log('threshold 2: ', thresholdValue)
 
             // Perform spoof classification (UNFINISHED!)
             if (classifySpoof){
@@ -152,65 +158,69 @@ const FaceDetectionAntiSpoofing = () => {
                         return classifier.predict(tensor);
                     }
                 );
-
-
+                console.log('threshold 3: ', thresholdValue)
+                // console.log('window: ', window)
                 const labelPredict = await logits.data();
 
                 if(cmp<=windows){
                     // console.log('labelPrediction: ', labelPredict[0])
                     decision.push(labelPredict[0]);
+                    // console.log('threshold 3.9: ================================================', thresholdValue)
 
                     if(decision.length===windows){
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
-                        if(bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400){
-                            if(bbx_w > 180){
+                        // console.log('threshold 4: ================================================', thresholdValue)
+
+                        if(bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400) {
                             // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
+                            if (bbx_w > 180) {
+                                if (ArrayAvg(decision) < thresholdValue) {
 
-                            if( ArrayAvg(decision) < 0.8 ){
-                                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                // console.log(ArrayAvg(decision))
-                                label=`Real `+ `(` + ArrayAvg(decision).toFixed(2) + `)`;
+                                    // console.log(threshold, window)
+                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                    // console.log(ArrayAvg(decision))
+                                    label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
 
-                                // Rendering the bounding box
-                                ctx.strokeStyle="green";
-                                ctx.fillStyle = "rgb(10,236,40)";
-                                ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
-                                // console.log(startNew[0], startNew[1])
-                                // console.log(label)
+                                    // Rendering the bounding box
+                                    ctx.strokeStyle = "green";
+                                    ctx.fillStyle = "rgb(10,236,40)";
+                                    ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
+                                    // console.log(startNew[0], startNew[1])
+                                    // console.log(label)
 
-                                // Drawing the label
-                                const textWidth = ctx.measureText(label).width;
-                                const textHeight = parseInt(font, 10); // base 10
-                                ctx.fillRect(startNew[0], startNew[1]-textHeight - 5, textWidth + 4, textHeight + 2);
-                                ctx.fillStyle = "#ffffff";
-                                ctx.fillText(label, startNew[0], startNew[1] - 6);
-                                // set_as_spoof(false)
-                                // dispatch(setAsReal())
-                            }
+                                    // Drawing the label
+                                    const textWidth = ctx.measureText(label).width;
+                                    const textHeight = parseInt(font, 10); // base 10
+                                    ctx.fillRect(startNew[0], startNew[1] - textHeight - 5, textWidth + 4, textHeight + 2);
+                                    ctx.fillStyle = "#ffffff";
+                                    ctx.fillText(label, startNew[0], startNew[1] - 6);
+                                    // set_as_spoof(false)
+                                    // dispatch(setAsReal())
+                                } else {
+                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                    label = 'Spoof ' + `(` + ArrayAvg(decision).toFixed(2) + `)`;
+                                    ctx.fillStyle = "rgb(208,25,25)";
+                                    // Rendering the bounding box
+                                    ctx.strokeStyle = "red";
+                                    ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
+                                    // console.log(startNew[0], startNew[1])
+                                    //  console.log(label)
 
+                                    // Drawing the label
+                                    const textWidth = ctx.measureText(label).width;
+                                    const textHeight = parseInt(font, 10); // base 10
+                                    ctx.fillRect(startNew[0], startNew[1] - textHeight - 5, textWidth + 4, textHeight + 4);
+                                    ctx.fillStyle = "#ffffff";
+                                    ctx.fillText(label, startNew[0], startNew[1] - 6);
+
+                                    // set_as_spoof(true)
+                                    // dispatch(setAsSpoof())
+                                }
+                        }
                             else{
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                label='Spoof ' + `(` + ArrayAvg(decision).toFixed(2) + `)`;
-                                ctx.fillStyle = "rgb(208,25,25)";
-                                // Rendering the bounding box
-                                ctx.strokeStyle="red";
-                                ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
-                                // console.log(startNew[0], startNew[1])
-                                //  console.log(label)
-
-                                // Drawing the label
-                                const textWidth = ctx.measureText(label).width;
-                                const textHeight = parseInt(font, 10); // base 10
-                                ctx.fillRect(startNew[0], startNew[1]-textHeight - 5, textWidth + 4, textHeight + 4);
-                                ctx.fillStyle = "#ffffff";
-                                ctx.fillText(label, startNew[0], startNew[1] - 6);
-
-                                // set_as_spoof(true)
-                                // dispatch(setAsSpoof())
-                            }}
-                            else{
                                 enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
                             }
                         }
@@ -224,6 +234,7 @@ const FaceDetectionAntiSpoofing = () => {
                     }
                 }
             }
+
         }
 
         else{
@@ -235,6 +246,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         //like setInterval()
         requestAnimationFrame(renderPrediction);
+        // console.log('threshold 6: ', thresholdValue)
 
     };
 
@@ -293,7 +305,7 @@ const FaceDetectionAntiSpoofing = () => {
         })
     })
 
-    const performTask = ( ()=>{
+    const performTask = ( () => {
         setupPage().then(async()=>{
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
@@ -313,6 +325,42 @@ const FaceDetectionAntiSpoofing = () => {
         // setShowGallery(true);
     };
 
+
+    const handleThresholdChange = async (event) => {
+        const { name, value } = event.target;
+
+        setThresholdValue(value);
+        setupCamera()
+        // setupPage()
+        // event.persist()
+    };
+
+    const handleWindowChange = async (event) => {
+        const { name, value } = event.target;
+
+        setWindows(value);
+        setupCamera()
+        // setupPage()
+        // event.persist()
+    };
+
+    const perform_anti_spoofing = async (event) => {
+        set_is_running(true)
+        event.preventDefault();
+        // console.log("event: ", thresholdValue, window)
+
+        setupPage().then( async()=>{
+            enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
+            await renderPrediction();
+        })
+    }
+
+    const refreshPage = ()=>{
+        console.log('window: ', window)
+        window.location.reload(false);
+    }
+
+
     return(
         <div className={'container'}>
             <div className={'row'}>
@@ -324,14 +372,79 @@ const FaceDetectionAntiSpoofing = () => {
                         <video preload="none" id="video" playsInline/>
                         <canvas id="output"/>
                     </div>
+                    <div>+ Threshold: {thresholdValue}</div>
+                    <div>+ Window: {windows}</div>
 
                     <div className={'actions'}>
-                        <Button variant="contained" color="success"
-                                sx={ { borderRadius: 0 }}
-                                onClick={()=> performTask()}
-                        >
-                            Perform anti-spoofing task
-                        </Button>
+
+                        {/*<Button variant="contained" color="success"*/}
+                        {/*        sx={ { borderRadius: 0 }}*/}
+                        {/*        onClick={()=> performTask()}*/}
+                        {/*>*/}
+                        {/*    Perform anti-spoofing task*/}
+                        {/*</Button>*/}
+                        <form onSubmit={perform_anti_spoofing}>
+
+
+                            {
+                                is_running ? <TextField
+                                    hiddenLabel
+                                    id="threshold"
+                                    defaultValue={thresholdValue}
+                                    variant="filled"
+                                    size="small"
+                                    onChange={handleThresholdChange}
+                                    disabled
+                                />: <TextField
+                                    hiddenLabel
+                                    id="threshold"
+                                    defaultValue={thresholdValue}
+                                    variant="filled"
+                                    size="small"
+                                    onChange={handleThresholdChange}
+                                />
+                            }
+
+                            {
+                                is_running ? <TextField
+                                    hiddenLabel
+                                    id="windows"
+                                    defaultValue={windows}
+                                    variant="filled"
+                                    size="small"
+                                    onChange={handleWindowChange}
+                                    disabled
+                                />
+                                    :
+                                    <TextField
+                                        hiddenLabel
+                                        id="windows"
+                                        defaultValue={windows}
+                                        variant="filled"
+                                        size="small"
+                                        onChange={handleWindowChange}
+                                    />
+                            }
+
+
+                            <Button variant="contained" color="success"
+                                    sx={ { borderRadius: 0 }}
+                                    type="submit"
+                            >
+                                Perform anti-spoofing task
+
+                            </Button>
+
+                            <Button variant="contained" color="warning"
+                                    sx={ { borderRadius: 0 }}
+                                    onClick={refreshPage}
+                            >
+                                Stop task
+
+                            </Button>
+
+                            {/*<button>Submit</button>*/}
+                        </form>
                     </div>
                 </div>
             </div>
