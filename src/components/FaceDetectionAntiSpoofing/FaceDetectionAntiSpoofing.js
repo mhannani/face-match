@@ -332,25 +332,25 @@ const FaceDetectionAntiSpoofing = () => {
                             Perform anti-spoofing task
                         </Button>
 
-                        <Button variant="contained" color="success" sx={ { borderRadius: 0 }} onClick={()=>take_selfies()}>
-                            Take Selfies
-                        </Button>
+                        {/*<Button variant="contained" color="success" sx={ { borderRadius: 0 }} onClick={()=>take_selfies()}>*/}
+                        {/*    Take Selfies*/}
+                        {/*</Button>*/}
                     </div>
                 </div>
 
-                <div className={'column'}>
-                    <div className={'row_avatar'}>
-                        <div className={'column_avatar'}>
-                            <img className={'frame_1'} src={avatarpng} alt={'avatar'}/>
-                            <h6>SELFIE 1</h6>
-                        </div>
+                {/*<div className={'column'}>*/}
+                {/*    <div className={'row_avatar'}>*/}
+                {/*        <div className={'column_avatar'}>*/}
+                {/*            <img className={'frame_1'} src={avatarpng} alt={'avatar'}/>*/}
+                {/*            <h6>SELFIE 1</h6>*/}
+                {/*        </div>*/}
 
-                        <div className={'column_avatar'}>
-                            <img className={'frame_2'} src={avatarpng} alt={'avatar'}/>
-                            <h6>SELFIE 2</h6>
-                        </div>
-                    </div>
-                </div>
+                {/*        <div className={'column_avatar'}>*/}
+                {/*            <img className={'frame_2'} src={avatarpng} alt={'avatar'}/>*/}
+                {/*            <h6>SELFIE 2</h6>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
             </div>
         </div>
