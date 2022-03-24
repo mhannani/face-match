@@ -3,50 +3,37 @@ import React, {useEffect, useRef, useState} from 'react'
 import * as blazeface from '@tensorflow-models/blazeface';
 import * as tf from '@tensorflow/tfjs';
 import './face_detection_anti_spoofing.css'
-import avatarpng from '../../assets/avatar.png'
-import Webcam from "react-webcam";
-import classnames from "classnames";
-import {setAsReal, setAsSpoof, reset} from "../../store/faceSlice";
-
+// import avatarpng from '../../assets/avatar.png'
+// import Webcam from "react-webcam";
+// import classnames from "classnames";
+// import {setAsReal, setAsSpoof, reset} from "../../store/faceSlice";
+import {renderPrediction, setDimension, setupPage} from '../../helpers/anti-spoofing'
 import {useDispatch, useSelector} from "react-redux";
 import {Alert, AlertTitle, Button} from "@mui/material";
 import {useSnackbar} from "notistack";
-import {round} from "@tensorflow/tfjs";
+
+// import {round} from "@tensorflow/tfjs";
 
 const svgIcon = () => (
     <svg
         width="100%"
         height="100%"
-        className="svg"
+        className="ellipse"
         viewBox="0 0 260 200"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
         xmlnsXlink="http://www.w3.org/1999/xlink">
         <defs>
             <mask id="overlay-mask" x="0" y="0" width="100%" height="100%">
-                <rect x="0" y="0" width="100%" height="100%" fill="#fff"/>
+                <rect x="0" y="0" width="100%" height="100%" fill="#fff" className={'rect'}/>
                 <ellipse id="ellipse-mask" cx="50%" cy="50%" rx="50" ry="70" />
             </mask>
         </defs>
 
-        <rect x="0" y="0" width="110%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
+        <rect x="0" y="0" width="100%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
     </svg>
 );
-
-const avatar = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" id="Ebene_1" data-name="Ebene 1" viewBox="0 -47 300 400">
-        <defs>
-            {/*<style>.cls-1{fill:#d8d8d8;}</style>*/}
-        </defs>
-        <path className="cls-1" d="M300,400H.07C3,320,69,256,150,256S297.1,320,300,400Z"
-              transform="translate(-0.07 -46.46)"/>
-        <polygon className="cls-1"
-                 points="182.54 170.59 149.97 170.59 117.39 170.59 103.83 226.38 149.97 226.38 196.1 226.38 182.54 170.59"/>
-        <ellipse className="cls-1" cx="149.96" cy="93.88" rx="81.54" ry="93.88"/>
-        <ellipse className="cls-1" cx="68.43" cy="102.24" rx="20.38" ry="25.48"/>
-        <ellipse className="cls-1" cx="231.5" cy="102.24" rx="20.38" ry="25.48"/>
-    </svg>
-)
 
 const FaceDetectionAntiSpoofing = () => {
     // const camera = useRef();
@@ -54,12 +41,13 @@ const FaceDetectionAntiSpoofing = () => {
 
     // const [enqueue_notification, set_enqueue_notification] = useState(true)
     // const [face_detected, set_face_as_detected] = useState(false)
-    const dispatch = useDispatch()
-    const do_liveness = useSelector((state) => state.face.do_liveness)
+    // const dispatch = useDispatch()
+    // const do_liveness = useSelector((state) => state.face.do_liveness)
 
 
     const { enqueueSnackbar } = useSnackbar();
     // const dispatch = useDispatch()
+
 
     let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
     let cmp=0;
@@ -75,12 +63,17 @@ const FaceDetectionAntiSpoofing = () => {
         return sum / ArrayLen;
     }
 
-    //Run camera
+//Run camera
     async function setupCamera() {
         video = document.getElementById('video');
         video.srcObject = await navigator.mediaDevices.getUserMedia({
             'audio': false,
-            'video': { facingMode: 'user' ,width: {exact: 640},height: {exact: 480}},
+            'video': {
+                facingMode: 'user',
+                width: {exact: 640},
+                height: {ideal: 480},
+                deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+            },
         });
 
         return new Promise((resolve) => {
@@ -90,7 +83,7 @@ const FaceDetectionAntiSpoofing = () => {
         });
     }
 
-    //cropped the face detected
+//cropped the face detected
     function getImage(video, sizeImg, startImg){
         const canvasTemp = document.createElement('canvas');
         canvasTemp.height = sizeImg;
@@ -104,7 +97,7 @@ const FaceDetectionAntiSpoofing = () => {
 
 
     const renderPrediction = async () => {
-        const font = "24px sans-serif";
+        const font = "18px sans-serif";
         ctx.font = font;
 
         const returnTensors = false;
@@ -130,7 +123,10 @@ const FaceDetectionAntiSpoofing = () => {
 
             const mid = [(start[0] + end[0]) * 0.5, (start[1] + end[1]) * 0.5]
 
+            const bbx_w = start[0] - end[0]
             // create a Square bounding box
+            console.log('a - c: ', start[0] - end[0])
+
 
             const scale = 1.1
             const sizeNew = Math.max(size[0], size[1]) * scale
@@ -146,15 +142,15 @@ const FaceDetectionAntiSpoofing = () => {
                 // If the past can be done easily int the manner in the best can be done
                 // Predictions
                 const logits = tf.tidy(() => {
-                    const normalizationConstant = 1.0 / 255.0;
+                        const normalizationConstant = 1.0 / 255.0;
 
-                    let tensor = tf.browser.fromPixels(videoCrop, 3)
-                        .resizeBilinear([224, 224], false)
-                        .expandDims(0)
-                        .toFloat()
-                        .mul(normalizationConstant)
-                    // console.log('predict', classifier.predict(tensor))
-                    return classifier.predict(tensor);
+                        let tensor = tf.browser.fromPixels(videoCrop, 3)
+                            .resizeBilinear([224, 224], false)
+                            .expandDims(0)
+                            .toFloat()
+                            .mul(normalizationConstant)
+                        // console.log('predict', classifier.predict(tensor))
+                        return classifier.predict(tensor);
                     }
                 );
 
@@ -168,7 +164,7 @@ const FaceDetectionAntiSpoofing = () => {
                     if(decision.length===windows){
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
-                        if(bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400){
+                        if(bbx_w > 200 && bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400){
                             // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
 
@@ -254,10 +250,10 @@ const FaceDetectionAntiSpoofing = () => {
         canvas.width = videoWidth;
         canvas.height = videoHeight;
 
-        console.log('canvas.width', canvas.width)
-        console.log('canvas.height', canvas.height)
-        console.log('video.width', video.height)
-        console.log('video.height', video.height)
+        // console.log('canvas.width', canvas.width)
+        // console.log('canvas.height', canvas.height)
+        // console.log('video.width', video.height)
+        // console.log('video.height', video.height)
 
 
         ctx = canvas.getContext('2d');
@@ -279,6 +275,15 @@ const FaceDetectionAntiSpoofing = () => {
     //     })
     // })
 
+    // export const setDimension = async () =>{
+    //     let offset_top = document.getElementById('video').offsetTop
+    //     let offset_left = document.getElementById('video').offsetLeft
+    //     document.getElementsByClassName('overlay-container').style.position = 'absolute'
+    //     document.getElementsByClassName('overlay-container').style.top = offset_top
+    //     document.getElementsByClassName('overlay-container').style.left = offset_left
+    //
+    // }
+
     useEffect(()=>{
         setupPage().then(()=>{
             enqueueSnackbar('Setting up environment...', { variant: 'success' })
@@ -290,9 +295,10 @@ const FaceDetectionAntiSpoofing = () => {
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
+        // setDimension()
     })
 
-    const take_selfies = (()=>{
+    const take_selfies = (() => {
         console.log('taking screen shots')
     })
 
@@ -306,17 +312,6 @@ const FaceDetectionAntiSpoofing = () => {
 
     return(
         <div className={'container'}>
-            {/*{face_detected ? <div className={'results'}>*/}
-            {/*    <div>Face detected is : </div>*/}
-            {/*    {is_spoof ?*/}
-            {/*        <div className={'label label-spoof'}> spoof </div>*/}
-            {/*        :*/}
-            {/*        <div className={'label label-real'}> real </div>}*/}
-            {/*</div>: <></>}*/}
-
-
-            {/*{avatar()}*/}
-
             <div className={'row'}>
                 <div className={'column'}>
                     <div id="main">
@@ -328,37 +323,17 @@ const FaceDetectionAntiSpoofing = () => {
                     </div>
 
                     <div className={'actions'}>
-                        <Button variant="contained" color="success" sx={ { borderRadius: 0 }} onClick={()=> performTask()}>
+                        <Button variant="contained" color="success"
+                                sx={ { borderRadius: 0 }}
+                                onClick={()=> performTask()}
+                        >
                             Perform anti-spoofing task
                         </Button>
-
-                        {/*<Button variant="contained" color="success" sx={ { borderRadius: 0 }} onClick={()=>take_selfies()}>*/}
-                        {/*    Take Selfies*/}
-                        {/*</Button>*/}
                     </div>
                 </div>
-
-                {/*<div className={'column'}>*/}
-                {/*    <div className={'row_avatar'}>*/}
-                {/*        <div className={'column_avatar'}>*/}
-                {/*            <img className={'frame_1'} src={avatarpng} alt={'avatar'}/>*/}
-                {/*            <h6>SELFIE 1</h6>*/}
-                {/*        </div>*/}
-
-                {/*        <div className={'column_avatar'}>*/}
-                {/*            <img className={'frame_2'} src={avatarpng} alt={'avatar'}/>*/}
-                {/*            <h6>SELFIE 2</h6>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-
             </div>
-        </div>
 
-        // <div className="camera__wrapper">
-        //     <Webcam audio={false} className={'video'} ref={camera} width="100%" height="auto" />
-        //     <canvas className={classnames('output webcam-overlay', 'webcam-overlay--hidden')} ref={cameraCanvas} />
-        // </div>
+        </div>
     )
 }
 

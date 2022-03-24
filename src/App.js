@@ -9,8 +9,7 @@ import {useRef} from "react";
 import './App.css';
 // createFaLibrary();
 
-
-function App() {
+function App(){
   const notistackRef = useRef();
 
   return (
@@ -18,9 +17,7 @@ function App() {
           <Button
               onClick={() => notistackRef.current.closeSnackbar(key)}
               style={{ color: '#fff', fontSize: '20px' }}
-          >
-              ✖
-          </Button>
+          > ✖ </Button>
         )} maxSnack={3}>
           <Provider store={store}>
             <Content/>

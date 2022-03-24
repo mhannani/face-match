@@ -1,19 +1,16 @@
-/*body {*/
-/*    margin: 25px;*/
-/*}*/
-
 #main {
     position: relative;
     margin-top: 20px;
-
+    margin-bottom: 20px;
+    /*background: yellow;*/
 }
 
 #video{
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
 
-
 }
+
 canvas {
     position: absolute;
     top: 0;
@@ -21,78 +18,80 @@ canvas {
     /*background: rgba(61, 153, 112, 0.18);*/
 }
 
-#description {
-    margin-top: 20px;
-    width: 600px;
-}
+/*#description {*/
+/*    margin-top: 20px;*/
+/*    width: 600px;*/
+/*}*/
 
-#description-title {
-    font-weight: bold;
-    font-size: 18px;
-}
+/*#description-title {*/
+/*    font-weight: bold;*/
+/*    font-size: 18px;*/
+/*}*/
 
-.overlay-container {
+.overlay-container{
     position: absolute ;
     width: 100%;
-    height: 99%;
+    height: 100%;
     top: 0 ;
     z-index: 1000;
-    right: 0 ;
     bottom: 0 ;
     left: 0;
+    /*background: rebeccapurple;*/
 }
 
-.results{
-    display: flex;
+/*.results{*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    gap: 10px*/
+/*}*/
 
-    flex-direction: row;
-    gap: 10px
-}
+/*.results .label {*/
+/*    font-weight: 700;*/
+/*}*/
 
-.results .label {
-    font-weight: 700;
-}
+/*.container .row {*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    align-items: baseline;*/
+/*    justify-content: space-evenly;*/
+/*    flex-wrap: wrap;*/
+/*    gap: 20px;*/
+/*}*/
 
-.container .row {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    gap: 20px;
-}
+/*.container .column img {*/
+/*    width: 200px;*/
+/*}*/
 
-.container .column img {
-    width: 200px;
+/*.container .column .row{*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    flex-wrap: wrap;*/
+/*    gap: 20px;*/
+/*}*/
 
-}
+/*.container .column .column_avatar{*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    !*background: red;*!*/
+/*    justify-content: space-evenly;*/
+/*}*/
 
-.container .column .row{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 20px;
-}
+/*!*.ellipse{*!*/
+/*!*    fill: pink;*!*/
+/*!*}*!*/
 
-.container .column .column_avatar{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /*background: red;*/
-    justify-content: space-evenly;
-}
+/*.container .column .row_avatar{*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    gap: 20px;*/
+/*    align-items: end;*/
+/*    justify-content: end;*/
+/*    justify-items: self-start;*/
+/*}*/
 
-.container .column .row_avatar{
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    align-items: end;
-    justify-content: end;
-    justify-items: self-start;
-}
-
-.actions{
-    display: flex;
-    justify-content: space-between;
-    gap: 10px
-}
+/*.actions{*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    gap: 10px*/
+/*}*/
