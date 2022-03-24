@@ -265,41 +265,19 @@ const FaceDetectionAntiSpoofing = () => {
         canvas.width = videoWidth;
         canvas.height = videoHeight;
 
-        // console.log('canvas.width', canvas.width)
-        // console.log('canvas.height', canvas.height)
-        // console.log('video.width', video.height)
-        // console.log('video.height', video.height)
-
-
         ctx = canvas.getContext('2d');
 
         //face detection
         model = await blazeface.load();
 
         // Load classifier from static storage
-        //classifier = await tf.loadGraphModel('model-graph-f16/anti-spoofing.json');
         classifier = await tf.loadLayersModel('./rose_model/model.json');
 
         // classifier.summary();
         // await renderPrediction();
     };
 
-    // useEffect(()=>{
-    //     setupPage().then(()=>{
-    //         enqueueSnackbar('Performing anti-spoofing task...', { variant: 'success' })
-    //     })
-    // })
-
-    // export const setDimension = async () =>{
-    //     let offset_top = document.getElementById('video').offsetTop
-    //     let offset_left = document.getElementById('video').offsetLeft
-    //     document.getElementsByClassName('overlay-container').style.position = 'absolute'
-    //     document.getElementsByClassName('overlay-container').style.top = offset_top
-    //     document.getElementsByClassName('overlay-container').style.left = offset_left
-    //
-    // }
-
-    useEffect(()=>{
+    useEffect( ()=>{
         setupPage().then(()=>{
             enqueueSnackbar('Setting up environment...', { variant: 'success' })
         })
@@ -312,12 +290,11 @@ const FaceDetectionAntiSpoofing = () => {
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
-        // setDimension()
     })
 
-    const take_selfies = (() => {
-        console.log('taking screen shots')
-    })
+    // const take_selfies = (() => {
+    //     console.log('taking screen shots')
+    // })
 
     const capture = () => {
         // const imgSrc = camera.current.getScreenshot();
@@ -352,9 +329,10 @@ const FaceDetectionAntiSpoofing = () => {
         // console.log("event: ", thresholdValue, window)
         // console.log('perform')
 
-
+        setupPage().then(async()=>{
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
+        })
     }
 
     const refreshPage = ()=>{
