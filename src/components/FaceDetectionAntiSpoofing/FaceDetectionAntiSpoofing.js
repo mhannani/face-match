@@ -75,12 +75,12 @@ const FaceDetectionAntiSpoofing = () => {
         return sum / ArrayLen;
     }
 
-    //run camera
+    //Run camera
     async function setupCamera() {
         video = document.getElementById('video');
         video.srcObject = await navigator.mediaDevices.getUserMedia({
             'audio': false,
-            'video': { facingMode: 'user' },
+            'video': { facingMode: 'user' ,width: {exact: 640},height: {exact: 480}},
         });
 
         return new Promise((resolve) => {
@@ -253,6 +253,13 @@ const FaceDetectionAntiSpoofing = () => {
         canvas = document.getElementById('output');
         canvas.width = videoWidth;
         canvas.height = videoHeight;
+
+        console.log('canvas.width', canvas.width)
+        console.log('canvas.height', canvas.height)
+        console.log('video.width', video.height)
+        console.log('video.height', video.height)
+
+
         ctx = canvas.getContext('2d');
 
         //face detection
@@ -277,6 +284,7 @@ const FaceDetectionAntiSpoofing = () => {
             enqueueSnackbar('Setting up environment...', { variant: 'success' })
         })
     })
+
     const performTask = ( ()=>{
         setupPage().then(async()=>{
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
@@ -287,6 +295,14 @@ const FaceDetectionAntiSpoofing = () => {
     const take_selfies = (()=>{
         console.log('taking screen shots')
     })
+
+    const capture = () => {
+        // const imgSrc = camera.current.getScreenshot();
+        // const newPhotos = [...photos, imgSrc];
+        // setPhotos(newPhotos);
+        // setPhoto(imgSrc);
+        // setShowGallery(true);
+    };
 
     return(
         <div className={'container'}>
@@ -309,8 +325,8 @@ const FaceDetectionAntiSpoofing = () => {
                         </div>
                         <video preload="none" id="video" playsInline/>
                         <canvas id="output"/>
-
                     </div>
+
                     <div className={'actions'}>
                         <Button variant="contained" color="success" sx={ { borderRadius: 0 }} onClick={()=> performTask()}>
                             Perform anti-spoofing task
