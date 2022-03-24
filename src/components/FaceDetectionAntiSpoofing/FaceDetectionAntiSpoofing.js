@@ -125,7 +125,6 @@ const FaceDetectionAntiSpoofing = () => {
 
             const bbx_w = start[0] - end[0]
             // create a Square bounding box
-            console.log('a - c: ', start[0] - end[0])
 
 
             const scale = 1.1
@@ -164,7 +163,8 @@ const FaceDetectionAntiSpoofing = () => {
                     if(decision.length===windows){
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
-                        if(bbx_w > 200 && bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400){
+                        if(bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400){
+                            if(bbx_w > 180){
                             // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
 
@@ -209,6 +209,9 @@ const FaceDetectionAntiSpoofing = () => {
 
                                 // set_as_spoof(true)
                                 // dispatch(setAsSpoof())
+                            }}
+                            else{
+                                enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
                             }
                         }
                         else{
