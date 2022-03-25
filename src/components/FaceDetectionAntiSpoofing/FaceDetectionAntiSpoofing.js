@@ -34,6 +34,7 @@ const svgIcon = () => (
         <rect x="0" y="0" width="100%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
     </svg>
 );
+
 let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
 let cmp=0;
 // let windows=15;
@@ -87,7 +88,7 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     //cropped the face detected
-    function getImage(video, sizeImg, startImg){
+    function getImage(video, sizeImg, startImg) {
         const canvasTemp = document.createElement('canvas');
         canvasTemp.height = sizeImg;
         canvasTemp.width = sizeImg;
@@ -98,11 +99,9 @@ const FaceDetectionAntiSpoofing = () => {
         return canvasTemp;
     }
 
-
     const renderPrediction = async () => {
         const font = "18px sans-serif";
         ctx.font = font;
-
 
         // console.log('windows, thresholdValue: ', windows, thresholdValue)
         const returnTensors = false;
@@ -114,7 +113,7 @@ const FaceDetectionAntiSpoofing = () => {
             video, returnTensors, flipHorizontal, annotateBoxes);
 
         // console.log('threshold 1: ', thresholdValue)
-        if (predictions.length===1){
+        if (predictions.length===1) {
             console.log('one face detected')
             // set_face_as_detected(true)
             // set_as_spoof(true)
@@ -126,7 +125,7 @@ const FaceDetectionAntiSpoofing = () => {
             const bbx_top_left_x = predictions[0].topLeft[0]
 
             const size = [end[0] - start[0], end[1] - start[1]];
-
+            // decision = []
 
             const mid = [(start[0] + end[0]) * 0.5, (start[1] + end[1]) * 0.5]
 
@@ -162,23 +161,25 @@ const FaceDetectionAntiSpoofing = () => {
                 // console.log('window: ', window)
                 const labelPredict = await logits.data();
 
-                console.log('windows /cmp: ', windows, cmp)
+                console.log('windows / cmp: ', windows, cmp)
 
                 if(cmp <= windows){
-                    // console.log('labelPrediction: ', labelPredict[0])
+                    console.log('labelPrediction: ', labelPredict[0])
                     decision.push(labelPredict[0]);
                     // console.log('threshold 3.9: ================================================', thresholdValue)
-
+                    console.log('===> decision.length, windows: ', decision.length, windows)
                     if(decision.length===windows){
-                        console.log('decision.length, windows: ', decision.length, windows)
+
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
                         // console.log('threshold 4: ================================================', thresholdValue)
-
-                        if( bbx_top_left_x > 460 && bbx_top_left_x < 580 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400 ) {
-                            // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
-                            // console.log("bbx_top_left_x: ", bbx_top_left_x)
+                        console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
+                        console.log("bbx_top_left_x: ", bbx_top_left_x)
+                        if( bbx_top_left_x > 460 && bbx_top_left_x < 600 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400 ) {
+                            console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
+                            console.log("bbx_top_left_x: ", bbx_top_left_x)
                             console.log('face within the ellipse')
+
                             if (bbx_w > 180) {
                                 console.log('face near to the camera')
                                 if (ArrayAvg(decision) < thresholdValue) {
@@ -225,23 +226,28 @@ const FaceDetectionAntiSpoofing = () => {
                                     // set_as_spoof(true)
                                     // dispatch(setAsSpoof())
                                 }
-                                cmp=0;
+                                // cmp=0;
                                 decision=[];
                             }
+
                             else{
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
+                                decision=[];
                             }
                         }
 
                         else{
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             enqueueSnackbar('Your face should be in the ellipse ', { variant: 'success' })
+                            decision=[];
                         }
+
                         cmp=0;
                         decision=[];
                     }
                 }
+
                 else{
                     cmp=0
                 }
@@ -292,8 +298,8 @@ const FaceDetectionAntiSpoofing = () => {
         // await renderPrediction();
     };
 
-    useEffect( ()=>{
-        setupPage().then(()=>{
+    useEffect( () => {
+        setupPage().then(() => {
             enqueueSnackbar('Setting up environment...', { variant: 'success' })
         })
 
@@ -303,7 +309,7 @@ const FaceDetectionAntiSpoofing = () => {
     },[is_ready_to_spoofing_task])
 
     const performTask = (() => {
-        setupPage().then(async()=>{
+        setupPage().then(async() => {
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
@@ -353,7 +359,7 @@ const FaceDetectionAntiSpoofing = () => {
         })
     }
 
-    const refreshPage = ()=>{
+    const refreshPage = () => {
         console.log('window: ', window)
         window.location.reload(false);
     }
