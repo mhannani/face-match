@@ -52,7 +52,6 @@ const FaceDetectionAntiSpoofing = () => {
     const { enqueueSnackbar } = useSnackbar();
     // const dispatch = useDispatch()
 
-
     let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
     let cmp=0;
     // let windows=15;
@@ -75,9 +74,9 @@ const FaceDetectionAntiSpoofing = () => {
             'audio': false,
             'video': {
                 facingMode: 'user',
-                width: {exact: 640},
+                width: {exact: 643},
                 height: {ideal: 480},
-                deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
         });
 
@@ -113,9 +112,8 @@ const FaceDetectionAntiSpoofing = () => {
         const predictions = await model.estimateFaces(
             video, returnTensors, flipHorizontal, annotateBoxes);
 
-
         // console.log('threshold 1: ', thresholdValue)
-        if (predictions.length===1) {
+        if (predictions.length===1){
             // set_face_as_detected(true)
             // set_as_spoof(true)
             cmp++
@@ -243,7 +241,6 @@ const FaceDetectionAntiSpoofing = () => {
 
         //like setInterval()
         requestAnimationFrame(renderPrediction);
-
         // console.log('threshold 6: ', thresholdValue)
 
     };
