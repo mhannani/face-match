@@ -16,7 +16,7 @@ import {useSnackbar} from "notistack";
 
 const svgIcon = () => (
     <svg
-        width="79%"
+        width="100%"
         height="100%"
         className="ellipse"
         viewBox="0 0 260 200"
@@ -47,6 +47,7 @@ const FaceDetectionAntiSpoofing = () => {
     // const [threshold, setThreshold] = React.useState(0.8);
     const [windows, setWindows] = React.useState(15);
     const [is_running, set_is_running] = React.useState(false)
+    const [is_ready_to_spoofing_task, set_is_ready_to_spoofing_task] = React.useState(false)
 
     const [thresholdValue, setThresholdValue] = React.useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
@@ -74,7 +75,7 @@ const FaceDetectionAntiSpoofing = () => {
             'audio': false,
             'video': {
                 facingMode: 'user',
-                width: {exact: 643},
+                width: {exact: 640},
                 height: {ideal: 480},
                 // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
@@ -104,6 +105,7 @@ const FaceDetectionAntiSpoofing = () => {
         const font = "18px sans-serif";
         ctx.font = font;
 
+        console.log('windows, thresholdValue: ', windows, thresholdValue)
         const returnTensors = false;
         const flipHorizontal = true;
         const annotateBoxes = true;
@@ -273,12 +275,15 @@ const FaceDetectionAntiSpoofing = () => {
     };
 
     useEffect( ()=>{
+        console.log('useeffect')
         setupPage().then(()=>{
             enqueueSnackbar('Setting up environment...', { variant: 'success' })
         })
-
+        console.log('before setting ready to spoofing task')
+        set_is_ready_to_spoofing_task(true)
+        console.log(is_ready_to_spoofing_task)
         // return ()=>{console.log('unmounted')}
-    })
+    },[is_ready_to_spoofing_task])
 
     const performTask = ( () => {
         setupPage().then(async()=>{
@@ -350,7 +355,7 @@ const FaceDetectionAntiSpoofing = () => {
                     <div>+ <code>Threshold</code>: proba > threshold => spoof : <b>{thresholdValue}</b></div>
                     <div>+ <code>Window</code> (number of frames to take in order to make decision): <b>{windows}</b></div>
 
-                    <div className={'actions'}>
+                    {is_ready_to_spoofing_task ? <div className={'actions'}>
 
                         {/*<Button variant="contained" color="success"*/}
                         {/*        sx={ { borderRadius: 0 }}*/}
@@ -418,7 +423,7 @@ const FaceDetectionAntiSpoofing = () => {
                             </Button>
                             {/*<button>Submit</button>*/}
                         </form>
-                    </div>
+                    </div>: <div>waiting...</div>}
                 </div>
             </div>
         </div>
