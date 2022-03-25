@@ -76,7 +76,7 @@ const FaceDetectionAntiSpoofing = () => {
                 facingMode: 'user',
                 width: {exact: 640},
                 height: {ideal: 480},
-                deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
         });
 
@@ -205,7 +205,8 @@ const FaceDetectionAntiSpoofing = () => {
                                     ctx.fillText(label, startNew[0], startNew[1] - 6);
                                     // set_as_spoof(false)
                                     // dispatch(setAsReal())
-                                } else {
+                                }
+                                else {
                                     console.log('spoof')
                                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                                     label = 'Spoof ' + `(` + ArrayAvg(decision).toFixed(2) + `)`;
@@ -230,14 +231,14 @@ const FaceDetectionAntiSpoofing = () => {
                                 decision=[];
                             }
 
-                            else{
+                            else {
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
                                 decision=[];
                             }
                         }
 
-                        else{
+                        else {
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             enqueueSnackbar('Your face should be in the ellipse ', { variant: 'success' })
                             decision=[];
