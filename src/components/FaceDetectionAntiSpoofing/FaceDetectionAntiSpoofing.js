@@ -168,8 +168,10 @@ const FaceDetectionAntiSpoofing = () => {
                     decision.push(labelPredict[0]);
                     // console.log('threshold 3.9: ================================================', thresholdValue)
                     console.log('===> decision.length, windows: ', decision.length, windows)
+                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                    console.log('===> decision.length, windows: ', typeof decision.length, typeof windows)
                     if(decision.length===windows){
-
+                        console.log('================================================')
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
                         // console.log('threshold 4: ================================================', thresholdValue)
@@ -236,6 +238,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
                                 decision=[];
                             }
+
                         }
 
                         else {
@@ -244,15 +247,17 @@ const FaceDetectionAntiSpoofing = () => {
                             decision=[];
                         }
 
+                        console.log('+++++++++++++++++++++++++++init cmp and decision ++++++++++++++++++++++++++')
                         cmp=0;
                         decision=[];
                     }
+
                 }
 
                 else{
                     cmp=0
+                    decision=[]
                 }
-
             }
         }
 
@@ -332,8 +337,8 @@ const FaceDetectionAntiSpoofing = () => {
     const handleThresholdChange = async (event) => {
         const { name, value } = event.target;
 
-        setThresholdValue(value);
-        setupCamera()
+        setThresholdValue(parseFloat(value));
+        // setupCamera()
         // setupPage()
         // event.persist()
     };
@@ -341,13 +346,14 @@ const FaceDetectionAntiSpoofing = () => {
     const handleWindowChange = async (event) => {
         const { name, value } = event.target;
 
-        setWindows(value);
-        setupCamera()
+        setWindows(parseInt(value));
+        // setupCamera()
         // setupPage()
         // event.persist()
     };
 
     const perform_anti_spoofing = async (event) => {
+        cmp = 0
 
         event.preventDefault();
         // console.log("event: ", thresholdValue, window)
