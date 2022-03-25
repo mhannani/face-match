@@ -77,7 +77,7 @@ const FaceDetectionAntiSpoofing = () => {
                 facingMode: 'user',
                 width: {exact: 640},
                 height: {ideal: 480},
-                // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
         });
 
@@ -105,7 +105,7 @@ const FaceDetectionAntiSpoofing = () => {
         const font = "18px sans-serif";
         ctx.font = font;
 
-        console.log('windows, thresholdValue: ', windows, thresholdValue)
+        // console.log('windows, thresholdValue: ', windows, thresholdValue)
         const returnTensors = false;
         const flipHorizontal = true;
         const annotateBoxes = true;
@@ -116,6 +116,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         // console.log('threshold 1: ', thresholdValue)
         if (predictions.length===1){
+            console.log('one face detected')
             // set_face_as_detected(true)
             // set_as_spoof(true)
             cmp++
@@ -162,21 +163,25 @@ const FaceDetectionAntiSpoofing = () => {
                 // console.log('window: ', window)
                 const labelPredict = await logits.data();
 
-                if(cmp<=windows){
+                if(cmp <= windows){
                     // console.log('labelPrediction: ', labelPredict[0])
                     decision.push(labelPredict[0]);
                     // console.log('threshold 3.9: ================================================', thresholdValue)
-
+                    console.log('frame n ', decision.length, '/', windows)
                     if(decision.length===windows){
+                        console.log('decision.length, windows: ', decision.length, windows)
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
                         // console.log('threshold 4: ================================================', thresholdValue)
 
-                        if(bbx_top_left_x > 360 && bbx_top_left_x < 480 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400) {
+                        if(bbx_top_left_x > 460 && bbx_top_left_x < 580 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400) {
                             // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
+                            console.log('face within the ellipse')
                             if (bbx_w > 180) {
+                                console.log('face near to the camera')
                                 if (ArrayAvg(decision) < thresholdValue) {
+                                    console.log('real')
 
                                     // console.log(threshold, window)
                                     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -199,6 +204,7 @@ const FaceDetectionAntiSpoofing = () => {
                                     // set_as_spoof(false)
                                     // dispatch(setAsReal())
                                 } else {
+                                    console.log('spoof')
                                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                                     label = 'Spoof ' + `(` + ArrayAvg(decision).toFixed(2) + `)`;
                                     ctx.fillStyle = "rgb(208,25,25)";
@@ -219,13 +225,16 @@ const FaceDetectionAntiSpoofing = () => {
                                     // dispatch(setAsSpoof())
                                 }
                         }
-                            else{
-                                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
-                            }
+                        else{
+
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
+                        }
                         }
                         else{
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            console.log('face NOT near to the camera')
+
                         }
                         cmp=0;
                         decision=[];
