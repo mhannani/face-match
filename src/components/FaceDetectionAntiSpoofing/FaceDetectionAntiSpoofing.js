@@ -50,7 +50,7 @@ const FaceDetectionAntiSpoofing = () => {
     // const do_liveness = useSelector((state) => state.face.do_liveness)
     // const [as_threshold, setThreshold] = React.useState(0.8);
     // const [threshold, setThreshold] = React.useState(0.8);
-    const [windows, setWindows] = React.useState(2);
+    const [windows, setWindows] = React.useState(15);
     const [is_running, set_is_running] = React.useState(false)
     const [is_ready_to_spoofing_task, set_is_ready_to_spoofing_task] = React.useState(false)
 
@@ -76,7 +76,7 @@ const FaceDetectionAntiSpoofing = () => {
                 facingMode: 'user',
                 width: {exact: 640},
                 height: {ideal: 480},
-                // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
         });
 
