@@ -7,16 +7,16 @@ import './face_detection_anti_spoofing.css'
 // import Webcam from "react-webcam";
 // import classnames from "classnames";
 // import {setAsReal, setAsSpoof, reset} from "../../store/faceSlice";
-import {renderPrediction, setDimension, setupPage} from '../../helpers/anti-spoofing'
+// import {renderPrediction, setDimension, setupPage} from '../../helpers/anti-spoofing'
 import {useDispatch, useSelector} from "react-redux";
-import {Alert, AlertTitle, Button, TextField, InputLabel, Form } from "@mui/material";
+import {Alert, AlertTitle, Button, TextField } from "@mui/material";
 import {useSnackbar} from "notistack";
 
 // import {round} from "@tensorflow/tfjs";
 
 const svgIcon = () => (
     <svg
-        width="100%"
+        width="79%"
         height="100%"
         className="ellipse"
         viewBox="0 0 260 200"
@@ -77,7 +77,7 @@ const FaceDetectionAntiSpoofing = () => {
                 facingMode: 'user',
                 width: {exact: 640},
                 height: {ideal: 480},
-                // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
         });
 
@@ -227,14 +227,11 @@ const FaceDetectionAntiSpoofing = () => {
                         else{
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                         }
-
-
                         cmp=0;
                         decision=[];
                     }
                 }
             }
-
         }
 
         else{
@@ -246,6 +243,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         //like setInterval()
         requestAnimationFrame(renderPrediction);
+
         // console.log('threshold 6: ', thresholdValue)
 
     };
@@ -341,7 +339,6 @@ const FaceDetectionAntiSpoofing = () => {
         window.location.reload(false);
     }
 
-
     return(
         <div className={'container'}>
             <div className={'row'}>
@@ -365,8 +362,6 @@ const FaceDetectionAntiSpoofing = () => {
                         {/*    Perform anti-spoofing task*/}
                         {/*</Button>*/}
                         <form onSubmit={perform_anti_spoofing}>
-
-
                             {
                                 is_running ? <TextField
                                     hiddenLabel
@@ -376,7 +371,7 @@ const FaceDetectionAntiSpoofing = () => {
                                     size="small"
                                     onChange={handleThresholdChange}
                                     disabled
-                                />: <TextField
+                                /> : <TextField
                                     hiddenLabel
                                     id="threshold"
                                     defaultValue={thresholdValue}
@@ -407,7 +402,6 @@ const FaceDetectionAntiSpoofing = () => {
                                     />
                             }
 
-
                             <Button variant="contained" color="success"
                                                   sx={ { borderRadius: 0 }}
                                                   type="submit"
@@ -417,7 +411,6 @@ const FaceDetectionAntiSpoofing = () => {
 
                             </Button>
 
-
                             <Button variant="contained" color="warning"
                                     sx={ { borderRadius: 0 }}
                                     onClick={refreshPage}
@@ -426,13 +419,11 @@ const FaceDetectionAntiSpoofing = () => {
                                 Stop task
 
                             </Button>
-
                             {/*<button>Submit</button>*/}
                         </form>
                     </div>
                 </div>
             </div>
-
         </div>
     )
 }
