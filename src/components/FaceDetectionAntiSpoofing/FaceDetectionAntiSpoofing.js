@@ -34,6 +34,10 @@ const svgIcon = () => (
         <rect x="0" y="0" width="100%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
     </svg>
 );
+let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
+let cmp=0;
+// let windows=15;
+let decision=[];
 
 const FaceDetectionAntiSpoofing = () => {
     // const camera = useRef();
@@ -45,19 +49,13 @@ const FaceDetectionAntiSpoofing = () => {
     // const do_liveness = useSelector((state) => state.face.do_liveness)
     // const [as_threshold, setThreshold] = React.useState(0.8);
     // const [threshold, setThreshold] = React.useState(0.8);
-    const [windows, setWindows] = React.useState(15);
+    const [windows, setWindows] = React.useState(2);
     const [is_running, set_is_running] = React.useState(false)
     const [is_ready_to_spoofing_task, set_is_ready_to_spoofing_task] = React.useState(false)
 
     const [thresholdValue, setThresholdValue] = React.useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
     // const dispatch = useDispatch()
-
-    let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
-    let cmp=0;
-    // let windows=15;
-    let decision=[];
-
 
     function ArrayAvg(myArray) {
         let i = 0, sum = 0, ArrayLen = myArray.length;
@@ -104,6 +102,7 @@ const FaceDetectionAntiSpoofing = () => {
     const renderPrediction = async () => {
         const font = "18px sans-serif";
         ctx.font = font;
+
 
         // console.log('windows, thresholdValue: ', windows, thresholdValue)
         const returnTensors = false;
@@ -163,18 +162,20 @@ const FaceDetectionAntiSpoofing = () => {
                 // console.log('window: ', window)
                 const labelPredict = await logits.data();
 
+                console.log('windows /cmp: ', windows, cmp)
+
                 if(cmp <= windows){
                     // console.log('labelPrediction: ', labelPredict[0])
                     decision.push(labelPredict[0]);
                     // console.log('threshold 3.9: ================================================', thresholdValue)
-                    console.log('frame n ', decision.length, '/', windows)
+
                     if(decision.length===windows){
                         console.log('decision.length, windows: ', decision.length, windows)
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
                         // console.log('threshold 4: ================================================', thresholdValue)
 
-                        if(bbx_top_left_x > 460 && bbx_top_left_x < 580 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400) {
+                        if( bbx_top_left_x > 460 && bbx_top_left_x < 580 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400 ) {
                             // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
                             console.log('face within the ellipse')
@@ -224,22 +225,27 @@ const FaceDetectionAntiSpoofing = () => {
                                     // set_as_spoof(true)
                                     // dispatch(setAsSpoof())
                                 }
+                                cmp=0;
+                                decision=[];
+                            }
+                            else{
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
+                            }
                         }
-                        else{
 
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
-                        }
-                        }
                         else{
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            console.log('face NOT near to the camera')
-
+                            enqueueSnackbar('Your face should be in the ellipse ', { variant: 'success' })
                         }
                         cmp=0;
                         decision=[];
                     }
                 }
+                else{
+                    cmp=0
+                }
+
             }
         }
 
@@ -251,8 +257,11 @@ const FaceDetectionAntiSpoofing = () => {
         }
 
         //like setInterval()
+        // cmp=0;
+        // decision=[];
         requestAnimationFrame(renderPrediction);
         // console.log('threshold 6: ', thresholdValue)
+        // cmp=0;
 
     };
 
@@ -284,17 +293,16 @@ const FaceDetectionAntiSpoofing = () => {
     };
 
     useEffect( ()=>{
-        console.log('useeffect')
         setupPage().then(()=>{
             enqueueSnackbar('Setting up environment...', { variant: 'success' })
         })
-        console.log('before setting ready to spoofing task')
+
         set_is_ready_to_spoofing_task(true)
         console.log(is_ready_to_spoofing_task)
         // return ()=>{console.log('unmounted')}
     },[is_ready_to_spoofing_task])
 
-    const performTask = ( () => {
+    const performTask = (() => {
         setupPage().then(async()=>{
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
@@ -338,7 +346,7 @@ const FaceDetectionAntiSpoofing = () => {
         // console.log("event: ", thresholdValue, window)
         // console.log('perform')
 
-        setupPage().then(async()=>{
+        setupPage().then( async() => {
             set_is_running(true)
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
