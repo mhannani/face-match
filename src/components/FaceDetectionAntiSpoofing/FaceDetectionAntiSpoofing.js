@@ -516,7 +516,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 onClick={perform_anti_spoofing}
                                 startIcon={<PlayArrowIcon />}
                         >
-                            Run task {selfie_1_taken ? 't': 'f'}
+                            Run task
 
                         </Button>
 
