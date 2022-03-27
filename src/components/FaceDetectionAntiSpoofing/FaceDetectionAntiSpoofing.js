@@ -430,13 +430,17 @@ const FaceDetectionAntiSpoofing = () => {
         <div className={'container'}>
             <div className={'row'}>
                 <div className={'column'}>
-                    <div id="main">
-                        <div className="overlay-container">
-                            {svgIcon()}
+
+                    <>
+                        <div id="main">
+                            <div className="overlay-container">
+                                {svgIcon()}
+                            </div>
+                            <video preload="none" id="video" playsInline/>
+                            <canvas id="output"/>
                         </div>
-                        <video preload="none" id="video" playsInline/>
-                        <canvas id="output"/>
-                    </div>
+                    </>
+
 
                     {/*<div>+ <code>Threshold</code>: proba > threshold => spoof : <b>{thresholdValue}</b></div>*/}
                     {/*<div>+ <code>Window</code> (number of frames to take in order to make decision): <b>{windows}</b></div>*/}
