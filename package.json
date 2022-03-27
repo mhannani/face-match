@@ -8,6 +8,8 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.19",
     "@fortawesome/free-solid-svg-icons": "^5.9.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "@mui/icons-material": "^5.5.1",
+    "@mui/lab": "^5.0.0-alpha.74",
     "@mui/material": "^5.5.1",
     "@reduxjs/toolkit": "^1.8.0",
     "@tensorflow-models/blazeface": "^0.0.7",

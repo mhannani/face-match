@@ -1,39 +1,74 @@
 import React, {useEffect, useRef, useState} from 'react'
-// import setupPage from '../../helpers/anti-spoofing'
 import * as blazeface from '@tensorflow-models/blazeface';
 import * as tf from '@tensorflow/tfjs';
 import './face_detection_anti_spoofing.css'
-// import avatarpng from '../../assets/avatar.png'
+import avatar from '../../assets/avatar.png'
+import {ArrayAvg, svgIcon} from "../../helpers/anti-spoofing";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
+
 // import Webcam from "react-webcam";
 // import classnames from "classnames";
 // import {setAsReal, setAsSpoof, reset} from "../../store/faceSlice";
 // import {renderPrediction, setDimension, setupPage} from '../../helpers/anti-spoofing'
-import {useDispatch, useSelector} from "react-redux";
-import {Alert, AlertTitle, Button, TextField } from "@mui/material";
+// import {useDispatch, useSelector} from "react-redux";
+import {
+    // Alert,
+    // AlertTitle,
+    Button,
+    CircularProgress,
+    Fade,
+    Paper,
+    Slider,
+    styled,
+    Tooltip
+} from "@mui/material";
 import {useSnackbar} from "notistack";
+// import Spinner from "../Spinner/Spinner";
 
 // import {round} from "@tensorflow/tfjs";
 
-const svgIcon = () => (
-    <svg
-        width="100%"
-        height="100%"
-        className="ellipse"
-        viewBox="0 0 260 200"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="none"
-        xmlnsXlink="http://www.w3.org/1999/xlink">
-        <defs>
-            <mask id="overlay-mask" x="0" y="0" width="100%" height="100%">
-                <rect x="0" y="0" width="100%" height="100%" fill="#fff" className={'rect'}/>
-                <ellipse id="ellipse-mask" cx="50%" cy="50%" rx="50" ry="70" />
-            </mask>
-        </defs>
+const PrettoSlider = styled(Slider)({
+    color: '#52af77',
+    height: 8,
+    '& .MuiSlider-track': {
+        border: 'none',
+    },
+    '& .MuiSlider-thumb': {
+        height: 24,
+        width: 24,
+        backgroundColor: '#fff',
+        border: '2px solid currentColor',
+        '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
+            boxShadow: 'inherit',
+        },
+        '&:before': {
+            display: 'none',
+        },
+    },
+    '& .MuiSlider-valueLabel': {
+        lineHeight: 1.2,
+        fontSize: 12,
+        background: 'unset',
+        padding: 0,
+        width: 32,
+        height: 32,
+        borderRadius: '50% 50% 50% 0',
+        backgroundColor: '#52af77',
+        transformOrigin: 'bottom left',
+        transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
+        '&:before': { display: 'none' },
+        '&.MuiSlider-valueLabelOpen': {
+            transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
+        },
+        '& > *': {
+            transform: 'rotate(45deg)',
+        },
+    },
+});
 
-        <rect x="0" y="0" width="100%" height="100%" mask="url(#overlay-mask)" fillOpacity="0.7"/>
-    </svg>
-);
+
+
 
 let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
 let cmp=0;
@@ -50,22 +85,23 @@ const FaceDetectionAntiSpoofing = () => {
     // const do_liveness = useSelector((state) => state.face.do_liveness)
     // const [as_threshold, setThreshold] = React.useState(0.8);
     // const [threshold, setThreshold] = React.useState(0.8);
-    const [windows, setWindows] = React.useState(15);
-    const [is_running, set_is_running] = React.useState(false)
-    const [is_ready_to_spoofing_task, set_is_ready_to_spoofing_task] = React.useState(false)
+    const [windows, setWindows] = useState(15);
+    const [is_running, set_is_running] = useState(false)
+    const [is_ready_to_spoofing_task, set_is_ready_to_spoofing_task] = useState(false)
 
-    const [thresholdValue, setThresholdValue] = React.useState(0.8)
+    const [selfie_1, set_selfie_1] = useState(null)
+    const [selfie_2, set_selfie_2] = useState(null)
+
+    const [selfie_1_taken, set_selfie_1_as_taken] = useState(false)
+    const [selfie_2_taken, set_selfie_2_as_taken] = useState(false)
+
+
+    const [thresholdValue, setThresholdValue] = useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
+
     // const dispatch = useDispatch()
 
-    function ArrayAvg(myArray) {
-        let i = 0, sum = 0, ArrayLen = myArray.length;
 
-        while (i < ArrayLen) {
-            sum = sum + myArray[i++];
-        }
-        return sum / ArrayLen;
-    }
 
     //Run camera
     async function setupCamera() {
@@ -96,6 +132,8 @@ const FaceDetectionAntiSpoofing = () => {
         const ctxTemp = canvasTemp.getContext("2d");
         ctxTemp.clearRect(0, 0, sizeImg, sizeImg); // clear canvas
         ctxTemp.drawImage(video, startImg[0], startImg[1], sizeImg, sizeImg, 0, 0, sizeImg, sizeImg);
+
+        // output.appendChild(canvasTemp)
         return canvasTemp;
     }
 
@@ -114,7 +152,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         // console.log('threshold 1: ', thresholdValue)
         if (predictions.length===1) {
-            console.log('one face detected')
+            // console.log('one face detected')
             // set_face_as_detected(true)
             // set_as_spoof(true)
             cmp++
@@ -156,37 +194,53 @@ const FaceDetectionAntiSpoofing = () => {
                         // console.log('predict', classifier.predict(tensor))
                         return classifier.predict(tensor);
                     }
+
                 );
+
+
+                // document.getElementById('image_for_crop').appendChild(image);
+
+                // let output = document.getElementById('screenshots_output')
+                // output.appendChild(videoCrop)
+
                 // console.log('threshold 3: ', thresholdValue)
                 // console.log('window: ', window)
                 const labelPredict = await logits.data();
 
-                console.log('windows / cmp: ', windows, cmp)
+                // console.log('windows / cmp: ', windows, cmp)
 
+                // set_selfie_1(capture())
                 if(cmp <= windows){
-                    console.log('labelPrediction: ', labelPredict[0])
+
+                    // console.log('labelPrediction: ', labelPredict[0])
                     decision.push(labelPredict[0]);
                     // console.log('threshold 3.9: ================================================', thresholdValue)
-                    console.log('===> decision.length, windows: ', decision.length, windows)
-                    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                    console.log('===> decision.length, windows: ', typeof decision.length, typeof windows)
+                    // console.log('===> decision.length, windows: ', decision.length, windows)
+                    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                    // console.log('===> decision.length, windows: ', typeof decision.length, typeof windows)
                     if(decision.length===windows){
-                        console.log('================================================')
+                        // console.log('================================================')
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
                         // console.log('threshold 4: ================================================', thresholdValue)
-                        console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
-                        console.log("bbx_top_left_x: ", bbx_top_left_x)
-                        if( bbx_top_left_x > 460 && bbx_top_left_x < 600 && bbx_bottom_right_y > 280 && bbx_bottom_right_y < 400 ) {
-                            console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
-                            console.log("bbx_top_left_x: ", bbx_top_left_x)
-                            console.log('face within the ellipse')
-
-                            if (bbx_w > 180) {
-                                console.log('face near to the camera')
+                        // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
+                        // console.log("bbx_top_left_x: ", bbx_top_left_x)
+                        if( bbx_top_left_x > 390 && bbx_top_left_x < 500 && bbx_bottom_right_y > 260 && bbx_bottom_right_y < 380 ) {
+                            // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
+                            // console.log("bbx_top_left_x: ", bbx_top_left_x)
+                            // console.log('face within the ellipse')
+                            // console.log('face near to the camera', bbx_w)
+                            if(!selfie_1_taken){
+                                await capture(videoCrop,  1)
+                            }
+                            if(!selfie_2_taken){
+                                await capture(videoCrop,  2)
+                            }
+                            if (bbx_w > 180){
                                 if (ArrayAvg(decision) < thresholdValue) {
-                                    console.log('real')
+                                    // console.log('real')
 
+                                    // Take screenshots
                                     // console.log(threshold, window)
                                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                                     // console.log(ArrayAvg(decision))
@@ -208,8 +262,9 @@ const FaceDetectionAntiSpoofing = () => {
                                     // set_as_spoof(false)
                                     // dispatch(setAsReal())
                                 }
+
                                 else {
-                                    console.log('spoof')
+                                    // console.log('spoof')
                                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                                     label = 'Spoof ' + `(` + ArrayAvg(decision).toFixed(2) + `)`;
                                     ctx.fillStyle = "rgb(208,25,25)";
@@ -230,24 +285,23 @@ const FaceDetectionAntiSpoofing = () => {
                                     // dispatch(setAsSpoof())
                                 }
                                 // cmp=0;
-                                decision=[];
+                                // decision=[];
                             }
 
                             else {
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
-                                decision=[];
+                                // decision=[];
                             }
 
                         }
 
                         else {
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            enqueueSnackbar('Your face should be in the ellipse ', { variant: 'success' })
-                            decision=[];
+                            enqueueSnackbar('Your face should be straight / within the ellipse ', { variant: 'success' })
+                            // decision=[];
                         }
 
-                        console.log('+++++++++++++++++++++++++++init cmp and decision ++++++++++++++++++++++++++')
                         cmp=0;
                         decision=[];
                     }
@@ -297,6 +351,10 @@ const FaceDetectionAntiSpoofing = () => {
         //face detection
         model = await blazeface.load();
 
+
+        // const imgSrc = context.toDataURL('png')
+        // console.log(imgSrc)
+
         // Load classifier from static storage
         classifier = await tf.loadLayersModel('./rose_model/model.json');
 
@@ -307,30 +365,28 @@ const FaceDetectionAntiSpoofing = () => {
     useEffect( () => {
         setupPage().then(() => {
             enqueueSnackbar('Setting up environment...', { variant: 'success' })
+            set_is_ready_to_spoofing_task(true)
         })
+    },[])
 
-        set_is_ready_to_spoofing_task(true)
-        console.log(is_ready_to_spoofing_task)
-        // return ()=>{console.log('unmounted')}
-    },[is_ready_to_spoofing_task])
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
-    const performTask = (() => {
-        setupPage().then(async() => {
-            enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
-            await renderPrediction();
-        })
-    })
+    const capture = async (canvas_img, selfie_id) => {
+        let img_source = canvas_img.toDataURL();
+        console.log('selfie_1_as_taoken ---- capture func: ', selfie_1_taken)
+        console.log('selfie_2_as_taoken ---- capture func: ', selfie_2_taken)
+        if(selfie_id === 1){
+            set_selfie_1(img_source)
+            set_selfie_1_as_taken(true)
+        }
 
-    // const take_selfies = (() => {
-    //     console.log('taking screen shots')
-    // })
+        await delay(500);
 
-    const capture = () => {
-        // const imgSrc = camera.current.getScreenshot();
-        // const newPhotos = [...photos, imgSrc];
-        // setPhotos(newPhotos);
-        // setPhoto(imgSrc);
-        // setShowGallery(true);
+        if(selfie_id === 2){
+            set_selfie_2(img_source)
+            set_selfie_2_as_taken(true)
+        }
+
     };
 
 
@@ -367,8 +423,7 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     const refreshPage = () => {
-        console.log('window: ', window)
-        window.location.reload(false);
+        window.location.reload();
     }
 
     return(
@@ -382,80 +437,107 @@ const FaceDetectionAntiSpoofing = () => {
                         <video preload="none" id="video" playsInline/>
                         <canvas id="output"/>
                     </div>
-                    <div>+ <code>Threshold</code>: proba > threshold => spoof : <b>{thresholdValue}</b></div>
-                    <div>+ <code>Window</code> (number of frames to take in order to make decision): <b>{windows}</b></div>
 
-                    {is_ready_to_spoofing_task ? <div className={'actions'}>
+                    {/*<div>+ <code>Threshold</code>: proba > threshold => spoof : <b>{thresholdValue}</b></div>*/}
+                    {/*<div>+ <code>Window</code> (number of frames to take in order to make decision): <b>{windows}</b></div>*/}
+                </div>
 
-                        {/*<Button variant="contained" color="success"*/}
-                        {/*        sx={ { borderRadius: 0 }}*/}
-                        {/*        onClick={()=> performTask()}*/}
-                        {/*>*/}
-                        {/*    Perform anti-spoofing task*/}
-                        {/*</Button>*/}
-                        <form onSubmit={perform_anti_spoofing}>
-                            {
-                                is_running ? <TextField
-                                    hiddenLabel
-                                    id="threshold"
-                                    defaultValue={thresholdValue}
-                                    variant="filled"
-                                    size="small"
+                <div className={'column-right-side'}>
+                    <div className={'row_avatar'}>
+                        <div className={'column_avatar'}>
+                            <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
+                            <h6>SELFIE 1</h6>
+                        </div>
+
+                        <div className={'column_avatar'} id={'image_for_crop'}>
+                            <img className={'frame_2'} src={selfie_2 ? selfie_2 : avatar} alt={'avatar'}/>
+                            <h6>SELFIE 2</h6>
+                        </div>
+                    </div>
+
+                    <div className="variables">
+                        {is_ready_to_spoofing_task ? <><Tooltip title="Proba > threshold => `spoof`, otherwise `real`" placement="top">
+                            <Paper key={1} elevation={4} className={'paper'}>
+                                <b>Threshold</b>
+                                <h4>{thresholdValue}</h4>
+                                <PrettoSlider
+                                    valueLabelDisplay="auto"
+                                    className={'prettoSlider'}
+                                    aria-label="pretto slider"
+                                    defaultValue={0.8}
                                     onChange={handleThresholdChange}
-                                    disabled
-                                /> : <TextField
-                                    hiddenLabel
-                                    id="threshold"
-                                    defaultValue={thresholdValue}
-                                    variant="filled"
-                                    size="small"
-                                    onChange={handleThresholdChange}
+                                    min={0.1}
+                                    max={1.0}
+                                    step={0.1}
+                                    disabled={is_running}
                                 />
-                            }
+                            </Paper>
+                        </Tooltip>
 
-                            {
-                                is_running ? <TextField
-                                    hiddenLabel
-                                    id="windows"
-                                    defaultValue={windows}
-                                    variant="filled"
-                                    size="small"
+                        <Tooltip title="Number of frames to take in order to make decision" placement="top" >
+                            <Paper key={2} elevation={4} className={'paper'}>
+                                <b>Windows</b>
+                                <h4>{windows}</h4>
+                                <PrettoSlider
+                                    valueLabelDisplay="auto"
+                                    className={'prettoSlider'}
+                                    aria-label="pretto slider"
+                                    defaultValue={15}
                                     onChange={handleWindowChange}
-                                    disabled
+                                    min={1}
+                                    max={30}
+                                    disabled={is_running}
                                 />
-                                    :
-                                    <TextField
-                                        hiddenLabel
-                                        id="windows"
-                                        defaultValue={windows}
-                                        variant="filled"
-                                        size="small"
-                                        onChange={handleWindowChange}
-                                    />
-                            }
-
-                            <Button variant="contained" color="success"
-                                                  sx={ { borderRadius: 0 }}
-                                                  type="submit"
-                                                  disabled={is_running}
+                            </Paper>
+                        </Tooltip>
+                        </>
+                        :
+                            <Fade
+                                in={true}
+                                style={{
+                                    color:'green'
+                                }}
                             >
-                                Perform anti-spoofing task
+                            <CircularProgress />
+                            </Fade>
+                        }
+                    </div>
 
-                            </Button>
 
-                            <Button variant="contained" color="warning"
-                                    sx={ { borderRadius: 0 }}
-                                    onClick={refreshPage}
-                                    disabled={!is_running}
-                            >
-                                Stop task
+                    <div className="row actions">
+                        <Button color="success"
+                                sx={ { borderRadius: 0 }}
+                                disabled={is_running}
+                                variant="contained"
+                                onClick={perform_anti_spoofing}
+                                startIcon={<PlayArrowIcon />}
+                        >
+                            Run task {selfie_1_taken ? 't': 'f'}
 
-                            </Button>
-                            {/*<button>Submit</button>*/}
-                        </form>
-                    </div>: <div>waiting...</div>}
+                        </Button>
+
+                        {/*<Button variant="contained" color="info"*/}
+                        {/*        sx={ { borderRadius: 0 }}*/}
+                        {/*        onClick={capture}*/}
+                        {/*        disabled={is_running}*/}
+                        {/*>*/}
+                        {/*    Take screenshots*/}
+
+                        {/*</Button>*/}
+
+                        <Button variant="contained" color="error"
+                                sx={ { borderRadius: 0 }}
+                                onClick={refreshPage}
+                                disabled={!is_running}
+                                startIcon={<StopIcon />}
+                        >
+                            Stop task
+
+                        </Button>
+                    </div>
                 </div>
             </div>
+
         </div>
     )
 }

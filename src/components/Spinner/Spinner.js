@@ -2,13 +2,11 @@ import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const Spinner = () => {
-  return (
-    <div
 
-    >
-      <FontAwesomeIcon icon="spinner" spin size="lg" />
-    </div>
+  return (
+      <FontAwesomeIcon icon="spinner" spin size="lg" color={'red'} />
   );
+
 };
 
 export default Spinner;
