@@ -373,8 +373,8 @@ const FaceDetectionAntiSpoofing = () => {
 
     const capture = async (canvas_img, selfie_id) => {
         let img_source = canvas_img.toDataURL();
-        console.log('selfie_1_as_taoken ---- capture func: ', selfie_1_taken)
-        console.log('selfie_2_as_taoken ---- capture func: ', selfie_2_taken)
+        // console.log('selfie_1_as_taoken ---- capture func: ', selfie_1_taken)
+        // console.log('selfie_2_as_taoken ---- capture func: ', selfie_2_taken)
         if(selfie_id === 1){
             set_selfie_1(img_source)
             set_selfie_1_as_taken(true)
