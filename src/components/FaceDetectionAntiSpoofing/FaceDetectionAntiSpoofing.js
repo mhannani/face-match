@@ -150,8 +150,9 @@ const FaceDetectionAntiSpoofing = () => {
         const predictions = await model.estimateFaces(
             video, returnTensors, flipHorizontal, annotateBoxes);
 
-        // console.log('threshold 1: ', thresholdValue)
+
         if (predictions.length===1) {
+            console.log('proba 1: ', predictions[0].probability)
             // console.log('one face detected')
             // set_face_as_detected(true)
             // set_as_spoof(true)
@@ -163,7 +164,7 @@ const FaceDetectionAntiSpoofing = () => {
             const bbx_top_left_x = predictions[0].topLeft[0]
 
             const size = [end[0] - start[0], end[1] - start[1]];
-            // decision = []
+            // decision = [] 0.999
 
             const mid = [(start[0] + end[0]) * 0.5, (start[1] + end[1]) * 0.5]
 
@@ -177,7 +178,7 @@ const FaceDetectionAntiSpoofing = () => {
             // console.log('threshold 2: ', thresholdValue)
 
             // Perform spoof classification (UNFINISHED!)
-            if (classifySpoof){
+            if (classifySpoof ){
                 // Cropping the frame and perform spoof classification
                 videoCrop = getImage(video, sizeNew, startNew);
 
@@ -230,15 +231,36 @@ const FaceDetectionAntiSpoofing = () => {
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
                             // console.log('face within the ellipse')
                             // console.log('face near to the camera', bbx_w)
-                            if(!selfie_1_taken){
-                                await capture(videoCrop,  1)
-                            }
-                            if(!selfie_2_taken){
-                                await capture(videoCrop,  2)
-                            }
+
                             if (bbx_w > 180){
                                 if (ArrayAvg(decision) < thresholdValue) {
                                     // console.log('real')
+                                    // const pre = await model.estimateFaces(
+                                    //     videoCrop, returnTensors, flipHorizontal, annotateBoxes);
+                                    // console.log('pre.probability: ', pre[0].probability)
+
+                                    if(!selfie_1_taken && predictions[0].probability >= 0.999){
+                                        await capture(videoCrop,  1)
+                                        set_selfie_1_as_taken(true)
+
+                                    }
+
+                                    else{
+                                        enqueueSnackbar('1 Look straight/close to the camera please...', { variant: 'warning' })
+                                        set_selfie_1(null)
+                                    }
+
+                                    if(!selfie_2_taken && predictions[0].probability >= 0.998){
+                                        await capture(videoCrop,  2)
+                                        set_selfie_2_as_taken(true)
+                                        capture = ()=>{}
+                                    }
+
+                                    else{
+                                        enqueueSnackbar('2 Look straight to the camera please...', { variant: 'warning' })
+                                        set_selfie_2(null)
+                                    }
+
 
                                     // Take screenshots
                                     // console.log(threshold, window)
@@ -300,6 +322,8 @@ const FaceDetectionAntiSpoofing = () => {
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             enqueueSnackbar('Your face should be straight / within the ellipse ', { variant: 'success' })
                             // decision=[];
+                            set_selfie_1(null)
+                            set_selfie_2(null)
                         }
 
                         cmp=0;
@@ -314,7 +338,6 @@ const FaceDetectionAntiSpoofing = () => {
                 }
             }
         }
-
         else{
             cmp=0;
             decision=[];
@@ -371,7 +394,7 @@ const FaceDetectionAntiSpoofing = () => {
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
-    const capture = async (canvas_img, selfie_id) => {
+    let capture = async (canvas_img, selfie_id) => {
         let img_source = canvas_img.toDataURL();
         // console.log('selfie_1_as_taoken ---- capture func: ', selfie_1_taken)
         // console.log('selfie_2_as_taoken ---- capture func: ', selfie_2_taken)
@@ -517,7 +540,6 @@ const FaceDetectionAntiSpoofing = () => {
                                 startIcon={<PlayArrowIcon />}
                         >
                             Run task
-
                         </Button>
 
                         {/*<Button variant="contained" color="info"*/}
