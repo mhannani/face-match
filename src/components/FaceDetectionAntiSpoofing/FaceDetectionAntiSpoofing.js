@@ -99,7 +99,7 @@ const FaceDetectionAntiSpoofing = () => {
     const [api_response, set_api_response] = useState(null)
 
 
-    const [thresholdValue, setThresholdValue] = useState(0.8)
+    const [thresholdValue, setThresholdValue] = useState(1)
     const { enqueueSnackbar } = useSnackbar();
 
     // const dispatch = useDispatch()
@@ -249,7 +249,7 @@ const FaceDetectionAntiSpoofing = () => {
                                         const requestOptions = make_requests(videoCrop)
                                         fetch("http://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                             .then(response => response.json())
-                                            .then(result => {set_api_response(result.response_data.class)})
+                                            .then(result => {set_api_response(result.response_data.class); console.log(result)})
                                             .catch(error => console.log('error', error));
                                         capture = ()=>{}
 
@@ -507,7 +507,7 @@ const FaceDetectionAntiSpoofing = () => {
                                     valueLabelDisplay="auto"
                                     className={'prettoSlider'}
                                     aria-label="pretto slider"
-                                    defaultValue={0.8}
+                                    defaultValue={thresholdValue}
                                     onChange={handleThresholdChange}
                                     min={0.1}
                                     max={1.0}
@@ -525,7 +525,7 @@ const FaceDetectionAntiSpoofing = () => {
                                     valueLabelDisplay="auto"
                                     className={'prettoSlider'}
                                     aria-label="pretto slider"
-                                    defaultValue={15}
+                                    defaultValue={windows}
                                     onChange={handleWindowChange}
                                     min={1}
                                     max={30}
