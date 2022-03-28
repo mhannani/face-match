@@ -226,7 +226,7 @@ const FaceDetectionAntiSpoofing = () => {
                         // console.log('threshold 4: ================================================', thresholdValue)
                         // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                         // console.log("bbx_top_left_x: ", bbx_top_left_x)
-                        if( bbx_top_left_x > 390 && bbx_top_left_x < 500 && bbx_bottom_right_y > 260 && bbx_bottom_right_y < 380 ) {
+                        if( bbx_top_left_x > 390 && bbx_top_left_x < 500 && bbx_bottom_right_y > 240 && bbx_bottom_right_y < 380 ) {
                             // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
                             // console.log('face within the ellipse')
@@ -239,25 +239,25 @@ const FaceDetectionAntiSpoofing = () => {
                                     //     videoCrop, returnTensors, flipHorizontal, annotateBoxes);
                                     // console.log('pre.probability: ', pre[0].probability)
 
-                                    if(!selfie_1_taken && predictions[0].probability >= 0.999){
+                                    if(!selfie_1_taken && predictions[0].probability >= 0.998){
                                         await capture(videoCrop,  1)
                                         set_selfie_1_as_taken(true)
 
                                     }
 
                                     else{
-                                        enqueueSnackbar('1 Look straight/close to the camera please...', { variant: 'warning' })
+                                        enqueueSnackbar('Look straight/close to the camera please...', { variant: 'warning' })
                                         set_selfie_1(null)
                                     }
 
-                                    if(!selfie_2_taken && predictions[0].probability >= 0.998){
+                                    if(!selfie_2_taken && predictions[0].probability >= 0.995){
                                         await capture(videoCrop,  2)
                                         set_selfie_2_as_taken(true)
                                         capture = ()=>{}
                                     }
 
                                     else{
-                                        enqueueSnackbar('2 Look straight to the camera please...', { variant: 'warning' })
+                                        enqueueSnackbar('Look straight to the camera please...', { variant: 'warning' })
                                         set_selfie_2(null)
                                     }
 
