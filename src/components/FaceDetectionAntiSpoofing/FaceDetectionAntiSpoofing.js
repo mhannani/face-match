@@ -6,6 +6,7 @@ import avatar from '../../assets/avatar.png'
 import {ArrayAvg, svgIcon} from "../../helpers/anti-spoofing";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
+import {make_requests} from "../../helpers/api";
 
 // import Webcam from "react-webcam";
 // import classnames from "classnames";
@@ -95,6 +96,8 @@ const FaceDetectionAntiSpoofing = () => {
     const [selfie_1_taken, set_selfie_1_as_taken] = useState(false)
     const [selfie_2_taken, set_selfie_2_as_taken] = useState(false)
 
+    const [api_response, set_api_response] = useState(null)
+
 
     const [thresholdValue, setThresholdValue] = useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
@@ -152,7 +155,7 @@ const FaceDetectionAntiSpoofing = () => {
 
 
         if (predictions.length===1) {
-            console.log('proba 1: ', predictions[0].probability)
+            // console.log('proba 1: ', predictions[0].probability)
             // console.log('one face detected')
             // set_face_as_detected(true)
             // set_as_spoof(true)
@@ -233,6 +236,7 @@ const FaceDetectionAntiSpoofing = () => {
                             // console.log('face near to the camera', bbx_w)
 
                             if (bbx_w > 180){
+
                                 if (ArrayAvg(decision) < thresholdValue) {
                                     // console.log('real')
                                     // const pre = await model.estimateFaces(
@@ -242,7 +246,12 @@ const FaceDetectionAntiSpoofing = () => {
                                     if(!selfie_1_taken && predictions[0].probability >= 0.998){
                                         await capture(videoCrop,  1)
                                         set_selfie_1_as_taken(true)
-                                        // capture = ()=>{}
+                                        const requestOptions = make_requests(videoCrop)
+                                        fetch("http://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                                            .then(response => response.json())
+                                            .then(result => {set_api_response(result.response_data.class)})
+                                            .catch(error => console.log('error', error));
+                                        capture = ()=>{}
 
                                     }
 
@@ -251,20 +260,20 @@ const FaceDetectionAntiSpoofing = () => {
                                         set_selfie_1(null)
                                     }
 
-                                    if(!selfie_2_taken && predictions[0].probability >= 0.998){
-                                        await capture(videoCrop,  2)
-                                        set_selfie_2_as_taken(true)
-                                        // capture = ()=>{}
-                                    }
+                                    // if(!selfie_2_taken && predictions[0].probability >= 0.998){
+                                    //     await capture(videoCrop,  2)
+                                    //     set_selfie_2_as_taken(true)
+                                    //     capture = ()=>{}
+                                    // }
 
-                                    if(selfie_1_taken && selfie_2_taken){
-                                        capture = () => {}
-                                    }
+                                    // if(selfie_1_taken && selfie_2_taken){
+                                    //     // capture = () => {}
+                                    // }
 
-                                    else{
-                                        enqueueSnackbar('Look straight to the camera please...', { variant: 'warning' })
-                                        set_selfie_2(null)
-                                    }
+                                    // else{
+                                    //     enqueueSnackbar('Look straight to the camera please...', { variant: 'warning' })
+                                    //     set_selfie_2(null)
+                                    // }
 
 
                                     // Take screenshots
@@ -476,10 +485,11 @@ const FaceDetectionAntiSpoofing = () => {
                 </div>
 
                 <div className={'column-right-side'}>
+
                     <div className={'row_avatar'}>
                         <div className={'column_avatar'}>
                             <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
-                            <h6>SELFIE 1</h6>
+                            <h3>SELFIE 1 </h3><h6> {api_response && api_response}</h6>
                         </div>
 
                         <div className={'column_avatar'} id={'image_for_crop'}>
@@ -525,14 +535,14 @@ const FaceDetectionAntiSpoofing = () => {
                         </Tooltip>
                         </>
                         :
-                            <Fade
-                                in={true}
-                                style={{
-                                    color:'green'
-                                }}
-                            >
-                            <CircularProgress />
-                            </Fade>
+                        <Fade
+                            in={true}
+                            style={{
+                                color:'green'
+                            }}
+                        >
+                        <CircularProgress />
+                        </Fade>
                         }
                     </div>
 
