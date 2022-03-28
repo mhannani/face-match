@@ -112,7 +112,7 @@ const FaceDetectionAntiSpoofing = () => {
                 facingMode: 'user',
                 width: {exact: 640},
                 height: {ideal: 480},
-                // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
         });
 
@@ -164,7 +164,7 @@ const FaceDetectionAntiSpoofing = () => {
             const bbx_top_left_x = predictions[0].topLeft[0]
 
             const size = [end[0] - start[0], end[1] - start[1]];
-            // decision = [] 0.999
+            // decision = []
 
             const mid = [(start[0] + end[0]) * 0.5, (start[1] + end[1]) * 0.5]
 
@@ -242,18 +242,23 @@ const FaceDetectionAntiSpoofing = () => {
                                     if(!selfie_1_taken && predictions[0].probability >= 0.998){
                                         await capture(videoCrop,  1)
                                         set_selfie_1_as_taken(true)
+                                        // capture = ()=>{}
 
                                     }
 
                                     else{
-                                        enqueueSnackbar('Look straight/close to the camera please...', { variant: 'warning' })
+                                        enqueueSnackbar('Look straight / close to the camera please...', { variant: 'warning' })
                                         set_selfie_1(null)
                                     }
 
-                                    if(!selfie_2_taken && predictions[0].probability >= 0.995){
+                                    if(!selfie_2_taken && predictions[0].probability >= 0.998){
                                         await capture(videoCrop,  2)
                                         set_selfie_2_as_taken(true)
-                                        capture = ()=>{}
+                                        // capture = ()=>{}
+                                    }
+
+                                    if(selfie_1_taken && selfie_2_taken){
+                                        capture = () => {}
                                     }
 
                                     else{
@@ -398,6 +403,7 @@ const FaceDetectionAntiSpoofing = () => {
         let img_source = canvas_img.toDataURL();
         // console.log('selfie_1_as_taoken ---- capture func: ', selfie_1_taken)
         // console.log('selfie_2_as_taoken ---- capture func: ', selfie_2_taken)
+
         if(selfie_id === 1){
             set_selfie_1(img_source)
             set_selfie_1_as_taken(true)
