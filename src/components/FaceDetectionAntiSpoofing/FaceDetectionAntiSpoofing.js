@@ -489,7 +489,8 @@ const FaceDetectionAntiSpoofing = () => {
                     <div className={'row_avatar'}>
                         <div className={'column_avatar'}>
                             <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
-                            <h3>SELFIE 1 </h3><h6> {api_response && api_response}</h6>
+                            <h6>SELFIE 1 </h6>
+                            <h2> {api_response && api_response}</h2>
                         </div>
 
                         <div className={'column_avatar'} id={'image_for_crop'}>
