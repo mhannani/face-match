@@ -129,29 +129,40 @@ const FaceDetectionAntiSpoofing = () => {
     //cropped the face detected
     function getImage(video, sizeImg, startImg) {
         const canvasTemp = document.createElement('canvas');
-        canvasTemp.height = sizeImg;
-        canvasTemp.width = sizeImg;
+        canvasTemp.height = sizeImg[1];
+        canvasTemp.width = sizeImg[0];
 
         const ctxTemp = canvasTemp.getContext("2d");
-        ctxTemp.clearRect(0, 0, sizeImg, sizeImg); // clear canvas
-        ctxTemp.drawImage(video, startImg[0], startImg[1], sizeImg, sizeImg, 0, 0, sizeImg, sizeImg);
+        //ctxTemp.clearRect(0, 0, sizeImg[0], sizeImg[1]); // clear canvas
+        ctxTemp.drawImage(video, startImg[0], startImg[1], sizeImg[0], sizeImg[1], 0, 0, sizeImg[0], sizeImg[1]);
 
         // output.appendChild(canvasTemp)
         return canvasTemp;
     }
 
+
+    function getFrame(video){
+        const canvas_frame = document.createElement('canvas');
+        canvas_frame.width = video.videoWidth;
+        canvas_frame.height = video.videoHeight;
+
+        const ctx = canvas_frame.getContext('2d')
+        ctx.drawImage(video,0,0);
+        return canvas_frame;
+    }
     const renderPrediction = async () => {
         const font = "18px sans-serif";
         ctx.font = font;
-
+        let myframe=getFrame(video);
+        await capture(myframe,  1)
         // console.log('windows, thresholdValue: ', windows, thresholdValue)
         const returnTensors = false;
-        const flipHorizontal = true;
+        const flipHorizontal = false;
         const annotateBoxes = true;
         const classifySpoof = true;
 
         const predictions = await model.estimateFaces(
-            video, returnTensors, flipHorizontal, annotateBoxes);
+            myframe, returnTensors, flipHorizontal, annotateBoxes);
 
 
         if (predictions.length===1) {
@@ -159,7 +170,7 @@ const FaceDetectionAntiSpoofing = () => {
             // console.log('one face detected')
             // set_face_as_detected(true)
             // set_as_spoof
-
+            console.log(predictions)
             cmp++
             const start = predictions[0].topLeft;
             const end = predictions[0].bottomRight;
@@ -170,21 +181,22 @@ const FaceDetectionAntiSpoofing = () => {
             const size = [end[0] - start[0], end[1] - start[1]];
             // decision = []
 
-            const mid = [(start[0] + end[0]) * 0.5, (start[1] + end[1]) * 0.5]
+            //const mid = [(start[0] + end[0]) * 0.5, (start[1] + end[1]) * 0.5]
 
-            const bbx_w = start[0] - end[0]
+            const bbx_w = end[0] - start[0]
             // create a Square bounding box
 
 
-            const scale = 1.1
-            const sizeNew = Math.max(size[0], size[1]) * scale
-            const startNew = [mid[0] - (sizeNew * 0.5), mid[1] - (sizeNew * 0.5)]
+            //const scale = 1.1
+            //const sizeNew = Math.max(size[0], size[1]) * scale
+            //const startNew = [mid[0] - (sizeNew * 0.5), mid[1] - (sizeNew * 0.5)]
             // console.log('threshold 2: ', thresholdValue)
 
             // Perform spoof classification (UNFINISHED!)
             if (classifySpoof ){
                 // Cropping the frame and perform spoof classification
-                videoCrop = getImage(video, sizeNew, startNew);
+                videoCrop = getImage(myframe, size, start);
+                await capture(videoCrop,  2)
                 console.log('video: ', video)
 
                 // If the past can be done easily int the manner in the best can be done
@@ -229,9 +241,9 @@ const FaceDetectionAntiSpoofing = () => {
                         // console.log("15 frame" + labelPredict[0])
                         ctx.lineWidth = "2";
                         // console.log('threshold 4: ================================================', thresholdValue)
-                        // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
-                        // console.log("bbx_top_left_x: ", bbx_top_left_x)
-                        if( bbx_top_left_x > 390 && bbx_top_left_x < 500 && bbx_bottom_right_y > 240 && bbx_bottom_right_y < 380 ) {
+                         console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
+                         console.log("bbx_top_left_x: ", bbx_top_left_x)
+                        if( bbx_top_left_x > 200 && bbx_top_left_x < 470 && bbx_bottom_right_y > 240 && bbx_bottom_right_y < 400 ) {
                             // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
                             // console.log("bbx_top_left_x: ", bbx_top_left_x)
                             // console.log('face within the ellipse')
@@ -245,9 +257,9 @@ const FaceDetectionAntiSpoofing = () => {
                                     // console.log('pre.probability: ', pre[0].probability)
 
                                     if(!selfie_1_taken && predictions[0].probability >= 0.998){
-                                        await capture(videoCrop,  1)
+                                        await capture(myframe,  1)
                                         set_selfie_1_as_taken(true)
-                                        const requestOptions = make_requests(videoCrop)
+                                        const requestOptions = make_requests(myframe)
                                         fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                             .then(response => response.json())
                                             .then(result => {set_api_response(result.response_data.class); console.log(result)})
@@ -285,16 +297,16 @@ const FaceDetectionAntiSpoofing = () => {
                                     // Rendering the bounding box
                                     ctx.strokeStyle = "green";
                                     ctx.fillStyle = "rgb(10,236,40)";
-                                    ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
+                                    ctx.strokeRect(start[0], start[1], size[0], size[1]);
                                     // console.log(startNew[0], startNew[1])
                                     // console.log(label)
 
                                     // Drawing the label
                                     const textWidth = ctx.measureText(label).width;
                                     const textHeight = parseInt(font, 10); // base 10
-                                    ctx.fillRect(startNew[0], startNew[1] - textHeight - 5, textWidth + 4, textHeight + 2);
+                                    ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
                                     ctx.fillStyle = "#ffffff";
-                                    ctx.fillText(label, startNew[0], startNew[1] - 6);
+                                    ctx.fillText(label, start[0], start[1] - 6);
                                     // set_as_spoof(false)
                                     // dispatch(setAsReal())
                                 }
@@ -306,16 +318,16 @@ const FaceDetectionAntiSpoofing = () => {
                                     ctx.fillStyle = "rgb(208,25,25)";
                                     // Rendering the bounding box
                                     ctx.strokeStyle = "red";
-                                    ctx.strokeRect(startNew[0], startNew[1], sizeNew, sizeNew);
+                                    ctx.strokeRect(start[0], start[1], size[0], size[1]);
                                     // console.log(startNew[0], startNew[1])
                                     //  console.log(label)
 
                                     // Drawing the label
                                     const textWidth = ctx.measureText(label).width;
                                     const textHeight = parseInt(font, 10); // base 10
-                                    ctx.fillRect(startNew[0], startNew[1] - textHeight - 5, textWidth + 4, textHeight + 4);
+                                    ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 4);
                                     ctx.fillStyle = "#ffffff";
-                                    ctx.fillText(label, startNew[0], startNew[1] - 6);
+                                    ctx.fillText(label, start[0], start[1] - 6);
 
                                     // set_as_spoof(true)
                                     // dispatch(setAsSpoof())
