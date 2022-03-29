@@ -240,10 +240,6 @@ const FaceDetectionAntiSpoofing = () => {
 
                                 capture = () => {}
 
-
-
-
-
                             } else {  // spoof
                                 // --------------------------------------------------------
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
