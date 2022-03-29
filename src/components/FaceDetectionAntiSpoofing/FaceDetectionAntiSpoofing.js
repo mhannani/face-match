@@ -96,6 +96,7 @@ const FaceDetectionAntiSpoofing = () => {
 
     const [api_response, set_api_response] = useState(null)
 
+    const [is_real, set_is_real] = useState(null)
 
     const [thresholdValue, setThresholdValue] = useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
@@ -235,8 +236,9 @@ const FaceDetectionAntiSpoofing = () => {
                                 console.log('================================================')
                                 fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                     .then(response => response.json())
-                                    .then(result => {set_api_response(result.response_data.class);
-                                        set_request_as_sent(true);set_is_running(false);
+                                    .then(result => {set_api_response(result.response_data.face_class);
+                                        set_request_as_sent(true);
+                                        set_is_running(false);
                                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                                         console.log(result)})
                                     .catch(error => console.log('error', error));
@@ -264,11 +266,8 @@ const FaceDetectionAntiSpoofing = () => {
                             decision = []
                             oldfaceDet = 1
                             cmp = 0
-
                         }
-
                     }
-
                 } else { // image size
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     headSizeewarningCounter++
@@ -277,8 +276,6 @@ const FaceDetectionAntiSpoofing = () => {
                         headSizeewarningCounter=0
                         enqueueSnackbar('Please be close to the camera... ', { variant: 'warning' })
                     }
-
-
                 }
 
             }else{ // image ellipse
@@ -383,7 +380,7 @@ const FaceDetectionAntiSpoofing = () => {
 
     const perform_anti_spoofing = async (event) => {
         cmp = 0
-
+        set_api_response(null)
         event.preventDefault();
         // console.log("event: ", thresholdValue, window)
         // console.log('perform')
@@ -400,6 +397,7 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     return(
+
         <div className={'container'}>
             <div className={'row'}>
                 <div className={'column'}>
@@ -414,9 +412,6 @@ const FaceDetectionAntiSpoofing = () => {
                         </div>
                     </>
 
-
-                    {/*<div>+ <code>Threshold</code>: proba > threshold => spoof : <b>{thresholdValue}</b></div>*/}
-                    {/*<div>+ <code>Window</code> (number of frames to take in order to make decision): <b>{windows}</b></div>*/}
                 </div>
 
                 <div className={'column-right-side'}>
@@ -424,7 +419,6 @@ const FaceDetectionAntiSpoofing = () => {
                         <div className={'column_avatar'}>
                             <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
                             <h6>SELFIE 1 </h6>
-                            <h2> {api_response && api_response}</h2>
                         </div>
 
                         <div className={'column_avatar'} id={'image_for_crop'}>
@@ -432,6 +426,12 @@ const FaceDetectionAntiSpoofing = () => {
                             <h6>SELFIE 2</h6>
                         </div>
                     </div>
+
+                    {
+                        api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.className==='real' ? 'real':'spoof')}>
+                            <h4>{api_response}</h4>
+                        </Paper>
+                    }
 
                     <div className="variables">
                         {is_ready_to_spoofing_task ? <><Tooltip title="Proba > threshold => `spoof`, otherwise `real`" placement="top">
@@ -516,6 +516,8 @@ const FaceDetectionAntiSpoofing = () => {
             </div>
 
         </div>
+
+
     )
 }
 
