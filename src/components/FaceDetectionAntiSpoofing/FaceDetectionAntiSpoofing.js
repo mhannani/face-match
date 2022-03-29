@@ -99,7 +99,7 @@ const FaceDetectionAntiSpoofing = () => {
     const [api_response, set_api_response] = useState(null)
 
 
-    const [thresholdValue, setThresholdValue] = useState(1)
+    const [thresholdValue, setThresholdValue] = useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
 
     // const dispatch = useDispatch()
