@@ -75,17 +75,13 @@ let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, l
 let cmp=0;
 // let windows=15;
 let decision=[];
+let oldfaceDet=1;
+
+let ellipsewarningCounter=0;
+let headSizeewarningCounter=0;
 
 const FaceDetectionAntiSpoofing = () => {
-    // const camera = useRef();
-    // const cameraCanvas = useRef();
 
-    // const [enqueue_notification, set_enqueue_notification] = useState(true)
-    // const [face_detected, set_face_as_detected] = useState(false)
-    // const dispatch = useDispatch()
-    // const do_liveness = useSelector((state) => state.face.do_liveness)
-    // const [as_threshold, setThreshold] = React.useState(0.8);
-    // const [threshold, setThreshold] = React.useState(0.8);
     const [windows, setWindows] = useState(15);
     const [is_running, set_is_running] = useState(false)
     const [is_ready_to_spoofing_task, set_is_ready_to_spoofing_task] = useState(false)
@@ -151,10 +147,11 @@ const FaceDetectionAntiSpoofing = () => {
         return canvas_frame;
     }
     const renderPrediction = async () => {
+        //ctx.clearRect(0, 0, canvas.width, canvas.height);
         const font = "18px sans-serif";
         ctx.font = font;
         let myframe=getFrame(video);
-        await capture(myframe,  1)
+        //await capture(myframe,  1)
         // console.log('windows, thresholdValue: ', windows, thresholdValue)
         const returnTensors = false;
         const flipHorizontal = false;
@@ -166,12 +163,7 @@ const FaceDetectionAntiSpoofing = () => {
 
 
         if (predictions.length===1) {
-            // console.log('proba 1: ', predictions[0].probability)
-            // console.log('one face detected')
-            // set_face_as_detected(true)
-            // set_as_spoof
-            console.log(predictions)
-            cmp++
+
             const start = predictions[0].topLeft;
             const end = predictions[0].bottomRight;
 
@@ -192,188 +184,100 @@ const FaceDetectionAntiSpoofing = () => {
             //const startNew = [mid[0] - (sizeNew * 0.5), mid[1] - (sizeNew * 0.5)]
             // console.log('threshold 2: ', thresholdValue)
 
-            // Perform spoof classification (UNFINISHED!)
-            if (classifySpoof ){
-                // Cropping the frame and perform spoof classification
-                videoCrop = getImage(myframe, size, start);
-                await capture(videoCrop,  2)
-                console.log('video: ', video)
+            if (bbx_top_left_x > 130 && bbx_top_left_x < 470 && bbx_bottom_right_y > 100 && bbx_bottom_right_y < 420) {
+                ellipsewarningCounter=0;
+                if (bbx_w > 150) {
+                    headSizeewarningCounter=0;
+                    cmp++
+                    if (classifySpoof) {
+                        videoCrop = getImage(myframe, size, start);
+                        await capture(videoCrop, 2)  // to be removed
+                        // check antispoofing
+                        const logits = tf.tidy(() => {
+                                const normalizationConstant = 1.0 / 255.0;
 
-                // If the past can be done easily int the manner in the best can be done
-                // Predictions
-                const logits = tf.tidy(() => {
-                        const normalizationConstant = 1.0 / 255.0;
-
-                        let tensor = tf.browser.fromPixels(videoCrop, 3)
-                            .resizeBilinear([224, 224], false)
-                            .expandDims(0)
-                            .toFloat()
-                            .mul(normalizationConstant)
-                        // console.log('predict', classifier.predict(tensor))
-                        return classifier.predict(tensor);
-                    }
-
-                );
-
-
-                // document.getElementById('image_for_crop').appendChild(image);
-
-                // let output = document.getElementById('screenshots_output')
-                // output.appendChild(videoCrop)
-
-                // console.log('threshold 3: ', thresholdValue)
-                // console.log('window: ', window)
-                const labelPredict = await logits.data();
-
-                // console.log('windows / cmp: ', windows, cmp)
-
-                // set_selfie_1(capture())
-                if(cmp <= windows){
-
-                    // console.log('labelPrediction: ', labelPredict[0])
-                    decision.push(labelPredict[0]);
-                    // console.log('threshold 3.9: ================================================', thresholdValue)
-                    // console.log('===> decision.length, windows: ', decision.length, windows)
-                    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-                    // console.log('===> decision.length, windows: ', typeof decision.length, typeof windows)
-                    if(decision.length===windows){
-                        // console.log('================================================')
-                        // console.log("15 frame" + labelPredict[0])
-                        ctx.lineWidth = "2";
-                        // console.log('threshold 4: ================================================', thresholdValue)
-                         console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
-                         console.log("bbx_top_left_x: ", bbx_top_left_x)
-                        if( bbx_top_left_x > 200 && bbx_top_left_x < 470 && bbx_bottom_right_y > 240 && bbx_bottom_right_y < 400 ) {
-                            // console.log("bbx_bottom_right_y: ", bbx_bottom_right_y)
-                            // console.log("bbx_top_left_x: ", bbx_top_left_x)
-                            // console.log('face within the ellipse')
-                            // console.log('face near to the camera', bbx_w)
-
-                            if (bbx_w > 180){
-                                if (ArrayAvg(decision) < thresholdValue){
-                                    // console.log('real')
-                                    // const pre = await model.estimateFaces(
-                                    //     videoCrop, returnTensors, flipHorizontal, annotateBoxes);
-                                    // console.log('pre.probability: ', pre[0].probability)
-
-                                    if(!selfie_1_taken && predictions[0].probability >= 0.998){
-                                        await capture(myframe,  1)
-                                        set_selfie_1_as_taken(true)
-                                        const requestOptions = make_requests(myframe)
-                                        fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
-                                            .then(response => response.json())
-                                            .then(result => {set_api_response(result.response_data.class); console.log(result)})
-                                            .catch(error => console.log('error', error));
-                                        capture = ()=>{}
-
-                                    }
-                                    else{
-                                        enqueueSnackbar('Look straight / close to the camera please...', { variant: 'warning' })
-                                        set_selfie_1(null)
-                                    }
-
-                                    // if(!selfie_2_taken && predictions[0].probability >= 0.998){
-                                    //     await capture(videoCrop,  2)
-                                    //     set_selfie_2_as_taken(true)
-                                    //     capture = ()=>{}
-                                    // }
-
-                                    // if(selfie_1_taken && selfie_2_taken){
-                                    //     // capture = () => {}
-                                    // }
-
-                                    // else{
-                                    //     enqueueSnackbar('Look straight to the camera please...', { variant: 'warning' })
-                                    //     set_selfie_2(null)
-                                    // }
-
-
-                                    // Take screenshots
-                                    // console.log(threshold, window)
-                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                    // console.log(ArrayAvg(decision))
-                                    label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
-
-                                    // Rendering the bounding box
-                                    ctx.strokeStyle = "green";
-                                    ctx.fillStyle = "rgb(10,236,40)";
-                                    ctx.strokeRect(start[0], start[1], size[0], size[1]);
-                                    // console.log(startNew[0], startNew[1])
-                                    // console.log(label)
-
-                                    // Drawing the label
-                                    const textWidth = ctx.measureText(label).width;
-                                    const textHeight = parseInt(font, 10); // base 10
-                                    ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
-                                    ctx.fillStyle = "#ffffff";
-                                    ctx.fillText(label, start[0], start[1] - 6);
-                                    // set_as_spoof(false)
-                                    // dispatch(setAsReal())
-                                }
-
-                                else {
-                                    // console.log('spoof')
-                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                    label = 'Spoof ' + `(` + ArrayAvg(decision).toFixed(2) + `)`;
-                                    ctx.fillStyle = "rgb(208,25,25)";
-                                    // Rendering the bounding box
-                                    ctx.strokeStyle = "red";
-                                    ctx.strokeRect(start[0], start[1], size[0], size[1]);
-                                    // console.log(startNew[0], startNew[1])
-                                    //  console.log(label)
-
-                                    // Drawing the label
-                                    const textWidth = ctx.measureText(label).width;
-                                    const textHeight = parseInt(font, 10); // base 10
-                                    ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 4);
-                                    ctx.fillStyle = "#ffffff";
-                                    ctx.fillText(label, start[0], start[1] - 6);
-
-                                    // set_as_spoof(true)
-                                    // dispatch(setAsSpoof())
-                                }
-                                // cmp=0;
-                                // decision=[];
+                                let tensor = tf.browser.fromPixels(videoCrop, 3)
+                                    .resizeBilinear([224, 224], false)
+                                    .expandDims(0)
+                                    .toFloat()
+                                    .mul(normalizationConstant)
+                                // console.log('predict', classifier.predict(tensor))
+                                return classifier.predict(tensor);
                             }
+                        );
+                        const labelPredict = await logits.data();
+                        decision.push(labelPredict[0]);
+                        if (oldfaceDet > labelPredict[0]) {
+                            oldfaceDet = labelPredict[0];
+                            await capture(myframe, 1)
+                        }
+                        if (decision.length === windows) {
+                            const meanProb = ArrayAvg(decision);
+                            if (meanProb < thresholdValue) { // real
+                                set_selfie_1_as_taken(true)
 
-                            else {
+                                // --------------------------------------------------------
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                enqueueSnackbar('Please be close to the camera... ', { variant: 'success' })
-                                // decision=[];
+                                label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
+                                // Rendering the bounding box
+                                ctx.strokeStyle = "green";
+                                ctx.fillStyle = "rgb(10,236,40)";
+                                ctx.strokeRect(start[0], start[1], size[0], size[1]);
+                                const textWidth = ctx.measureText(label).width;
+                                const textHeight = parseInt(font, 10); // base 10
+                                ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
+                                ctx.fillStyle = "#ffffff";
+                                ctx.fillText(label, start[0], start[1] - 6);
+                                // ---------------------------------------------------------
+                                capture = () => {}
+
+                            } else {  // spoof
+                                // --------------------------------------------------------
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                label = `Spoof ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
+                                // Rendering the bounding box
+                                ctx.strokeStyle = "red";
+                                ctx.fillStyle = "rgb(10,236,40)";
+                                ctx.strokeRect(start[0], start[1], size[0], size[1]);
+                                const textWidth = ctx.measureText(label).width;
+                                const textHeight = parseInt(font, 10); // base 10
+                                ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
+                                ctx.fillStyle = "#ffffff";
+                                ctx.fillText(label, start[0], start[1] - 6);
+                                // ---------------------------------------------------------
                             }
+                            decision = []
+                            oldfaceDet = 1
+                            cmp = 0
 
                         }
 
-                        else {
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            enqueueSnackbar('Your face should be straight / within the ellipse ', { variant: 'success' })
-                            // decision=[];
-                            set_selfie_1(null)
-                            set_selfie_2(null)
-                        }
-
-                        cmp=0;
-                        decision=[];
                     }
 
+                }else{ // image size
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    headSizeewarningCounter++
+                    if(headSizeewarningCounter>25)
+                    {
+                        headSizeewarningCounter=0
+                        enqueueSnackbar('Please be close to the camera... ', { variant: 'warning' })
+                    }
+
+
+                }
+            }else{ // image ellipse
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ellipsewarningCounter++
+                if(ellipsewarningCounter>25)
+                {
+                    ellipsewarningCounter=0
+                    enqueueSnackbar('Your face should be straight / within the ellipse ', { variant: 'warning' })
                 }
 
-                else{
-                    cmp=0
-                    decision=[]
-                }
             }
-        }
-        else{
-            cmp=0;
-            decision=[];
-            const context = canvas.getContext('2d');
-            context.clearRect(0, 0, canvas.width, canvas.height);
+
         }
 
-        //like setInterval()
-        // cmp=0;
-        // decision=[];
         requestAnimationFrame(renderPrediction);
         // console.log('threshold 6: ', thresholdValue)
         // cmp=0;
