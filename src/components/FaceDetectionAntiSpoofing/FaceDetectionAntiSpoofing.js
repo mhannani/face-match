@@ -92,6 +92,8 @@ const FaceDetectionAntiSpoofing = () => {
     const [selfie_1_taken, set_selfie_1_as_taken] = useState(false)
     const [selfie_2_taken, set_selfie_2_as_taken] = useState(false)
 
+    const [request_sent, set_request_as_sent] = useState(false)
+
     const [api_response, set_api_response] = useState(null)
 
 
@@ -146,7 +148,7 @@ const FaceDetectionAntiSpoofing = () => {
         ctx.drawImage(video,0,0);
         return canvas_frame;
     }
-    const renderPrediction = async () => {
+    let renderPrediction = async () => {
         //ctx.clearRect(0, 0, canvas.width, canvas.height);
         const font = "18px sans-serif";
         ctx.font = font;
@@ -229,7 +231,18 @@ const FaceDetectionAntiSpoofing = () => {
                                 ctx.fillStyle = "#ffffff";
                                 ctx.fillText(label, start[0], start[1] - 6);
                                 // ---------------------------------------------------------
+                                const requestOptions = make_requests(myframe)
+                                fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                                    .then(response => response.json())
+                                    .then(result => {set_api_response(result.response_data.class); set_request_as_sent(true)})
+                                    .catch(error => console.log('error', error));
+
+
                                 capture = () => {}
+
+
+
+
 
                             } else {  // spoof
                                 // --------------------------------------------------------
@@ -237,8 +250,8 @@ const FaceDetectionAntiSpoofing = () => {
                                 label = `Spoof ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
                                 // Rendering the bounding box
                                 ctx.strokeStyle = "red";
-                                ctx.fillStyle = "rgb(10,236,40)";
-                                ctx.strokeRect(start[0], start[1], size[0], size[1]);
+                                // ctx.fillStyle = "rgb(10,236,40)";
+                                // ctx.strokeRect(start[0], start[1], size[0], size[1]);
                                 const textWidth = ctx.measureText(label).width;
                                 const textHeight = parseInt(font, 10); // base 10
                                 ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
@@ -254,7 +267,7 @@ const FaceDetectionAntiSpoofing = () => {
 
                     }
 
-                }else{ // image size
+                } else { // image size
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     headSizeewarningCounter++
                     if(headSizeewarningCounter>25)
@@ -265,6 +278,7 @@ const FaceDetectionAntiSpoofing = () => {
 
 
                 }
+
             }else{ // image ellipse
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ellipsewarningCounter++
@@ -275,12 +289,15 @@ const FaceDetectionAntiSpoofing = () => {
                 }
 
             }
-
         }
 
-        requestAnimationFrame(renderPrediction);
-        // console.log('threshold 6: ', thresholdValue)
-        // cmp=0;
+        if(!request_sent){
+            requestAnimationFrame(renderPrediction);
+        }
+
+        else{
+            return 0;
+        }
 
     };
 

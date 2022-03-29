@@ -88,7 +88,7 @@ export const make_requests = (canvas) => {
     let form_data = new FormData();
     form_data.append("selfie", img);
 
-    return  {
+    return {
         method: 'POST',
         body: form_data,
         redirect: 'follow'
