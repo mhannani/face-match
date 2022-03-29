@@ -258,6 +258,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
                                 ctx.fillStyle = "#ffffff";
                                 ctx.fillText(label, start[0], start[1] - 6);
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 // ---------------------------------------------------------
                             }
                             decision = []
