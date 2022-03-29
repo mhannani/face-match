@@ -217,7 +217,7 @@ const FaceDetectionAntiSpoofing = () => {
                             const meanProb = ArrayAvg(decision);
                             if (meanProb < thresholdValue) { // real
                                 set_selfie_1_as_taken(true)
-
+                                
                                 // --------------------------------------------------------
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
@@ -232,13 +232,18 @@ const FaceDetectionAntiSpoofing = () => {
                                 ctx.fillText(label, start[0], start[1] - 6);
                                 // ---------------------------------------------------------
                                 const requestOptions = make_requests(myframe)
+                                console.log('================================================')
                                 fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                     .then(response => response.json())
-                                    .then(result => {set_api_response(result.response_data.class); set_request_as_sent(true)})
+                                    .then(result => {set_api_response(result.response_data.class);
+                                        set_request_as_sent(true);set_is_running(false);
+                                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                        console.log(result)})
                                     .catch(error => console.log('error', error));
-
-
+                                set_request_as_sent(true)
                                 capture = () => {}
+
+                                return 0;
 
                             } else {  // spoof
                                 // --------------------------------------------------------
