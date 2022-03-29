@@ -158,7 +158,8 @@ const FaceDetectionAntiSpoofing = () => {
             // console.log('proba 1: ', predictions[0].probability)
             // console.log('one face detected')
             // set_face_as_detected(true)
-            // set_as_spoof(true)
+            // set_as_spoof
+
             cmp++
             const start = predictions[0].topLeft;
             const end = predictions[0].bottomRight;
@@ -184,6 +185,7 @@ const FaceDetectionAntiSpoofing = () => {
             if (classifySpoof ){
                 // Cropping the frame and perform spoof classification
                 videoCrop = getImage(video, sizeNew, startNew);
+                console.log('video: ', video)
 
                 // If the past can be done easily int the manner in the best can be done
                 // Predictions
@@ -236,8 +238,7 @@ const FaceDetectionAntiSpoofing = () => {
                             // console.log('face near to the camera', bbx_w)
 
                             if (bbx_w > 180){
-
-                                if (ArrayAvg(decision) < thresholdValue) {
+                                if (ArrayAvg(decision) < thresholdValue){
                                     // console.log('real')
                                     // const pre = await model.estimateFaces(
                                     //     videoCrop, returnTensors, flipHorizontal, annotateBoxes);
@@ -247,14 +248,13 @@ const FaceDetectionAntiSpoofing = () => {
                                         await capture(videoCrop,  1)
                                         set_selfie_1_as_taken(true)
                                         const requestOptions = make_requests(videoCrop)
-                                        fetch("http://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                                        fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                             .then(response => response.json())
                                             .then(result => {set_api_response(result.response_data.class); console.log(result)})
                                             .catch(error => console.log('error', error));
                                         capture = ()=>{}
 
                                     }
-
                                     else{
                                         enqueueSnackbar('Look straight / close to the camera please...', { variant: 'warning' })
                                         set_selfie_1(null)
@@ -485,7 +485,6 @@ const FaceDetectionAntiSpoofing = () => {
                 </div>
 
                 <div className={'column-right-side'}>
-
                     <div className={'row_avatar'}>
                         <div className={'column_avatar'}>
                             <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
