@@ -236,7 +236,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 console.log('================================================')
                                 fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                     .then(response => response.json())
-                                    .then(result => {set_api_response(result.response_data.face_class);
+                                    .then(result => {set_api_response(result.response_data);
                                         set_request_as_sent(true);
                                         set_is_running(false);
                                         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -429,7 +429,8 @@ const FaceDetectionAntiSpoofing = () => {
 
                     {
                         api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.className==='real' ? 'real':'spoof')}>
-                            <h4>{api_response}</h4>
+                            <h4>{api_response.face_class}</h4>
+                            <p>{api_response.score}</p>
                         </Paper>
                     }
 
