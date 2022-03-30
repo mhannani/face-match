@@ -189,3 +189,12 @@ canvas {
     justify-content: center;
     align-items: center;
 }
+
+.on_mobile{
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
