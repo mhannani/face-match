@@ -120,11 +120,14 @@ const FaceDetectionAntiSpoofing = () => {
             'audio': false,
             'video': {
                 facingMode: 'user',
-                width: {exact: 640},
-                height: {ideal: 480},
-                // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                // width: {ideal: 640},
+                // height: {ideal: 480},
+
+                width: { min: 160, ideal: 640, max: 640 },
+                height: { min: 240, ideal: 480, max: 480 },
+        // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
-        });
+        })
 
         return new Promise((resolve) => {
             video.onloadedmetadata = () => {
@@ -494,13 +497,13 @@ const FaceDetectionAntiSpoofing = () => {
     return(
 
         <>
-            <BrowserView>
-                <div className={'on_mobile'}>
-                    <h5>This application is available on desktop screens... Please bring up your laptop :)</h5>
-                </div>
-            </BrowserView>
-
             <MobileView>
+                <div className={'on_mobile'}>
+                    <h5>At the moment, this application is available only on desktop screens... Please bring up your laptop :)</h5>
+                </div>
+            </MobileView>
+
+            <BrowserView>
                 {
                     app_loading ?
                         <div className={'app_loader'}>
@@ -634,7 +637,7 @@ const FaceDetectionAntiSpoofing = () => {
                             </div>
                         </>
                 }
-            </MobileView>
+            </BrowserView>
 
         </>
 
