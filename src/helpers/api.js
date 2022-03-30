@@ -76,11 +76,12 @@ function _base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
-export const make_requests = (canvas) => {
+export const make_requests = () => {
 
     // Get the content of the current canvas as an image
     // that you can use as a source for another canvas or an HTML element.
-    const canvas_content = canvas.toDataURL('png')
+    // const canvas_content = canvas.toDataURL('png')
+    const canvas_content = document.getElementsByClassName('frame_1')[0].src;
     const cleaned_canvas_content = canvas_content.replace('data:image/png;base64,', '');
     const binary_data = _base64ToArrayBuffer(cleaned_canvas_content)
 

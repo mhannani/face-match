@@ -82,6 +82,9 @@ let oldfaceDet=1;
 let ellipsewarningCounter=0;
 let headSizeewarningCounter=0;
 
+const maxAttempt=2;
+let attemptCount=0;
+
 const FaceDetectionAntiSpoofing = () => {
 
     const [windows, setWindows] = useState(15);
@@ -156,7 +159,55 @@ const FaceDetectionAntiSpoofing = () => {
         return canvas_frame;
     }
     let renderPrediction = async () => {
-        //ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (attemptCount > maxAttempt)
+        {
+            console.log('stopping when 5 attempts was spoof by local model! ')
+            const requestOptions = make_requests()
+            // console.log('================================================')
+            fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    set_request_as_sent(true);
+                    if(result.status_code !== '500'){
+                        set_api_response(result.response_data);
+                    }
+
+                    else{
+                        set_api_response(null)
+                        set_api_error(result.status_label)
+
+                    }
+
+
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    console.log(result)
+
+
+                    // showing confetti
+                    if(result.response_data.face_class==='Real'){
+                        set_conf_as_running(true);
+                        setTimeout(() => {
+                            set_conf_as_running(false);
+                        }, 3000);
+                    }
+                    set_is_running(false);
+                    // set_app_as_loading(true)
+
+                })
+
+                .catch(error => console.log('error', error));
+            set_request_as_sent(true)
+            capture = () => {}
+            set_api_response(null)
+            set_api_error(null)
+            return 0;
+        }
+
+        console.log('attemptCount: ', attemptCount)
+
         const font = "18px sans-serif";
         ctx.font = font;
         let myframe=getFrame(video);
@@ -187,15 +238,28 @@ const FaceDetectionAntiSpoofing = () => {
             const bbx_w = end[0] - start[0]
             // create a Square bounding box
 
-
             //const scale = 1.1
             //const sizeNew = Math.max(size[0], size[1]) * scale
             //const startNew = [mid[0] - (sizeNew * 0.5), mid[1] - (sizeNew * 0.5)]
             // console.log('threshold 2: ', thresholdValue)
 
-            if (bbx_top_left_x > 130 && bbx_top_left_x < 470 && bbx_bottom_right_y > 100 && bbx_bottom_right_y < 420) {
+            if (bbx_top_left_x > 200 && bbx_top_left_x < 400 && bbx_bottom_right_y > 100 && bbx_bottom_right_y < 420) {
                 ellipsewarningCounter=0;
                 if (bbx_w > 150) {
+                    // ------------------------------------- Face detected
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    label = `FACE ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
+
+                    // Rendering the bounding box
+                    ctx.strokeStyle = "blue";
+                    ctx.fillStyle = "rgb(10,236,40)";
+                    ctx.strokeRect(start[0], start[1], size[0], size[1]);
+                    const textWidth = ctx.measureText(label).width;
+                    const textHeight = parseInt(font, 10); // base 10
+                    ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillText(label, start[0], start[1] - 6);
+                    // ---------------------------------------------------------
                     headSizeewarningCounter=0;
                     cmp++
                     if (classifySpoof) {
@@ -216,19 +280,22 @@ const FaceDetectionAntiSpoofing = () => {
                         );
                         const labelPredict = await logits.data();
                         decision.push(labelPredict[0]);
-
+                        if (oldfaceDet > labelPredict[0]) {
+                            oldfaceDet = labelPredict[0];
+                            await capture(myframe, 1)
+                        }
                         if (decision.length === windows) {
+                            console.log('incrementing attemptCount')
+                            attemptCount++
                             const meanProb = ArrayAvg(decision);
                             if (meanProb < thresholdValue) { // real
                                 set_selfie_1_as_taken(true)
-                                if (oldfaceDet > labelPredict[0]) {
-                                    oldfaceDet = labelPredict[0];
-                                    await capture(myframe, 1)
-                                }
+                                console.log('===============> detected as real <=================')
                                 // await capture(videoCrop, 2)  // to be removed
                                 // --------------------------------------------------------
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
+
                                 // Rendering the bounding box
                                 ctx.strokeStyle = "green";
                                 ctx.fillStyle = "rgb(10,236,40)";
@@ -239,7 +306,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 ctx.fillStyle = "#ffffff";
                                 ctx.fillText(label, start[0], start[1] - 6);
                                 // ---------------------------------------------------------
-                                const requestOptions = make_requests(myframe)
+                                const requestOptions = make_requests()
                                 // console.log('================================================')
                                 fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                     .then(response => response.json())
@@ -247,12 +314,15 @@ const FaceDetectionAntiSpoofing = () => {
                                         set_request_as_sent(true);
                                         if(result.status_code !== '500'){
                                             set_api_response(result.response_data);
-
                                         }
+
                                         else{
                                             set_api_response(null)
                                             set_api_error(result.status_label)
+
                                         }
+
+
 
                                         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -267,14 +337,15 @@ const FaceDetectionAntiSpoofing = () => {
                                             }, 3000);
                                         }
                                         set_is_running(false);
-
+                                        // set_app_as_loading(true)
 
                                     })
 
                                     .catch(error => console.log('error', error));
                                 set_request_as_sent(true)
                                 capture = () => {}
-
+                                set_api_response(null)
+                                set_api_error(null)
                                 return 0;
 
                             } else {  // spoof
@@ -316,7 +387,6 @@ const FaceDetectionAntiSpoofing = () => {
                     ellipsewarningCounter=0
                     enqueueSnackbar('Your face should be straight / within the ellipse ', { variant: 'warning' })
                 }
-
             }
         }
 
@@ -331,7 +401,6 @@ const FaceDetectionAntiSpoofing = () => {
     };
 
     const setupPage = async () => {
-
         await setupCamera();
         video.play();
 
@@ -346,7 +415,6 @@ const FaceDetectionAntiSpoofing = () => {
         canvas.height = videoHeight;
 
         ctx = canvas.getContext('2d');
-
         //face detection
         model = await blazeface.load();
 
@@ -423,7 +491,6 @@ const FaceDetectionAntiSpoofing = () => {
         // console.log('perform')
         set_is_running(true)
         setupPage().then( async() => {
-
             enqueueSnackbar('Performing Anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
@@ -462,24 +529,29 @@ const FaceDetectionAntiSpoofing = () => {
                                 </div>
 
                                 <div className={'column-right-side'}>
+                                    <>
+
+                                        {
+                                            api_error && <Paper key={1} elevation={4} className={'internal_error'}>
+                                                <h4>{api_error}</h4>
+                                            </Paper>
+                                        }
+
+                                        {
+                                            api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.face_class==='Real' ? 'real':'spoof')}>
+                                                <h4>{api_response.face_class}</h4>
+                                                <p>{api_response.score}</p>
+                                            </Paper>
+                                        }
+                                    </>
+
                                     <div className={'row_avatar'}>
                                         <div className={'column_avatar'}>
                                             <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
                                             <h6>SELFIE</h6>
                                         </div>
                                     </div>
-                                    {
-                                        api_error && <Paper key={1} elevation={4} className={'internal_error'}>
-                                            <h4>{api_error}</h4>
-                                        </Paper>
-                                    }
 
-                                    {
-                                        api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.face_class==='Real' ? 'real':'spoof')}>
-                                            <h4>{api_response.face_class}</h4>
-                                            <p>{api_response.score}</p>
-                                        </Paper>
-                                    }
 
                                     <div className="variables">
                                         <Tooltip title="Proba > threshold => `spoof`, otherwise `real`" placement="top">
@@ -523,16 +595,26 @@ const FaceDetectionAntiSpoofing = () => {
 
 
                                     <div className="row actions">
-                                        <Button color="success"
-                                                sx={ { borderRadius: 0 }}
-                                                disabled={is_running}
-                                                variant="contained"
-                                                onClick={perform_anti_spoofing}
-                                                startIcon={<PlayArrowIcon />}
-                                        >
-                                            Run task
-                                        </Button>
-
+                                        { !request_sent ?
+                                            <Button color="success"
+                                                 sx={{borderRadius: 0}}
+                                                 disabled={is_running}
+                                                 variant="contained"
+                                                 onClick={perform_anti_spoofing}
+                                                 startIcon={<PlayArrowIcon/>}
+                                            >
+                                                Run task
+                                            </Button>:
+                                            <Button color="success"
+                                                    sx={{borderRadius: 0}}
+                                                    // disabled={is_running}
+                                                    variant="contained"
+                                                    onClick={refreshPage}
+                                                    startIcon={<PlayArrowIcon/>}
+                                            >
+                                                Try again
+                                            </Button>
+                                        }
                                         {/*<Button variant="contained" color="info"*/}
                                         {/*        sx={ { borderRadius: 0 }}*/}
                                         {/*        onClick={capture}*/}
