@@ -26,20 +26,3 @@ body {
 p {
   font-size: 22px;
 }
-
-.api_result{
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-items: center;
-  justify-content: center;
-  align-items: center;
-}
-
-.spoof{
-  background: red !important;
-}
-
-.real{
-  background: green !important;
-}

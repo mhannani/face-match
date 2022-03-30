@@ -103,6 +103,7 @@ const FaceDetectionAntiSpoofing = () => {
     const [app_loading, set_app_as_loading] = useState(false)
     const [conf_is_running, set_conf_as_running] = useState(false)
 
+    const [api_error, set_api_error] = useState(null)
     const [thresholdValue, setThresholdValue] = useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
 
@@ -199,7 +200,7 @@ const FaceDetectionAntiSpoofing = () => {
                     cmp++
                     if (classifySpoof) {
                         videoCrop = getImage(myframe, size, start);
-                        await capture(videoCrop, 2)  // to be removed
+
                         // check antispoofing
                         const logits = tf.tidy(() => {
                                 const normalizationConstant = 1.0 / 255.0;
@@ -215,15 +216,16 @@ const FaceDetectionAntiSpoofing = () => {
                         );
                         const labelPredict = await logits.data();
                         decision.push(labelPredict[0]);
-                        if (oldfaceDet > labelPredict[0]) {
-                            oldfaceDet = labelPredict[0];
-                            await capture(myframe, 1)
-                        }
+
                         if (decision.length === windows) {
                             const meanProb = ArrayAvg(decision);
                             if (meanProb < thresholdValue) { // real
                                 set_selfie_1_as_taken(true)
-                                
+                                if (oldfaceDet > labelPredict[0]) {
+                                    oldfaceDet = labelPredict[0];
+                                    await capture(myframe, 1)
+                                }
+                                // await capture(videoCrop, 2)  // to be removed
                                 // --------------------------------------------------------
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
@@ -241,18 +243,30 @@ const FaceDetectionAntiSpoofing = () => {
                                 console.log('================================================')
                                 fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                     .then(response => response.json())
-                                    .then(result => {set_api_response(result.response_data);
+                                    .then(result => {
                                         set_request_as_sent(true);
+                                        if(result.status_code !== '500'){
+                                            set_api_response(result.response_data);
+
+                                        }
+                                        else{
+                                            set_api_response(null)
+                                            set_api_error(result.status_label)
+                                        }
+
                                         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                        set_is_running(false);
+
                                         console.log(result)
 
-                                        if(result.response_data.face_class==='real'){
+
+                                        // showing confetti
+                                        if(result.response_data.face_class==='Real'){
                                             set_conf_as_running(true);
                                             setTimeout(() => {
                                                 set_conf_as_running(false);
                                             }, 3000);
                                         }
+                                        set_is_running(false);
 
 
                                     })
@@ -407,9 +421,9 @@ const FaceDetectionAntiSpoofing = () => {
         event.preventDefault();
         // console.log("event: ", thresholdValue, window)
         // console.log('perform')
-
+        set_is_running(true)
         setupPage().then( async() => {
-            set_is_running(true)
+
             enqueueSnackbar('Performing Anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
@@ -430,7 +444,7 @@ const FaceDetectionAntiSpoofing = () => {
                 </div>:
                     <>
 
-                        {conf_is_running &&<Confetti is_run={conf_is_running}/>}
+                        {conf_is_running && <Confetti is_run={conf_is_running}/>}
                         <div className={'container'}>
                             <div className={'row'}>
                                 <div className={'column'}>
@@ -438,7 +452,7 @@ const FaceDetectionAntiSpoofing = () => {
                                     <>
                                         <div id="main">
                                             <div className="overlay-container">
-                                                {is_running && svgIcon()}
+                                                { is_running && svgIcon()}
                                             </div>
                                             <video preload="none" id="video" playsInline/>
                                             <canvas id="output"/>
@@ -451,17 +465,17 @@ const FaceDetectionAntiSpoofing = () => {
                                     <div className={'row_avatar'}>
                                         <div className={'column_avatar'}>
                                             <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
-                                            <h6>SELFIE 1 </h6>
-                                        </div>
-
-                                        <div className={'column_avatar'} id={'image_for_crop'}>
-                                            <img className={'frame_2'} src={selfie_2 ? selfie_2 : avatar} alt={'avatar'}/>
-                                            <h6>SELFIE 2</h6>
+                                            <h6>SELFIE</h6>
                                         </div>
                                     </div>
+                                    {
+                                        api_error && <Paper key={1} elevation={4} className={'internal_error'}>
+                                            <h4>{api_error}</h4>
+                                        </Paper>
+                                    }
 
                                     {
-                                        api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.className==='real' ? 'real':'spoof')}>
+                                        api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.face_class==='Real' ? 'real':'spoof')}>
                                             <h4>{api_response.face_class}</h4>
                                             <p>{api_response.score}</p>
                                         </Paper>
