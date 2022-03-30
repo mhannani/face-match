@@ -494,13 +494,13 @@ const FaceDetectionAntiSpoofing = () => {
     return(
 
         <>
-            <BrowserView>
+            <MobileView>
                 <div className={'on_mobile'}>
                     <h5>This application is available on desktop screens... Please bring up your laptop :)</h5>
                 </div>
-            </BrowserView>
+            </MobileView>
 
-            <MobileView>
+            <BrowserView>
                 {
                     app_loading ?
                         <div className={'app_loader'}>
@@ -634,7 +634,7 @@ const FaceDetectionAntiSpoofing = () => {
                             </div>
                         </>
                 }
-            </MobileView>
+            </>
 
         </>
 
