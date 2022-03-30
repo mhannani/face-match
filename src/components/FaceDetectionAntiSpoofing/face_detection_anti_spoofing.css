@@ -192,7 +192,9 @@ canvas {
 
 .on_mobile{
     display: flex;
-    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: row;
     justify-items: center;
     justify-content: center;
     align-items: center;
