@@ -12,26 +12,14 @@ import SyncLoader from "react-spinners/SyncLoader";
 import { BrowserView, MobileView } from 'react-device-detect';
 import MobileOffIcon from '@mui/icons-material/MobileOff';
 
-// import Webcam from "react-webcam";
-// import classnames from "classnames";
-// import {setAsReal, setAsSpoof, reset} from "../../store/faceSlice";
-// import {renderPrediction, setDimension, setupPage} from '../../helpers/anti-spoofing'
-// import {useDispatch, useSelector} from "react-redux";
 import {
-    // Alert,
-    // AlertTitle,
     Button,
-    CircularProgress,
-    Fade,
     Paper,
     Slider,
     styled,
     Tooltip
 } from "@mui/material";
 import {useSnackbar} from "notistack";
-// import Spinner from "../Spinner/Spinner";
-
-// import {round} from "@tensorflow/tfjs";
 
 const PrettoSlider = styled(Slider)({
     color: '#52af77',
