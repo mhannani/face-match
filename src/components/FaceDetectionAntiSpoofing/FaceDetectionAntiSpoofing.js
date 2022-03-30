@@ -75,8 +75,6 @@ let headSizeewarningCounter=0;
 const maxAttempt=2;
 let attemptCount=0;
 
-
-
 const FaceDetectionAntiSpoofing = () => {
 
     const [windows, setWindows] = useState(15);
