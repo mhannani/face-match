@@ -192,6 +192,8 @@ canvas {
 
 .on_mobile{
     display: flex;
+    padding-right: 20px;
+    padding-left: 20px;
     width: 100vw;
     height: 100vh;
     flex-direction: row;
