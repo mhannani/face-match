@@ -499,7 +499,7 @@ const FaceDetectionAntiSpoofing = () => {
         <>
             <MobileView>
                 <div className={'on_mobile'}>
-                    <MobileOffIcon/>
+                    <MobileOffIcon fontSize={'large'}/>
                     <h5>At the moment, this application is available only on desktop screens... Please bring up your laptop :)</h5>
                 </div>
             </MobileView>
