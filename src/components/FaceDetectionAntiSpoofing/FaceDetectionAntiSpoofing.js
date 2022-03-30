@@ -240,7 +240,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 ctx.fillText(label, start[0], start[1] - 6);
                                 // ---------------------------------------------------------
                                 const requestOptions = make_requests(myframe)
-                                console.log('================================================')
+                                // console.log('================================================')
                                 fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                                     .then(response => response.json())
                                     .then(result => {
