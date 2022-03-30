@@ -107,13 +107,10 @@ const FaceDetectionAntiSpoofing = () => {
     const [conf_is_running, set_conf_as_running] = useState(false)
 
     const [api_error, set_api_error] = useState(null)
-    const [thresholdValue, setThresholdValue] = useState(0.8)
+    const [thresholdValue, setThresholdValue] = useState(0.85)
     const { enqueueSnackbar } = useSnackbar();
 
     // const dispatch = useDispatch()
-
-
-
     //Run camera
     async function setupCamera() {
         video = document.getElementById('video');
@@ -143,11 +140,8 @@ const FaceDetectionAntiSpoofing = () => {
         const ctxTemp = canvasTemp.getContext("2d");
         //ctxTemp.clearRect(0, 0, sizeImg[0], sizeImg[1]); // clear canvas
         ctxTemp.drawImage(video, startImg[0], startImg[1], sizeImg[0], sizeImg[1], 0, 0, sizeImg[0], sizeImg[1]);
-
-        // output.appendChild(canvasTemp)
         return canvasTemp;
     }
-
 
     function getFrame(video){
         const canvas_frame = document.createElement('canvas');
@@ -158,6 +152,7 @@ const FaceDetectionAntiSpoofing = () => {
         ctx.drawImage(video,0,0);
         return canvas_frame;
     }
+
     let renderPrediction = async () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (attemptCount > maxAttempt)
@@ -179,12 +174,7 @@ const FaceDetectionAntiSpoofing = () => {
 
                     }
 
-
-
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                    console.log(result)
-
 
                     // showing confetti
                     if(result.response_data.face_class==='Real'){
@@ -193,9 +183,9 @@ const FaceDetectionAntiSpoofing = () => {
                             set_conf_as_running(false);
                         }, 3000);
                     }
+
                     set_is_running(false);
                     // set_app_as_loading(true)
-
                 })
 
                 .catch(error => console.log('error', error));
@@ -205,8 +195,6 @@ const FaceDetectionAntiSpoofing = () => {
             set_api_error(null)
             return 0;
         }
-
-        console.log('attemptCount: ', attemptCount)
 
         const font = "18px sans-serif";
         ctx.font = font;
@@ -562,11 +550,11 @@ const FaceDetectionAntiSpoofing = () => {
                                                     valueLabelDisplay="auto"
                                                     className={'prettoSlider'}
                                                     aria-label="pretto slider"
-                                                    defaultValue={thresholdValue}
+                                                    value={thresholdValue}
                                                     onChange={handleThresholdChange}
                                                     min={0.1}
                                                     max={1.0}
-                                                    step={0.1}
+                                                    step={0.01}
                                                     disabled={is_running}
                                                 />
                                             </Paper>
@@ -580,7 +568,7 @@ const FaceDetectionAntiSpoofing = () => {
                                                     valueLabelDisplay="auto"
                                                     className={'prettoSlider'}
                                                     aria-label="pretto slider"
-                                                    defaultValue={windows}
+                                                    value={windows}
                                                     onChange={handleWindowChange}
                                                     min={1}
                                                     max={30}
@@ -588,11 +576,7 @@ const FaceDetectionAntiSpoofing = () => {
                                                 />
                                             </Paper>
                                         </Tooltip>
-
-
-
                                     </div>
-
 
                                     <div className="row actions">
                                         { !request_sent ?
