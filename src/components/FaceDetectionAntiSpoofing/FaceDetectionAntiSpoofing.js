@@ -10,7 +10,7 @@ import {make_requests} from "../../helpers/api";
 import Confetti from '../Confetti/Confetti'
 import SyncLoader from "react-spinners/SyncLoader";
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
-
+import MobileOffIcon from '@mui/icons-material/MobileOff';
 
 // import Webcam from "react-webcam";
 // import classnames from "classnames";
@@ -499,6 +499,7 @@ const FaceDetectionAntiSpoofing = () => {
         <>
             <MobileView>
                 <div className={'on_mobile'}>
+                    <MobileOffIcon/>
                     <h5>At the moment, this application is available only on desktop screens... Please bring up your laptop :)</h5>
                 </div>
             </MobileView>
