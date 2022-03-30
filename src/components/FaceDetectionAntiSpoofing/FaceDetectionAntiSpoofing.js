@@ -410,7 +410,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         setupPage().then( async() => {
             set_is_running(true)
-            enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
+            enqueueSnackbar('Performing Anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
 
@@ -425,8 +425,8 @@ const FaceDetectionAntiSpoofing = () => {
             {
                 app_loading ?
                 <div className={'app_loader'}>
-                    <SyncLoader size={15} />
-                    <h3>Getting ready...</h3>
+                    <SyncLoader size={20} />
+                    <h3>Getting environment ready...</h3>
                 </div>:
                     <>
 
