@@ -9,7 +9,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import {make_requests} from "../../helpers/api";
 import Confetti from '../Confetti/Confetti'
 import SyncLoader from "react-spinners/SyncLoader";
-import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
+import { BrowserView, MobileView } from 'react-device-detect';
 import MobileOffIcon from '@mui/icons-material/MobileOff';
 
 // import Webcam from "react-webcam";
@@ -75,7 +75,7 @@ const PrettoSlider = styled(Slider)({
 
 
 
-let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label;
+let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label, left_min, left_max, top_min, top_max, canvas_ratio;
 let cmp=0;
 // let windows=15;
 let decision=[];
@@ -86,6 +86,8 @@ let headSizeewarningCounter=0;
 
 const maxAttempt=2;
 let attemptCount=0;
+
+
 
 const FaceDetectionAntiSpoofing = () => {
 
@@ -109,7 +111,7 @@ const FaceDetectionAntiSpoofing = () => {
     const [conf_is_running, set_conf_as_running] = useState(false)
 
     const [api_error, set_api_error] = useState(null)
-    const [thresholdValue, setThresholdValue] = useState(0.85)
+    const [thresholdValue, setThresholdValue] = useState(0.90)
     const { enqueueSnackbar } = useSnackbar();
 
     // const dispatch = useDispatch()
@@ -123,9 +125,9 @@ const FaceDetectionAntiSpoofing = () => {
                 // width: {ideal: 640},
                 // height: {ideal: 480},
 
-                width: { min: 160, ideal: 640, max: 640 },
-                height: { min: 240, ideal: 480, max: 480 },
-        // deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                width: { ideal: 960, max:1200},
+                height: { ideal: 720, max:1200},
+        //deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
         })
 
@@ -152,6 +154,9 @@ const FaceDetectionAntiSpoofing = () => {
         const canvas_frame = document.createElement('canvas');
         canvas_frame.width = video.videoWidth;
         canvas_frame.height = video.videoHeight;
+
+        console.log("video width ",video.videoWidth)
+        console.log("video height ",video.videoHeight)
 
         const ctx = canvas_frame.getContext('2d')
         ctx.drawImage(video,0,0);
@@ -217,18 +222,20 @@ const FaceDetectionAntiSpoofing = () => {
 
         if (predictions.length===1) {
 
-            const start = predictions[0].topLeft;
-            const end = predictions[0].bottomRight;
+            const start = predictions[0].topLeft.map(function(x) { return x * canvas_ratio; });
+            const end = predictions[0].bottomRight.map(function(x) { return x * canvas_ratio; });
+            const bbx_w = end[0] - start[0]
 
             const bbx_bottom_right_y = predictions[0].bottomRight[1]
             const bbx_top_left_x = predictions[0].topLeft[0]
 
-            const size = [end[0] - start[0], end[1] - start[1]];
+            const size = [end[0] - start[0], end[1] - start[1]].map(function(x) { return x * canvas_ratio; });
+
             // decision = []
 
             //const mid = [(start[0] + end[0]) * 0.5, (start[1] + end[1]) * 0.5]
 
-            const bbx_w = end[0] - start[0]
+
             // create a Square bounding box
 
             //const scale = 1.1
@@ -236,10 +243,11 @@ const FaceDetectionAntiSpoofing = () => {
             //const startNew = [mid[0] - (sizeNew * 0.5), mid[1] - (sizeNew * 0.5)]
             // console.log('threshold 2: ', thresholdValue)
 
-            if (bbx_top_left_x > 200 && bbx_top_left_x < 400 && bbx_bottom_right_y > 100 && bbx_bottom_right_y < 420) {
+            if (bbx_top_left_x > left_min && bbx_top_left_x < left_max && bbx_bottom_right_y > top_min && bbx_bottom_right_y < top_max) {
                 ellipsewarningCounter=0;
-                if (bbx_w > 150) {
+                if (bbx_w > 180) {
                     // ------------------------------------- Face detected
+
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     label = `FACE ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
 
@@ -252,6 +260,7 @@ const FaceDetectionAntiSpoofing = () => {
                     ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
                     ctx.fillStyle = "#ffffff";
                     ctx.fillText(label, start[0], start[1] - 6);
+
                     // ---------------------------------------------------------
                     headSizeewarningCounter=0;
                     cmp++
@@ -286,6 +295,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 console.log('===============> detected as real <=================')
                                 // await capture(videoCrop, 2)  // to be removed
                                 // --------------------------------------------------------
+
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
 
@@ -397,10 +407,17 @@ const FaceDetectionAntiSpoofing = () => {
         await setupCamera();
         video.play();
 
-        videoWidth = video.videoWidth;
-        videoHeight = video.videoHeight;
+        videoWidth = 640;
+        videoHeight = 480;
         video.width = videoWidth;
         video.height = videoHeight;
+
+        canvas_ratio=videoWidth/video.videoWidth;
+
+        left_min=(video.videoWidth/3) - 20;
+        left_max=2*(video.videoWidth/3)+50;
+        top_min=video.videoHeight/10;
+        top_max=video.videoHeight-(video.videoHeight/10);
 
         // canvas
         canvas = document.getElementById('output');
@@ -408,6 +425,8 @@ const FaceDetectionAntiSpoofing = () => {
         canvas.height = videoHeight;
 
         ctx = canvas.getContext('2d');
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
         //face detection
         model = await blazeface.load();
 
@@ -500,7 +519,7 @@ const FaceDetectionAntiSpoofing = () => {
             <MobileView>
                 <div className={'on_mobile'}>
                     <MobileOffIcon fontSize={'large'}/>
-                    <h5>At the moment, this application is available only on desktop screens... Please bring up your laptop :)</h5>
+                    <h5>At the moment, this application is available only on desktop screens... Please bring up your laptop :).</h5>
                 </div>
             </MobileView>
 
