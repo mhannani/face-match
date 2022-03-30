@@ -21,9 +21,12 @@
     "jquery": "^3.6.0",
     "notistack": "^2.0.3",
     "react": "^17.0.2",
+    "react-confetti": "^6.0.1",
     "react-dom": "^16.8.6",
     "react-redux": "^7.2.6",
     "react-scripts": "3.0.1",
+    "react-spinners": "^0.11.0",
+    "react-use": "^17.3.2",
     "react-webcam": "^1.1.1"
   },
   "scripts": {

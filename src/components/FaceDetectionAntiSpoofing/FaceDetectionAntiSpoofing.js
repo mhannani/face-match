@@ -7,6 +7,8 @@ import {ArrayAvg, svgIcon} from "../../helpers/anti-spoofing";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import {make_requests} from "../../helpers/api";
+import Confetti from '../Confetti/Confetti'
+import SyncLoader from "react-spinners/SyncLoader";
 
 // import Webcam from "react-webcam";
 // import classnames from "classnames";
@@ -97,6 +99,9 @@ const FaceDetectionAntiSpoofing = () => {
     const [api_response, set_api_response] = useState(null)
 
     const [is_real, set_is_real] = useState(null)
+
+    const [app_loading, set_app_as_loading] = useState(false)
+    const [conf_is_running, set_conf_as_running] = useState(false)
 
     const [thresholdValue, setThresholdValue] = useState(0.8)
     const { enqueueSnackbar } = useSnackbar();
@@ -238,9 +243,20 @@ const FaceDetectionAntiSpoofing = () => {
                                     .then(response => response.json())
                                     .then(result => {set_api_response(result.response_data);
                                         set_request_as_sent(true);
-                                        set_is_running(false);
                                         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                        console.log(result)})
+                                        set_is_running(false);
+                                        console.log(result)
+
+                                        if(result.response_data.face_class==='real'){
+                                            set_conf_as_running(true);
+                                            setTimeout(() => {
+                                                set_conf_as_running(false);
+                                            }, 3000);
+                                        }
+
+
+                                    })
+
                                     .catch(error => console.log('error', error));
                                 set_request_as_sent(true)
                                 capture = () => {}
@@ -331,11 +347,18 @@ const FaceDetectionAntiSpoofing = () => {
         // await renderPrediction();
     };
 
-    useEffect( () => {
-        setupPage().then(() => {
-            enqueueSnackbar('Setting up environment...', { variant: 'success' })
-            set_is_ready_to_spoofing_task(true)
-        })
+    useEffect(  () => {
+        set_conf_as_running(false)
+        set_app_as_loading(true)
+
+        setTimeout(()=>{
+            set_app_as_loading(false)
+        }, 3000)
+
+        // setupPage().then(() => {
+        //     enqueueSnackbar('Setting up environment...', { variant: 'success' })
+        //     set_is_ready_to_spoofing_task(true)
+        // })
     },[])
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -390,6 +413,7 @@ const FaceDetectionAntiSpoofing = () => {
             enqueueSnackbar('Performing anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
+
     }
 
     const refreshPage = () => {
@@ -397,126 +421,131 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     return(
-
-        <div className={'container'}>
-            <div className={'row'}>
-                <div className={'column'}>
-
+        <>
+            {
+                app_loading ?
+                <div className={'app_loader'}>
+                    <SyncLoader size={15} />
+                    <h3>Getting ready...</h3>
+                </div>:
                     <>
-                        <div id="main">
-                            <div className="overlay-container">
-                                {svgIcon()}
+
+                        {conf_is_running &&<Confetti is_run={conf_is_running}/>}
+                        <div className={'container'}>
+                            <div className={'row'}>
+                                <div className={'column'}>
+
+                                    <>
+                                        <div id="main">
+                                            <div className="overlay-container">
+                                                {is_running && svgIcon()}
+                                            </div>
+                                            <video preload="none" id="video" playsInline/>
+                                            <canvas id="output"/>
+                                        </div>
+                                    </>
+
+                                </div>
+
+                                <div className={'column-right-side'}>
+                                    <div className={'row_avatar'}>
+                                        <div className={'column_avatar'}>
+                                            <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
+                                            <h6>SELFIE 1 </h6>
+                                        </div>
+
+                                        <div className={'column_avatar'} id={'image_for_crop'}>
+                                            <img className={'frame_2'} src={selfie_2 ? selfie_2 : avatar} alt={'avatar'}/>
+                                            <h6>SELFIE 2</h6>
+                                        </div>
+                                    </div>
+
+                                    {
+                                        api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.className==='real' ? 'real':'spoof')}>
+                                            <h4>{api_response.face_class}</h4>
+                                            <p>{api_response.score}</p>
+                                        </Paper>
+                                    }
+
+                                    <div className="variables">
+                                        <Tooltip title="Proba > threshold => `spoof`, otherwise `real`" placement="top">
+                                            <Paper key={1} elevation={4} className={'paper'}>
+                                                <b>Threshold</b>
+                                                <h4>{thresholdValue}</h4>
+                                                <PrettoSlider
+                                                    valueLabelDisplay="auto"
+                                                    className={'prettoSlider'}
+                                                    aria-label="pretto slider"
+                                                    defaultValue={thresholdValue}
+                                                    onChange={handleThresholdChange}
+                                                    min={0.1}
+                                                    max={1.0}
+                                                    step={0.1}
+                                                    disabled={is_running}
+                                                />
+                                            </Paper>
+                                        </Tooltip>
+
+                                        <Tooltip title="Number of frames to take in order to make decision" placement="top" >
+                                            <Paper key={2} elevation={4} className={'paper'}>
+                                                <b>Windows</b>
+                                                <h4>{windows}</h4>
+                                                <PrettoSlider
+                                                    valueLabelDisplay="auto"
+                                                    className={'prettoSlider'}
+                                                    aria-label="pretto slider"
+                                                    defaultValue={windows}
+                                                    onChange={handleWindowChange}
+                                                    min={1}
+                                                    max={30}
+                                                    disabled={is_running}
+                                                />
+                                            </Paper>
+                                        </Tooltip>
+
+
+
+                                    </div>
+
+
+                                    <div className="row actions">
+                                        <Button color="success"
+                                                sx={ { borderRadius: 0 }}
+                                                disabled={is_running}
+                                                variant="contained"
+                                                onClick={perform_anti_spoofing}
+                                                startIcon={<PlayArrowIcon />}
+                                        >
+                                            Run task
+                                        </Button>
+
+                                        {/*<Button variant="contained" color="info"*/}
+                                        {/*        sx={ { borderRadius: 0 }}*/}
+                                        {/*        onClick={capture}*/}
+                                        {/*        disabled={is_running}*/}
+                                        {/*>*/}
+                                        {/*    Take screenshots*/}
+
+                                        {/*</Button>*/}
+
+                                        <Button variant="contained" color="error"
+                                                sx={ { borderRadius: 0 }}
+                                                onClick={refreshPage}
+                                                disabled={!is_running}
+                                                startIcon={<StopIcon />}
+                                        >
+                                            Stop task
+
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
-                            <video preload="none" id="video" playsInline/>
-                            <canvas id="output"/>
+
                         </div>
                     </>
+            }
+        </>
 
-                </div>
-
-                <div className={'column-right-side'}>
-                    <div className={'row_avatar'}>
-                        <div className={'column_avatar'}>
-                            <img className={'frame_1'} src={selfie_1 ? selfie_1 : avatar} alt={'avatar'}/>
-                            <h6>SELFIE 1 </h6>
-                        </div>
-
-                        <div className={'column_avatar'} id={'image_for_crop'}>
-                            <img className={'frame_2'} src={selfie_2 ? selfie_2 : avatar} alt={'avatar'}/>
-                            <h6>SELFIE 2</h6>
-                        </div>
-                    </div>
-
-                    {
-                        api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.className==='real' ? 'real':'spoof')}>
-                            <h4>{api_response.face_class}</h4>
-                            <p>{api_response.score}</p>
-                        </Paper>
-                    }
-
-                    <div className="variables">
-                        {is_ready_to_spoofing_task ? <><Tooltip title="Proba > threshold => `spoof`, otherwise `real`" placement="top">
-                            <Paper key={1} elevation={4} className={'paper'}>
-                                <b>Threshold</b>
-                                <h4>{thresholdValue}</h4>
-                                <PrettoSlider
-                                    valueLabelDisplay="auto"
-                                    className={'prettoSlider'}
-                                    aria-label="pretto slider"
-                                    defaultValue={thresholdValue}
-                                    onChange={handleThresholdChange}
-                                    min={0.1}
-                                    max={1.0}
-                                    step={0.1}
-                                    disabled={is_running}
-                                />
-                            </Paper>
-                        </Tooltip>
-
-                        <Tooltip title="Number of frames to take in order to make decision" placement="top" >
-                            <Paper key={2} elevation={4} className={'paper'}>
-                                <b>Windows</b>
-                                <h4>{windows}</h4>
-                                <PrettoSlider
-                                    valueLabelDisplay="auto"
-                                    className={'prettoSlider'}
-                                    aria-label="pretto slider"
-                                    defaultValue={windows}
-                                    onChange={handleWindowChange}
-                                    min={1}
-                                    max={30}
-                                    disabled={is_running}
-                                />
-                            </Paper>
-                        </Tooltip>
-                        </>
-                        :
-                        <Fade
-                            in={true}
-                            style={{
-                                color:'green'
-                            }}
-                        >
-                        <CircularProgress />
-                        </Fade>
-                        }
-                    </div>
-
-
-                    <div className="row actions">
-                        <Button color="success"
-                                sx={ { borderRadius: 0 }}
-                                disabled={is_running}
-                                variant="contained"
-                                onClick={perform_anti_spoofing}
-                                startIcon={<PlayArrowIcon />}
-                        >
-                            Run task
-                        </Button>
-
-                        {/*<Button variant="contained" color="info"*/}
-                        {/*        sx={ { borderRadius: 0 }}*/}
-                        {/*        onClick={capture}*/}
-                        {/*        disabled={is_running}*/}
-                        {/*>*/}
-                        {/*    Take screenshots*/}
-
-                        {/*</Button>*/}
-
-                        <Button variant="contained" color="error"
-                                sx={ { borderRadius: 0 }}
-                                onClick={refreshPage}
-                                disabled={!is_running}
-                                startIcon={<StopIcon />}
-                        >
-                            Stop task
-
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
 
 
     )
