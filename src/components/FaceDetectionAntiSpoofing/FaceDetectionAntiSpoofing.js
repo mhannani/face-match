@@ -634,7 +634,7 @@ const FaceDetectionAntiSpoofing = () => {
                             </div>
                         </>
                 }
-            </>
+            </BrowserView>
 
         </>
 
