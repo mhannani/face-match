@@ -25,7 +25,7 @@ import {useSnackbar} from "notistack";
 
 const config = {
     debug: false,
-    backend: 'webgl',
+    backend: 'wasm',
     filter: { enabled: false, equalization: false },
     modelBasePath: 'https://cdn.jsdelivr.net/npm/@vladmandic/human/models',
     face: { enabled: true, detector: { rotation: false, return: false }, mesh: { enabled: false },
