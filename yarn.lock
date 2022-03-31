@@ -1910,6 +1910,11 @@
     lodash.unescape "4.0.1"
     semver "5.5.0"
 
+"@vladmandic/human@^2.6.4":
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/@vladmandic/human/-/human-2.6.4.tgz#3fbadf5115f5bde27e72be327ae43eca62ec4dce"
+  integrity sha512-SOoR//mm5lgah7ERFV9rk1xqyHdjklZp2E3DCDjctYv2pHkwkryVJzhj4IEMLpbQgJ+7SvC7LPpUg6l3/sS8aw==
+
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
   resolved "https://registry.npmjs.org/@webassemblyjs/ast/-/ast-1.8.5.tgz"
