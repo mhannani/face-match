@@ -258,7 +258,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 const normalizationConstant = 1.0 / 255.0;
 
                                 let tensor = tf.browser.fromPixels(videoCrop, 3)
-                                    .resizeBilinear([224, 224], false)
+                                    .resizeBilinear([32, 32], false)
                                     .expandDims(0)
                                     .toFloat()
                                     .mul(normalizationConstant)
