@@ -11,6 +11,7 @@ import Confetti from '../Confetti/Confetti'
 import SyncLoader from "react-spinners/SyncLoader";
 import { BrowserView, MobileView } from 'react-device-detect';
 import MobileOffIcon from '@mui/icons-material/MobileOff';
+import { Human, Config } from '@vladmandic/human/dist/human.esm';
 
 import {
     Button,
@@ -19,7 +20,26 @@ import {
     styled,
     Tooltip
 } from "@mui/material";
+
 import {useSnackbar} from "notistack";
+
+const config = {
+    debug: false,
+    backend: 'webgl',
+    filter: { enabled: false, equalization: false },
+    modelBasePath: 'https://cdn.jsdelivr.net/npm/@vladmandic/human/models',
+    face: { enabled: true, detector: { rotation: false, return: false }, mesh: { enabled: false },
+        iris: { enabled: false }, description: { enabled: false },
+        emotion: { enabled: false } },
+    body: { enabled: false },
+    hand: { enabled: false },
+    object: { enabled: false },
+}
+
+
+
+
+const human = new Human(config);
 
 const PrettoSlider = styled(Slider)({
     color: '#52af77',
@@ -67,7 +87,7 @@ let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, l
 let cmp=0;
 // let windows=15;
 let decision=[];
-let oldfaceDet=1;
+let oldfaceDet=0;
 
 let ellipsewarningCounter=0;
 let headSizeewarningCounter=0;
@@ -77,7 +97,7 @@ let attemptCount=0;
 
 const FaceDetectionAntiSpoofing = () => {
 
-    const [windows, setWindows] = useState(15);
+    const [windows, setWindows] = useState(5);
     const [is_running, set_is_running] = useState(false)
     const [is_ready_to_spoofing_task, set_is_ready_to_spoofing_task] = useState(false)
 
@@ -97,7 +117,7 @@ const FaceDetectionAntiSpoofing = () => {
     const [conf_is_running, set_conf_as_running] = useState(false)
 
     const [api_error, set_api_error] = useState(null)
-    const [thresholdValue, setThresholdValue] = useState(0.90)
+    const [thresholdValue, setThresholdValue] = useState(0.50)
     const { enqueueSnackbar } = useSnackbar();
 
     // const dispatch = useDispatch()
@@ -113,7 +133,7 @@ const FaceDetectionAntiSpoofing = () => {
 
                 width: { ideal: 960, max:1200},
                 height: { ideal: 720, max:1200},
-        //deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
+                //deviceId: {exact: 'b25a6018bdb675995f90e11cd6983f89255cb55e0bcd5c91d1c04a5590f225b2'}
             },
         })
 
@@ -140,9 +160,6 @@ const FaceDetectionAntiSpoofing = () => {
         const canvas_frame = document.createElement('canvas');
         canvas_frame.width = video.videoWidth;
         canvas_frame.height = video.videoHeight;
-
-        console.log("video width ",video.videoWidth)
-        console.log("video height ",video.videoHeight)
 
         const ctx = canvas_frame.getContext('2d')
         ctx.drawImage(video,0,0);
@@ -202,20 +219,42 @@ const FaceDetectionAntiSpoofing = () => {
         const annotateBoxes = true;
         const classifySpoof = true;
 
-        const predictions = await model.estimateFaces(
-            myframe, returnTensors, flipHorizontal, annotateBoxes);
+        // [x, y, width, height]
+        const predictions = await human.detect(myframe); // run detection
+        let score = 0;
 
 
-        if (predictions.length===1) {
 
-            const start = predictions[0].topLeft.map(function(x) { return x * canvas_ratio; });
-            const end = predictions[0].bottomRight.map(function(x) { return x * canvas_ratio; });
-            const bbx_w = end[0] - start[0]
 
-            const bbx_bottom_right_y = predictions[0].bottomRight[1]
-            const bbx_top_left_x = predictions[0].topLeft[0]
+        if (predictions.face.length===1 && predictions.face[0].score>0.8) {
 
-            const size = [end[0] - start[0], end[1] - start[1]].map(function(x) { return x * canvas_ratio; });
+            console.log("predictions box ",predictions.face[0].box);
+            console.log("predictions left_min",left_min);
+            console.log("predictions left_max ",left_max);
+            console.log("predictions top_min ",top_min);
+            console.log("predictions top_max ",top_max);
+
+            console.log("predictions score ",predictions.face[0].score);
+
+            const faceBox=predictions.face[0].box;
+            const faceScore=predictions.face[0].score
+
+
+
+            const start = [faceBox[0],faceBox[1]].map(function(x) { return x * canvas_ratio; });
+
+
+            const bbx_w = faceBox[2]
+
+            const bbx_bottom_right_y = faceBox[1]+faceBox[3]
+            const bbx_top_left_x = faceBox[0]
+
+            const size = [faceBox[2], faceBox[3]].map(function(x) { return x * canvas_ratio; });
+
+
+            const video_start = [faceBox[0],faceBox[1]];
+
+            const video_size = [faceBox[2], faceBox[3]];
 
             // decision = []
 
@@ -251,8 +290,8 @@ const FaceDetectionAntiSpoofing = () => {
                     headSizeewarningCounter=0;
                     cmp++
                     if (classifySpoof) {
-                        videoCrop = getImage(myframe, size, start);
-
+                        videoCrop = getImage(myframe, video_size, video_start);
+                        //await capture(videoCrop, 1)
                         // check antispoofing
                         const logits = tf.tidy(() => {
                                 const normalizationConstant = 1.0 / 255.0;
@@ -267,16 +306,17 @@ const FaceDetectionAntiSpoofing = () => {
                             }
                         );
                         const labelPredict = await logits.data();
-                        decision.push(labelPredict[0]);
-                        if (oldfaceDet > labelPredict[0]) {
-                            oldfaceDet = labelPredict[0];
+                        console.log("labelPredict ",labelPredict)
+                        decision.push(labelPredict[1]);
+                        if (oldfaceDet < labelPredict[1]) {
+                            oldfaceDet = labelPredict[1];
                             await capture(myframe, 1)
                         }
                         if (decision.length === windows) {
                             console.log('incrementing attemptCount')
                             attemptCount++
                             const meanProb = ArrayAvg(decision);
-                            if (meanProb < thresholdValue) { // real
+                            if (meanProb > thresholdValue) { // real
                                 set_selfie_1_as_taken(true)
                                 console.log('===============> detected as real <=================')
                                 // await capture(videoCrop, 2)  // to be removed
@@ -400,10 +440,10 @@ const FaceDetectionAntiSpoofing = () => {
 
         canvas_ratio=videoWidth/video.videoWidth;
 
-        left_min=(video.videoWidth/3) - 20;
-        left_max=2*(video.videoWidth/3)+50;
-        top_min=video.videoHeight/10;
-        top_max=video.videoHeight-(video.videoHeight/10);
+        left_min=(video.videoWidth/3) - (video.videoWidth/10);
+        left_max=2*(video.videoWidth/3) + (video.videoWidth/10);
+        top_min=video.videoHeight/15;
+        top_max=video.videoHeight-(video.videoHeight/20);
 
         // canvas
         canvas = document.getElementById('output');
@@ -414,7 +454,7 @@ const FaceDetectionAntiSpoofing = () => {
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
         //face detection
-        model = await blazeface.load();
+        //model = await blazeface.load();
 
 
         // const imgSrc = context.toDataURL('png')
