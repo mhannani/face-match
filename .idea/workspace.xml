@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" afterDir="false" />
-    </list>
+    <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,7 +91,7 @@
       <workItem from="1648718087610" duration="45000" />
       <workItem from="1648727857537" duration="28000" />
       <workItem from="1648742526952" duration="4099000" />
-      <workItem from="1648808463038" duration="17697000" />
+      <workItem from="1648808463038" duration="17712000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -270,7 +268,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648833023587</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="adding redux store for some state variables">
+      <created>1648833774109</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1648833774109</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
