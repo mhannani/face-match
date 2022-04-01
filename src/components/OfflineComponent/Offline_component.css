@@ -1,0 +1,15 @@
+.no-internet{
+    display: flex;
+    /*background: orangered;*/
+    text-align: center;
+    flex-wrap: wrap;
+    /*padding-right: 1rem;*/
+    width: 100vw;
+    height: 100vh;
+    color: red;
+    flex-direction: column;
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}

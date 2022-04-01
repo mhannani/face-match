@@ -15,39 +15,7 @@ const Content = () => {
 
     return(
         <div className={'App'}>
-            <header>
-                {/*<div className="App__header">*/}
-                {/*    {is_spoof ?*/}
-                {/*        <Alert severity="success">*/}
-                {/*            <AlertTitle>Real</AlertTitle>*/}
-                {/*        </Alert>*/}
-                {/*        :*/}
-                {/*        <Alert severity="warning">*/}
-                {/*            <AlertTitle>Spoof</AlertTitle>*/}
-                {/*        </Alert>*/}
-                {/*    }*/}
-                {/*</div>*/}
-            </header>
-            {/*<div style={{color: '#2ac92a', fontWeight: 700, marginBottom: '10px'}}>*/}
-            {/*    Checks:*/}
-            {/*</div>*/}
-            {/*<div className={'results'}>*/}
-            {/*    <div className={'child'}>- Face detection:*/}
-            {/*        {face_detected ? <h6 style={{color: '#2ac92a'}}> Face detected ! </h6>: <h6 style={{color: '#ff0000'}}> No face detected </h6>}*/}
-            {/*    </div>*/}
-            {/*    <div className={'child'}>- Can do liveness check ? {face_detected ?*/}
-            {/*        <h6 style={{color: '#2ac92a'}}> Yes </h6> : <h6 style={{color: '#ff0000'}}> Not yet </h6>}*/}
-            {/*    </div>*/}
-
-            {/*    <br/>*/}
-            {/*</div>*/}
-
-            {/*{*/}
-            {/*    (face_detected && do_liveness) ? <FaceDetectionAntiSpoofing/> :<FaceDetectionEllipse/>*/}
-            {/*}*/}
-
             <FaceDetectionAntiSpoofing/>
-            {/*<FaceDetectionEllipse/>*/}
         </div>
     )
 }
