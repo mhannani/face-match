@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="CSS File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="274t63lj7JaaQfFTj1PVZKBJOsY" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/public/rose_model" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="yarn" />
+    <property name="ts.external.directory.path" value="C:\Users\mhannani\AppData\Local\JetBrains\Toolbox\apps\IDEA-U\ch-0\213.6777.52\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\mhannani\IdeaProjects\face\public\rose_model" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="'react-loader-spinner" />
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="" />
+      <created>1648591016215</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1648591016215</updated>
+      <workItem from="1648591024033" duration="8162000" />
+      <workItem from="1648632749232" duration="23024000" />
+      <workItem from="1648666886680" duration="821000" />
+      <workItem from="1648718087610" duration="45000" />
+      <workItem from="1648727857537" duration="28000" />
+      <workItem from="1648742526952" duration="4099000" />
+      <workItem from="1648808463038" duration="6888000" />
+    </task>
+    <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
+      <created>1648598955739</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1648598955739</updated>
+    </task>
+    <task id="LOCAL-00002" summary="handling 500 errors">
+      <created>1648635986455</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1648635986455</updated>
+    </task>
+    <task id="LOCAL-00003" summary="handling 500 errors">
+      <created>1648636619927</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1648636619927</updated>
+    </task>
+    <task id="LOCAL-00004" summary="changes by soufiane_12_39">
+      <created>1648643820027</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1648643820027</updated>
+    </task>
+    <task id="LOCAL-00005" summary="changing the ui">
+      <created>1648652638310</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1648652638310</updated>
+    </task>
+    <task id="LOCAL-00006" summary="preventing view from mobiles">
+      <created>1648653366598</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1648653366598</updated>
+    </task>
+    <task id="LOCAL-00007" summary="preventing view from mobiles">
+      <created>1648653670093</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1648653670093</updated>
+    </task>
+    <task id="LOCAL-00008" summary="preventing view from mobiles">
+      <created>1648653701607</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1648653701607</updated>
+    </task>
+    <task id="LOCAL-00009" summary="preventing view from mobiles">
+      <created>1648653750315</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1648653750315</updated>
+    </task>
+    <task id="LOCAL-00010" summary="preventing view from mobiles">
+      <created>1648653948034</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1648653948034</updated>
+    </task>
+    <task id="LOCAL-00011" summary="changing width and height ratio">
+      <created>1648655843790</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1648655843790</updated>
+    </task>
+    <task id="LOCAL-00012" summary="changing styling on+mobile">
+      <created>1648656308604</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1648656308604</updated>
+    </task>
+    <task id="LOCAL-00013" summary="adding no-mobile icon.">
+      <created>1648656907607</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1648656907607</updated>
+    </task>
+    <task id="LOCAL-00014" summary="adding no-mobile icon.">
+      <created>1648657148621</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1648657148621</updated>
+    </task>
+    <task id="LOCAL-00015" summary="edited by soufiane at 5:26">
+      <created>1648661220449</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1648661220449</updated>
+    </task>
+    <task id="LOCAL-00016" summary="edited by soufiane at 5:26">
+      <created>1648666996426</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1648666996427</updated>
+    </task>
+    <task id="LOCAL-00017" summary="edited by soufiane at 5:26">
+      <created>1648667044240</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1648667044240</updated>
+    </task>
+    <task id="LOCAL-00018" summary="edited by soufiane at 5:26">
+      <created>1648667061092</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1648667061092</updated>
+    </task>
+    <task id="LOCAL-00019" summary="using human pkg and new anti-spoofing classifier.">
+      <created>1648742838597</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1648742838597</updated>
+    </task>
+    <task id="LOCAL-00020" summary="using human pkg and new anti-spoofing classifier.">
+      <created>1648743087798</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1648743087798</updated>
+    </task>
+    <task id="LOCAL-00021" summary="using human pkg and new anti-spoofing classifier.">
+      <created>1648743936417</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1648743936417</updated>
+    </task>
+    <task id="LOCAL-00022" summary="wasm">
+      <created>1648747156981</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1648747156981</updated>
+    </task>
+    <task id="LOCAL-00023" summary="online and offline feature">
+      <created>1648815029652</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1648815029652</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="adding spinner, setting up page after starting the task" />
+    <MESSAGE value="handling 500 errors" />
+    <MESSAGE value="changes by soufiane_12_39" />
+    <MESSAGE value="changing the ui" />
+    <MESSAGE value="preventing view from mobiles" />
+    <MESSAGE value="changing width and height ratio" />
+    <MESSAGE value="changing styling on+mobile" />
+    <MESSAGE value="adding no-mobile icon." />
+    <MESSAGE value="edited by soufiane at 5:26" />
+    <MESSAGE value="using human pkg and new anti-spoofing classifier." />
+    <MESSAGE value="wasm" />
+    <MESSAGE value="online and offline feature" />
+    <option name="LAST_COMMIT_MESSAGE" value="online and offline feature" />
+  </component>
+</project>
