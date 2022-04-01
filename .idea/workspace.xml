@@ -5,18 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/MobileViewComponent/MobileViewComponent.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Parameters/Parameters.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Parameters/Parameters.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/helpers/camera.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/helpers/human.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/store/AppSlice.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/store/ParametersSlice.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/face_detection_anti_spoofing.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/face_detection_anti_spoofing.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helpers/anti-spoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers/anti-spoofing.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/store/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/store.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +93,7 @@
       <workItem from="1648718087610" duration="45000" />
       <workItem from="1648727857537" duration="28000" />
       <workItem from="1648742526952" duration="4099000" />
-      <workItem from="1648808463038" duration="17030000" />
+      <workItem from="1648808463038" duration="17697000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -274,7 +263,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648815463301</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="adding redux store for some state variables">
+      <created>1648833023587</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1648833023587</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -295,6 +291,7 @@
     <MESSAGE value="using human pkg and new anti-spoofing classifier." />
     <MESSAGE value="wasm" />
     <MESSAGE value="online and offline feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="online and offline feature" />
+    <MESSAGE value="adding redux store for some state variables" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding redux store for some state variables" />
   </component>
 </project>

@@ -466,9 +466,9 @@ const FaceDetectionAntiSpoofing = () => {
         <>
             <OfflineComponent/>
             <Online>
-                <MobileViewComponent/>
+                {/*<MobileViewComponent/>*/}
 
-                <BrowserView>
+                {/*<BrowserView>*/}
                     {
                         app_loading ?
                             <div className={'app_loader'}>
@@ -555,7 +555,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 </div>
                             </>
                     }
-                </BrowserView>
+                {/*</BrowserView>*/}
 
             </Online>
         </>
