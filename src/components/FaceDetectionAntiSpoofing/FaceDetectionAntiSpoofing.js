@@ -10,14 +10,13 @@ import {make_requests} from "../../helpers/api";
 import Confetti from '../Confetti/Confetti'
 import SyncLoader from "react-spinners/SyncLoader";
 import { BrowserView, MobileView } from 'react-device-detect';
-import MobileOffIcon from '@mui/icons-material/MobileOff';
-import { Human, Config } from '@vladmandic/human/dist/human.esm';
+import { Human } from '@vladmandic/human/dist/human.esm';
 import { Online } from "react-detect-offline"
-
-
+import {refreshPage} from "../../helpers/anti-spoofing";
+import {human_config} from "../../helpers/human";
+import {MobileViewComponent} from "../MobileViewComponent/MobileViewComponent";
 // components
 import {OfflineComponent} from '../OfflineComponent/OfflineComponent'
-
 import {
     Button,
     Paper,
@@ -27,63 +26,14 @@ import {
 } from "@mui/material";
 
 import {useSnackbar} from "notistack";
+import {useDispatch, useSelector} from "react-redux";
 
-const config = {
-    debug: false,
-    backend: 'wasm',
-    filter: { enabled: false, equalization: false },
-    modelBasePath: 'https://cdn.jsdelivr.net/npm/@vladmandic/human/models',
-    face: { enabled: true, detector: { rotation: false, return: false }, mesh: { enabled: false },
-        iris: { enabled: false }, description: { enabled: false },
-        emotion: { enabled: false } },
-    body: { enabled: false },
-    hand: { enabled: false },
-    object: { enabled: false },
-}
+// redux toolkit actions
+import {setWindows, setThreshold} from "../../store/ParametersSlice";
+import {setIsRunning, setIsLoading} from "../../store/AppSlice"
+import {Parameters} from "../Parameters/Parameters";
 
-const human = new Human(config);
-
-
-const PrettoSlider = styled(Slider)({
-    color: '#52af77',
-    height: 8,
-    '& .MuiSlider-track': {
-        border: 'none',
-    },
-    '& .MuiSlider-thumb': {
-        height: 24,
-        width: 24,
-        backgroundColor: '#fff',
-        border: '2px solid currentColor',
-        '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
-            boxShadow: 'inherit',
-        },
-        '&:before': {
-            display: 'none',
-        },
-    },
-    '& .MuiSlider-valueLabel': {
-        lineHeight: 1.2,
-        fontSize: 12,
-        background: 'unset',
-        padding: 0,
-        width: 32,
-        height: 32,
-        borderRadius: '50% 50% 50% 0',
-        backgroundColor: '#52af77',
-        transformOrigin: 'bottom left',
-        transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
-        '&:before': { display: 'none' },
-        '&.MuiSlider-valueLabelOpen': {
-            transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
-        },
-        '& > *': {
-            transform: 'rotate(45deg)',
-        },
-    },
-});
-
-
+const human = new Human(human_config);
 
 
 let model, classifier, ctx, videoWidth, videoHeight, video, videoCrop, canvas, label, left_min, left_max, top_min, top_max, canvas_ratio;
@@ -100,30 +50,47 @@ let attemptCount=0;
 
 const FaceDetectionAntiSpoofing = () => {
 
-    const [windows, setWindows] = useState(5);
-    const [is_running, set_is_running] = useState(false)
-    const [is_ready_to_spoofing_task, set_is_ready_to_spoofing_task] = useState(false)
+    // control variables
+    // -----------------
+    // The window parameter
+    const windows = useSelector((state) => state.parameters.windows)
 
-    const [selfie_1, set_selfie_1] = useState(null)
-    const [selfie_2, set_selfie_2] = useState(null)
+    // The threshold parameter
+    const threshold = useSelector((state) => state.parameters.threshold)
 
-    const [selfie_1_taken, set_selfie_1_as_taken] = useState(false)
-    const [selfie_2_taken, set_selfie_2_as_taken] = useState(false)
+    // App state
+    // ----------
+    // tracks when application's job is running
+    // const [is_running, set_is_running] = useState(false)
+    const is_running = useSelector((state) => state.app.is_running)
 
-    const [request_sent, set_request_as_sent] = useState(false)
-
-    const [api_response, set_api_response] = useState(null)
-
-    const [is_real, set_is_real] = useState(null)
-
+    // tracks when the application is loading
     const [app_loading, set_app_as_loading] = useState(false)
+
+
+    // screenshots state
+    // -----------------
+    // Track when the selfie is taken
+    const [selfie_1, set_selfie_1] = useState(null)
+
+    // api state
+    // ---------
+    // tells if the request has sent to the api
+    const [request_sent, set_request_as_sent] = useState(false)
+    // holds the api response[object/json]
+    const [api_response, set_api_response] = useState(null)
+    // holds the error message if there
+    const [api_error, set_api_error] = useState(null)
+
+    // confetti state
+    // show confetti animation when predicting faces as `real`
     const [conf_is_running, set_conf_as_running] = useState(false)
 
-    const [api_error, set_api_error] = useState(null)
-    const [thresholdValue, setThresholdValue] = useState(0.50)
+    // snack bar hock
     const { enqueueSnackbar } = useSnackbar();
 
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch()
+
     //Run camera
     async function setupCamera() {
         video = document.getElementById('video');
@@ -200,7 +167,7 @@ const FaceDetectionAntiSpoofing = () => {
                         }, 3000);
                     }
 
-                    set_is_running(false);
+                    dispatch(setIsRunning(false));
                     // set_app_as_loading(true)
                 })
 
@@ -227,14 +194,6 @@ const FaceDetectionAntiSpoofing = () => {
         let score = 0;
 
         if (predictions.face.length===1 && predictions.face[0].score>0.8) {
-            console.log("predictions box ",predictions.face[0].box);
-            console.log("predictions left_min",left_min);
-            console.log("predictions left_max ",left_max);
-            console.log("predictions top_min ",top_min);
-            console.log("predictions top_max ",top_max);
-
-            console.log("predictions score ",predictions.face[0].score);
-
             const faceBox=predictions.face[0].box;
             const faceScore=predictions.face[0].score
 
@@ -309,14 +268,14 @@ const FaceDetectionAntiSpoofing = () => {
                         decision.push(labelPredict[1]);
                         if (oldfaceDet < labelPredict[1]) {
                             oldfaceDet = labelPredict[1];
-                            await capture(myframe, 1)
+                            await capture(myframe)
                         }
                         if (decision.length === windows) {
                             console.log('incrementing attemptCount')
                             attemptCount++
                             const meanProb = ArrayAvg(decision);
-                            if (meanProb > thresholdValue) { // real
-                                set_selfie_1_as_taken(true)
+                            if (meanProb > threshold) { // real
+                                // set_selfie_1_as_taken(true)
                                 console.log('===============> detected as real <=================')
                                 // await capture(videoCrop, 2)  // to be removed
                                 // --------------------------------------------------------
@@ -364,7 +323,7 @@ const FaceDetectionAntiSpoofing = () => {
                                                 set_conf_as_running(false);
                                             }, 3000);
                                         }
-                                        set_is_running(false);
+                                        dispatch(setIsRunning(false))
                                         // set_app_as_loading(true)
 
                                     })
@@ -460,7 +419,7 @@ const FaceDetectionAntiSpoofing = () => {
         // console.log(imgSrc)
 
         // Load classifier from static storage
-        classifier = await tf.loadLayersModel('./rose_model/model.json');
+        // classifier = await tf.loadLayersModel('./rose_model/model.json');
 
         // classifier.summary();
         // await renderPrediction();
@@ -483,45 +442,11 @@ const FaceDetectionAntiSpoofing = () => {
         // })
     },[])
 
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-
-    let capture = async (canvas_img, selfie_id) => {
+    let capture = async (canvas_img) => {
         let img_source = canvas_img.toDataURL();
-        // console.log('selfie_1_as_taoken ---- capture func: ', selfie_1_taken)
-        // console.log('selfie_2_as_taoken ---- capture func: ', selfie_2_taken)
-
-        if(selfie_id === 1){
-            set_selfie_1(img_source)
-            set_selfie_1_as_taken(true)
-        }
-
-        await delay(500);
-
-        if(selfie_id === 2){
-            set_selfie_2(img_source)
-            set_selfie_2_as_taken(true)
-        }
-
+        set_selfie_1(img_source)
     };
 
-
-    const handleThresholdChange = async (event) => {
-        const { name, value } = event.target;
-
-        setThresholdValue(parseFloat(value));
-        // setupCamera()
-        // setupPage()
-        // event.persist()
-    };
-
-    const handleWindowChange = async (event) => {
-        const { name, value } = event.target;
-
-        setWindows(parseInt(value));
-        // setupCamera()
-        // setupPage()
-        // event.persist()
-    };
 
     const perform_anti_spoofing = async (event) => {
         cmp = 0
@@ -529,7 +454,7 @@ const FaceDetectionAntiSpoofing = () => {
         event.preventDefault();
         // console.log("event: ", thresholdValue, window)
         // console.log('perform')
-        set_is_running(true)
+        dispatch(setIsRunning(true))
         setupPage().then( async() => {
             enqueueSnackbar('Performing Anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
@@ -537,20 +462,11 @@ const FaceDetectionAntiSpoofing = () => {
 
     }
 
-    const refreshPage = () => {
-        window.location.reload();
-    }
-
     return(
         <>
             <OfflineComponent/>
             <Online>
-                <MobileView>
-                    <div className={'on_mobile'}>
-                        <MobileOffIcon fontSize={'large'}/>
-                        <h5>At the moment, this application is available only on desktop screens... Please bring up your laptop :).</h5>
-                    </div>
-                </MobileView>
+                <MobileViewComponent/>
 
                 <BrowserView>
                     {
@@ -580,13 +496,11 @@ const FaceDetectionAntiSpoofing = () => {
 
                                         <div className={'column-right-side'}>
                                             <>
-
                                                 {
                                                     api_error && <Paper key={1} elevation={4} className={'internal_error'}>
                                                         <h4>{api_error}</h4>
                                                     </Paper>
                                                 }
-
                                                 {
                                                     api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.face_class==='Real' ? 'real':'spoof')}>
                                                         <h4>{api_response.face_class}</h4>
@@ -602,43 +516,7 @@ const FaceDetectionAntiSpoofing = () => {
                                                 </div>
                                             </div>
 
-
-                                            <div className="variables">
-                                                <Tooltip title="Proba > threshold => `spoof`, otherwise `real`" placement="top">
-                                                    <Paper key={1} elevation={4} className={'paper'}>
-                                                        <b>Threshold</b>
-                                                        <h4>{thresholdValue}</h4>
-                                                        <PrettoSlider
-                                                            valueLabelDisplay="auto"
-                                                            className={'prettoSlider'}
-                                                            aria-label="pretto slider"
-                                                            value={thresholdValue}
-                                                            onChange={handleThresholdChange}
-                                                            min={0.1}
-                                                            max={1.0}
-                                                            step={0.01}
-                                                            disabled={is_running}
-                                                        />
-                                                    </Paper>
-                                                </Tooltip>
-
-                                                <Tooltip title="Number of frames to take in order to make decision" placement="top" >
-                                                    <Paper key={2} elevation={4} className={'paper'}>
-                                                        <b>Windows</b>
-                                                        <h4>{windows}</h4>
-                                                        <PrettoSlider
-                                                            valueLabelDisplay="auto"
-                                                            className={'prettoSlider'}
-                                                            aria-label="pretto slider"
-                                                            value={windows}
-                                                            onChange={handleWindowChange}
-                                                            min={1}
-                                                            max={30}
-                                                            disabled={is_running}
-                                                        />
-                                                    </Paper>
-                                                </Tooltip>
-                                            </div>
+                                            <Parameters/>
 
                                             <div className="row actions">
                                                 { !request_sent ?
@@ -661,15 +539,6 @@ const FaceDetectionAntiSpoofing = () => {
                                                         Try again
                                                     </Button>
                                                 }
-                                                {/*<Button variant="contained" color="info"*/}
-                                                {/*        sx={ { borderRadius: 0 }}*/}
-                                                {/*        onClick={capture}*/}
-                                                {/*        disabled={is_running}*/}
-                                                {/*>*/}
-                                                {/*    Take screenshots*/}
-
-                                                {/*</Button>*/}
-
                                                 <Button variant="contained" color="error"
                                                         sx={ { borderRadius: 0 }}
                                                         onClick={refreshPage}

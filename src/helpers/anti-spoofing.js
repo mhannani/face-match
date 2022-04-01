@@ -30,3 +30,8 @@ export function ArrayAvg(myArray) {
     }
     return sum / ArrayLen;
 }
+
+
+export const refreshPage = () => {
+    window.location.reload();
+}
