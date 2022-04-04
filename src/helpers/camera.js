@@ -1,3 +1,5 @@
+import {setIsRunning} from "../store/AppSlice";
+
 export async function setupCamera() {
     let video = document.getElementById('video');
     video.srcObject = await navigator.mediaDevices.getUserMedia({

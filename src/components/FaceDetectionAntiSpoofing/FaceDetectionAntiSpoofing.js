@@ -86,7 +86,7 @@ const FaceDetectionAntiSpoofing = () => {
 
     let renderPrediction = async () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+        console.log('renderPrediction')
         ctx.font = "18px sans-serif";
         let my_frame = getFrame(video);
         const returnTensors = false;
@@ -153,6 +153,44 @@ const FaceDetectionAntiSpoofing = () => {
                             await capture(my_frame)
                         }
 
+                        const requestOptions = make_requests()
+                        fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                            .then(response => response.json())
+                            .then(result => {
+                                // set_request_as_sent(true);
+                                dispatch(setRequestSent(true))
+                                if(result.status_code !== '500'){
+                                    dispatch(setApiResponse(result.response_data));
+                                }
+
+                                else{
+                                    dispatch(setApiResponse(null));
+                                    dispatch(setApiError(result.status_label))
+
+                                }
+
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                                // showing confetti
+                                if(result.response_data.face_class==='Real'){
+                                    dispatch(setShowConfetti(true))
+                                    setTimeout(() => {
+                                        dispatch(setShowConfetti(false))
+                                    }, 3000);
+                                }
+
+                                dispatch(setIsRunning(false));
+                                // set_app_as_loading(true)
+                            })
+
+                            .catch(error => console.log('error', error));
+                        dispatch(setRequestSent(true))
+                        capture = () => {}
+                        dispatch(setApiResponse(null));
+
+                        dispatch(setApiError(null))
+                        return 0;
+
                         if (decision.length === windows) {
                             attemptCount++
                             const meanProb = ArrayAvg(decision);
@@ -173,43 +211,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 // ctx.fillStyle = "#ffffff";
                                 // ctx.fillText(label, start[0], start[1] - 6);
                                 // ---------------------------------------------------------
-                                const requestOptions = make_requests()
-                                fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
-                                    .then(response => response.json())
-                                    .then(result => {
-                                        // set_request_as_sent(true);
-                                        dispatch(setRequestSent(true))
-                                        if(result.status_code !== '500'){
-                                            dispatch(setApiResponse(result.response_data));
-                                        }
 
-                                        else{
-                                            dispatch(setApiResponse(null));
-                                            dispatch(setApiError(result.status_label))
-
-                                        }
-
-                                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                                        // showing confetti
-                                        if(result.response_data.face_class==='Real'){
-                                            dispatch(setShowConfetti(true))
-                                            setTimeout(() => {
-                                                dispatch(setShowConfetti(false))
-                                            }, 3000);
-                                        }
-
-                                        dispatch(setIsRunning(false));
-                                        // set_app_as_loading(true)
-                                    })
-
-                                    .catch(error => console.log('error', error));
-                                dispatch(setRequestSent(true))
-                                capture = () => {}
-                                dispatch(setApiResponse(null));
-
-                                dispatch(setApiError(null))
-                                return 0;
 
                             } else {  // spoof
                                 // --------------------------------------------------------
@@ -266,9 +268,9 @@ const FaceDetectionAntiSpoofing = () => {
             requestAnimationFrame(renderPrediction);
         }
 
-        else{
-            return 0;
-        }
+        // else{
+        //     return 0;
+        // }
     };
 
     const setupPage = async () => {
@@ -339,6 +341,34 @@ const FaceDetectionAntiSpoofing = () => {
         })
     }
 
+    const re_perform_anti_spoofing = async (event) => {
+        let cmp=0;
+        let decision=[];
+        let oldfaceDet=0;
+
+        let ellipsewarningCounter=0;
+        let one_face_warningCounter = 0
+        let headSizeewarningCounter=0;
+
+        const maxAttempt=2;
+        let attemptCount=0;
+
+        dispatch(setIsRunning(false))
+        dispatch(setIsLoading(false))
+        dispatch(setSelfie(null))
+        dispatch(setRequestSent(false))
+        dispatch(setApiResponse(null))
+        dispatch(setApiError(null))
+        dispatch(setApiResponse(null));
+
+        event.preventDefault();
+        dispatch(setIsRunning(true))
+        setupPage().then( async() => {
+            enqueueSnackbar('Reperforming Anti-spoofing task...', { variant: 'info' })
+            await renderPrediction();
+        })
+    }
+
     return(
         <>
             <OfflineComponent/>
@@ -355,7 +385,7 @@ const FaceDetectionAntiSpoofing = () => {
                                         <div className={'column'}>
                                                 <div id="main">
                                                     <div className="overlay-container">
-                                                        { is_running && svgIcon()}
+                                                        {is_running && svgIcon()}
                                                     </div>
                                                     <video preload="none" id="video" playsInline/>
                                                     <canvas id="output"/>
@@ -412,7 +442,7 @@ const FaceDetectionAntiSpoofing = () => {
                                                             sx={{borderRadius: 0}}
                                                         // disabled={is_running}
                                                             variant="contained"
-                                                            onClick={refreshPage}
+                                                            onClick={re_perform_anti_spoofing}
                                                             startIcon={<ReplayIcon/>}
                                                     >
                                                         Try again
