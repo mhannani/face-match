@@ -1,11 +1,11 @@
 import React from "react";
 import SyncLoader from "react-spinners/SyncLoader";
 
-const Loading = () => {
+const Loading = ({message}) => {
   return (
       <div className={'app_loader'}>
         <SyncLoader size={18} />
-        <h4>Loading models...</h4>
+        <h4>{message}</h4>
       </div>
   );
 };

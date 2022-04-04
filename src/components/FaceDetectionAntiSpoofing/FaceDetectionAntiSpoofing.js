@@ -26,7 +26,7 @@ import Loading from "../Loading/Loading";
 import {Parameters} from "../Parameters/Parameters";
 
 // redux toolkit actions
-import {setIsLoading, setIsRunning} from "../../store/AppSlice"
+import {setIsLoading, setIsRunning, setMessage} from "../../store/AppSlice"
 import {setSelfie} from "../../store/screenshotsSlice";
 import {setApiError, setApiResponse, setRequestSent} from "../../store/apiSlice";
 import {setShowConfetti} from "../../store/confettiSlice";
@@ -56,6 +56,7 @@ const FaceDetectionAntiSpoofing = () => {
     // App state
     const is_running = useSelector((state) => state.app.is_running)
     const is_loading = useSelector((state) => state.app.is_loading)
+    const message = useSelector((state) => state.app.message)
 
     // screenshots state
     const selfie = useSelector((state)=> state.screenshots.selfie_uri)
@@ -299,15 +300,23 @@ const FaceDetectionAntiSpoofing = () => {
     useEffect(  async () => {
         dispatch(setShowConfetti(false))
         dispatch(setIsLoading(true))
+        dispatch(setMessage('Setting up environment...'))
         // set_app_as_loading(true)
 
         // Loading the classifier model
         classifier = await tf.loadLayersModel('./rose_model/model.json');
 
-        setTimeout(()=>{
+        setTimeout(() => {
             dispatch(setIsLoading(false))
-        }, 3000)
+        }, 4000)
 
+        setTimeout(()=>{
+            dispatch(setMessage('Loading models...'))
+        }, 1500)
+
+        setTimeout(()=>{
+            dispatch(setMessage('Ready !'))
+        }, 3000)
         // setupPage().then(() => {
         //     enqueueSnackbar('Setting up environment...', { variant: 'success' })
         //     set_is_ready_to_spoofing_task(true)
@@ -338,7 +347,7 @@ const FaceDetectionAntiSpoofing = () => {
                 <BrowserView>
                     {
                         is_loading ?
-                            <Loading/>:
+                            <Loading message={message}/>:
                             <>
                                 {conf_is_running && <Confetti is_run={conf_is_running}/>}
                                 <div className={'container'}>
