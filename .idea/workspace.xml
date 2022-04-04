@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +95,7 @@
       <workItem from="1648742526952" duration="4099000" />
       <workItem from="1648808463038" duration="17712000" />
       <workItem from="1648996028749" duration="1156000" />
-      <workItem from="1649063511543" duration="10774000" />
+      <workItem from="1649063511543" duration="12059000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -287,7 +286,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649074642814</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="adding retry button and spinner when job is running">
+      <created>1649075560190</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1649075560190</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -309,6 +315,7 @@
     <MESSAGE value="wasm" />
     <MESSAGE value="online and offline feature" />
     <MESSAGE value="adding redux store for some state variables" />
-    <option name="LAST_COMMIT_MESSAGE" value="adding redux store for some state variables" />
+    <MESSAGE value="adding retry button and spinner when job is running" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding retry button and spinner when job is running" />
   </component>
 </project>
