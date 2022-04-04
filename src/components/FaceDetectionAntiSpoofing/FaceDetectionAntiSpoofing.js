@@ -97,8 +97,9 @@ const FaceDetectionAntiSpoofing = () => {
         const predictions = await human.detect(my_frame); // run detection
         let score = 0;
 
+        console.log('predictions: ', predictions)
         if (predictions.face.length===1 && predictions.face[0].score > 0.8) {
-            const faceBox=predictions.face[0].box;
+            const faceBox = predictions.face[0].box;
             const faceScore = predictions.face[0].score
             const start = [faceBox[0],faceBox[1]].map(function(x) { return x * canvas_ratio; });
             const bbx_w = faceBox[2]
@@ -242,6 +243,7 @@ const FaceDetectionAntiSpoofing = () => {
 
             }else{ // image ellipse
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                console.log('not within the ellipse')
                 ellipsewarningCounter++
                 if(ellipsewarningCounter>10)
                 {
