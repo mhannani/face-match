@@ -15,6 +15,7 @@ import {MobileViewComponent} from "../MobileViewComponent/MobileViewComponent";
 import {Button, Paper} from "@mui/material";
 import {useSnackbar} from "notistack";
 import {useDispatch, useSelector} from "react-redux";
+import ReplayIcon from '@mui/icons-material/Replay';
 
 // Helpers
 import {getImage, setupCamera} from "../../helpers/camera";
@@ -29,6 +30,7 @@ import {setIsLoading, setIsRunning} from "../../store/AppSlice"
 import {setSelfie} from "../../store/screenshotsSlice";
 import {setApiError, setApiResponse, setRequestSent} from "../../store/apiSlice";
 import {setShowConfetti} from "../../store/confettiSlice";
+import {LoadingButton} from "@mui/lab";
 
 const human = new Human(human_config);
 
@@ -376,21 +378,32 @@ const FaceDetectionAntiSpoofing = () => {
 
                                             <div className="row actions">
                                                 { !request_sent ?
-                                                    <Button color="success"
-                                                            sx={{borderRadius: 0}}
-                                                            disabled={is_running}
-                                                            variant="contained"
-                                                            onClick={perform_anti_spoofing}
-                                                            startIcon={<PlayArrowIcon/>}
+                                                    // <Button color="success"
+                                                    //         sx={{borderRadius: 0}}
+                                                    //         disabled={is_running}
+                                                    //         variant="contained"
+                                                    //         onClick={perform_anti_spoofing}
+                                                    //         startIcon={<PlayArrowIcon/>}
+                                                    // >
+                                                    //     Run task
+                                                    // </Button>:
+                                                    <LoadingButton
+                                                        sx={{borderRadius: 0}}
+                                                        color="success"
+                                                        onClick={perform_anti_spoofing}
+                                                        loading={is_running}
+                                                        loadingPosition="start"
+                                                        startIcon={ <PlayArrowIcon /> }
+                                                        variant="contained"
                                                     >
                                                         Run task
-                                                    </Button>:
+                                                    </LoadingButton>:
                                                     <Button color="success"
                                                             sx={{borderRadius: 0}}
                                                         // disabled={is_running}
                                                             variant="contained"
                                                             onClick={refreshPage}
-                                                            startIcon={<PlayArrowIcon/>}
+                                                            startIcon={<ReplayIcon/>}
                                                     >
                                                         Try again
                                                     </Button>

@@ -5,19 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/store/apiSlice.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/store/confettiSlice.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/store/screenshotsSlice.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Camera/Camera.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Camera/Camera.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Content/Content.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Content/Content.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/face_detection_anti_spoofing.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/face_detection_anti_spoofing.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionEllipse/FaceDetectionEllipse.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionEllipse/FaceDetectionEllipse.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Results/Results.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Results/Results.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Spinner/Spinner.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Loading/Loading.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helpers/camera.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers/camera.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/store/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/store.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +96,7 @@
       <workItem from="1648742526952" duration="4099000" />
       <workItem from="1648808463038" duration="17712000" />
       <workItem from="1648996028749" duration="1156000" />
-      <workItem from="1649063511543" duration="9870000" />
+      <workItem from="1649063511543" duration="10774000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -291,7 +280,14 @@
       <option name="project" value="LOCAL" />
       <updated>1648833774109</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="adding redux store for some state variables">
+      <created>1649074642814</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1649074642814</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
