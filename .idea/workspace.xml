@@ -7,6 +7,7 @@
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Loading/Loading.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Loading/Loading.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +97,9 @@
       <workItem from="1648742526952" duration="4099000" />
       <workItem from="1648808463038" duration="17712000" />
       <workItem from="1648996028749" duration="1156000" />
-      <workItem from="1649063511543" duration="13847000" />
+      <workItem from="1649063511543" duration="14199000" />
+      <workItem from="1649081676701" duration="7000" />
+      <workItem from="1649084035482" duration="53000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -301,7 +304,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649076736078</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="adding retry button and spinner when job is running">
+      <created>1649078832344</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1649078832344</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

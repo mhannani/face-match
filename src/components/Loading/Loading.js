@@ -5,7 +5,7 @@ const Loading = () => {
   return (
       <div className={'app_loader'}>
         <SyncLoader size={18} />
-        <h4>Getting environment ready...</h4>
+        <h4>Loading models...</h4>
       </div>
   );
 };

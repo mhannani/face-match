@@ -132,7 +132,7 @@ const FaceDetectionAntiSpoofing = () => {
                     if (classifySpoof) {
                         videoCrop = getImage(my_frame, video_size, video_start);
                         //await capture(videoCrop, 1)
-                        // check antispoofing
+                        // check anti-spoofing
                         const logits = tf.tidy(() => {
                                 const normalizationConstant = 1.0 / 255.0;
 
@@ -268,7 +268,6 @@ const FaceDetectionAntiSpoofing = () => {
         else{
             return 0;
         }
-
     };
 
     const setupPage = async () => {
