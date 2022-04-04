@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Spinner from '../Spinner/Spinner';
+import Loading from '../Loading/Loading';
 
 import { mapExpressionToEmoji } from '../../helpers/emojis';
 
@@ -9,7 +9,7 @@ import './Results.css';
 
 const Results = ({ results, processing }) => {
   if (processing && results) {
-    return <Spinner />;
+    return <Loading />;
   }
   if (!processing && results && results.length > 0) {
     return (
@@ -49,7 +49,7 @@ const Results = ({ results, processing }) => {
   } else {
     return (
       <div className="results">
-        <Spinner />
+        <Loading />
       </div>
     );
   }

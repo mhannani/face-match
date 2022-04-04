@@ -1,14 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
-import FaceReducer from './faceSlice'
 import ParametersReducer from "./ParametersSlice";
 import AppReducer from "./AppSlice"
-
+import ScreenshotsReducer from "./screenshotsSlice"
+import ApiReducer from "./apiSlice"
+import ConfettiReducer from "./confettiSlice"
 
 const store = configureStore({
     reducer: {
-        face: FaceReducer,
         parameters: ParametersReducer,
-        app: AppReducer
+        app: AppReducer,
+        screenshots: ScreenshotsReducer,
+        api: ApiReducer,
+        confetti: ConfettiReducer
     },
 })
 

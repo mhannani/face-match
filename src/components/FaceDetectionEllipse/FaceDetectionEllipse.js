@@ -4,8 +4,6 @@ import {loadModels} from "../../helpers/faceApi";
 import Camera from '../Camera/Camera';
 import {Button} from "@mui/material";
 import {useDispatch, useSelector} from "react-redux";
-import {canCheckLiveness, reset} from "../../store/faceSlice";
-
 
 const FaceDetectionEllipse = () =>{
     const { enqueueSnackbar } = useSnackbar();

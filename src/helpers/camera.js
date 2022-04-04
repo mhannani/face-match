@@ -20,3 +20,16 @@ export async function setupCamera() {
         };
     });
 }
+
+//cropped the face detected
+export const getImage = (video, sizeImg, startImg)=> {
+    const canvasTemp = document.createElement('canvas');
+    canvasTemp.height = sizeImg[1];
+    canvasTemp.width = sizeImg[0];
+
+    const ctxTemp = canvasTemp.getContext("2d");
+    //ctxTemp.clearRect(0, 0, sizeImg[0], sizeImg[1]); // clear canvas
+    ctxTemp.drawImage(video, startImg[0], startImg[1], sizeImg[0], sizeImg[1], 0, 0, sizeImg[0], sizeImg[1]);
+    return canvasTemp;
+}
+
