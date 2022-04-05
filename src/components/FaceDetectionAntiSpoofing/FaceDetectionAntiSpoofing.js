@@ -86,6 +86,7 @@ const FaceDetectionAntiSpoofing = () => {
 
     let renderPrediction = async () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         console.log('renderPrediction')
         ctx.font = "18px sans-serif";
         let my_frame = getFrame(video);
@@ -96,6 +97,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         // [x, y, width, height]
         const predictions = await human.detect(my_frame); // run detection
+
         let score = 0;
 
         console.log('predictions: ', predictions)
@@ -364,7 +366,7 @@ const FaceDetectionAntiSpoofing = () => {
         event.preventDefault();
         dispatch(setIsRunning(true))
         setupPage().then( async() => {
-            enqueueSnackbar('Reperforming Anti-spoofing task...', { variant: 'info' })
+            enqueueSnackbar('Re-performing Anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
     }
