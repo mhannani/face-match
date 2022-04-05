@@ -191,7 +191,7 @@ const FaceDetectionAntiSpoofing = () => {
                         dispatch(setApiResponse(null));
 
                         dispatch(setApiError(null))
-                        return 0;
+
 
                         if (decision.length === windows) {
                             attemptCount++
@@ -270,9 +270,9 @@ const FaceDetectionAntiSpoofing = () => {
             requestAnimationFrame(renderPrediction);
         }
 
-        // else{
-        //     return 0;
-        // }
+        else{
+            return 0;
+        }
     };
 
     const setupPage = async () => {
