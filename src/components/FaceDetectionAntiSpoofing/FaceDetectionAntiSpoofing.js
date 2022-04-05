@@ -86,7 +86,7 @@ const FaceDetectionAntiSpoofing = () => {
 
     let renderPrediction = async () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        console.log('renderPrediction')
+        // console.log('renderPrediction')
         ctx.font = "18px sans-serif";
         let my_frame = getFrame(video);
         const returnTensors = false;
@@ -96,6 +96,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         // [x, y, width, height]
         const predictions = await human.detect(my_frame); // run detection
+        await human.draw.hand(canvas, predictions.hand)
         let score = 0;
 
         console.log('predictions: ', predictions)
@@ -109,7 +110,7 @@ const FaceDetectionAntiSpoofing = () => {
             const size = [faceBox[2], faceBox[3]].map(function(x) { return x * canvas_ratio; });
             const video_start = [faceBox[0],faceBox[1]];
             const video_size = [faceBox[2], faceBox[3]];
-            console.log('left_min, left_max, top_min, top_max: ', left_min, left_max, top_min, top_max)
+            // console.log('left_min, left_max, top_min, top_max: ', left_min, left_max, top_min, top_max)
             if (bbx_top_left_x > left_min && bbx_top_left_x < left_max && bbx_bottom_right_y > top_min && bbx_bottom_right_y < top_max) {
                 ellipsewarningCounter=0;
                 if (bbx_w > 190) {
@@ -153,43 +154,43 @@ const FaceDetectionAntiSpoofing = () => {
                             await capture(my_frame)
                         }
 
-                        const requestOptions = make_requests()
-                        fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
-                            .then(response => response.json())
-                            .then(result => {
-                                // set_request_as_sent(true);
-                                dispatch(setRequestSent(true))
-                                if(result.status_code !== '500'){
-                                    dispatch(setApiResponse(result.response_data));
-                                }
-
-                                else{
-                                    dispatch(setApiResponse(null));
-                                    dispatch(setApiError(result.status_label))
-
-                                }
-
-                                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                                // showing confetti
-                                if(result.response_data.face_class==='Real'){
-                                    dispatch(setShowConfetti(true))
-                                    setTimeout(() => {
-                                        dispatch(setShowConfetti(false))
-                                    }, 3000);
-                                }
-
-                                dispatch(setIsRunning(false));
-                                // set_app_as_loading(true)
-                            })
-
-                            .catch(error => console.log('error', error));
-                        dispatch(setRequestSent(true))
-                        capture = () => {}
-                        dispatch(setApiResponse(null));
-
-                        dispatch(setApiError(null))
-                        return 0;
+                        // const requestOptions = make_requests()
+                        // fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                        //     .then(response => response.json())
+                        //     .then(result => {
+                        //         // set_request_as_sent(true);
+                        //         dispatch(setRequestSent(true))
+                        //         if(result.status_code !== '500'){
+                        //             dispatch(setApiResponse(result.response_data));
+                        //         }
+                        //
+                        //         else{
+                        //             dispatch(setApiResponse(null));
+                        //             dispatch(setApiError(result.status_label))
+                        //
+                        //         }
+                        //
+                        //         ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        //
+                        //         // showing confetti
+                        //         if(result.response_data.face_class==='Real'){
+                        //             dispatch(setShowConfetti(true))
+                        //             setTimeout(() => {
+                        //                 dispatch(setShowConfetti(false))
+                        //             }, 3000);
+                        //         }
+                        //
+                        //         dispatch(setIsRunning(false));
+                        //         // set_app_as_loading(true)
+                        //     })
+                        //
+                        //     .catch(error => console.log('error', error));
+                        // dispatch(setRequestSent(true))
+                        // capture = () => {}
+                        // dispatch(setApiResponse(null));
+                        //
+                        // dispatch(setApiError(null))
+                        // return 0;
 
                         if (decision.length === windows) {
                             attemptCount++
@@ -246,7 +247,7 @@ const FaceDetectionAntiSpoofing = () => {
 
             }else{ // image ellipse
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                console.log('not within the ellipse')
+                // console.log('not within the ellipse')
                 ellipsewarningCounter++
                 if(ellipsewarningCounter>10)
                 {

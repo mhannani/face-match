@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const parametersState = {
-    windows: 5,
-    threshold: 0.50
+    windows: 10,
+    threshold: 0.60
 }
 
 export const ParametersSlice = createSlice({
