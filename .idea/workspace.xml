@@ -101,7 +101,8 @@
       <workItem from="1649084035482" duration="2330000" />
       <workItem from="1649103285888" duration="5163000" />
       <workItem from="1649155831898" duration="298000" />
-      <workItem from="1649156447536" duration="146000" />
+      <workItem from="1649156447536" duration="209000" />
+      <workItem from="1649163043626" duration="4542000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -334,7 +335,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649156119285</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="re-performing task without reloading page.">
+      <created>1649156602985</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1649156602985</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

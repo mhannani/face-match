@@ -86,7 +86,6 @@ const FaceDetectionAntiSpoofing = () => {
 
     let renderPrediction = async () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         console.log('renderPrediction')
         ctx.font = "18px sans-serif";
         let my_frame = getFrame(video);
@@ -97,7 +96,6 @@ const FaceDetectionAntiSpoofing = () => {
 
         // [x, y, width, height]
         const predictions = await human.detect(my_frame); // run detection
-
         let score = 0;
 
         console.log('predictions: ', predictions)
@@ -191,7 +189,7 @@ const FaceDetectionAntiSpoofing = () => {
                         dispatch(setApiResponse(null));
 
                         dispatch(setApiError(null))
-
+                        return 0;
 
                         if (decision.length === windows) {
                             attemptCount++
@@ -270,9 +268,9 @@ const FaceDetectionAntiSpoofing = () => {
             requestAnimationFrame(renderPrediction);
         }
 
-        else{
-            return 0;
-        }
+        // else{
+        //     return 0;
+        // }
     };
 
     const setupPage = async () => {
@@ -366,7 +364,7 @@ const FaceDetectionAntiSpoofing = () => {
         event.preventDefault();
         dispatch(setIsRunning(true))
         setupPage().then( async() => {
-            enqueueSnackbar('Re-performing Anti-spoofing task...', { variant: 'info' })
+            enqueueSnackbar('Reperforming Anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
     }
@@ -385,13 +383,13 @@ const FaceDetectionAntiSpoofing = () => {
                                 <div className={'container'}>
                                     <div className={'row'}>
                                         <div className={'column'}>
-                                                <div id="main">
-                                                    <div className="overlay-container">
-                                                        {is_running && svgIcon()}
-                                                    </div>
-                                                    <video preload="none" id="video" playsInline/>
-                                                    <canvas id="output"/>
+                                            <div id="main">
+                                                <div className="overlay-container">
+                                                    {is_running && svgIcon()}
                                                 </div>
+                                                <video preload="none" id="video" playsInline/>
+                                                <canvas id="output"/>
+                                            </div>
                                         </div>
 
                                         <div className={'column-right-side'}>
