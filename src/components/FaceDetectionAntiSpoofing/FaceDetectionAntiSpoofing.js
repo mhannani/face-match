@@ -378,7 +378,7 @@ const FaceDetectionAntiSpoofing = () => {
                 <BrowserView>
                     {
                         is_loading ?
-                            <Loading message={message}/>:
+                            <Loading message={message} variant={'sync'}/>:
                             <>
                                 {conf_is_running && <Confetti is_run={conf_is_running}/>}
                                 <div className={'container'}>

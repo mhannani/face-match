@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const UploadState = {
+    is_loading: true,
     is_uploaded: false,
     uploaded_file: null,
     filename: null,
@@ -11,6 +12,12 @@ export const AppSlice = createSlice({
     name: 'upload',
     initialState: UploadState,
     reducers: {
+        setIsLoading: ( state, action) => {
+            return{
+                ...state,
+                is_loading: action.payload
+            }
+        },
         setIsUploaded: ( state, action) => {
             return{
                 ...state,
@@ -39,6 +46,6 @@ export const AppSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setIsUploaded, setUploadedFile, setGuid, setFilename } = AppSlice.actions
+export const { setIsUploaded, setUploadedFile, setGuid, setFilename, setIsLoading } = AppSlice.actions
 
 export default AppSlice.reducer
