@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DragDrop/DragDrop.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DragDrop/DragDrop.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/face_detection_anti_spoofing.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/face_detection_anti_spoofing.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/helpers/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +109,7 @@
       <workItem from="1649240565201" duration="2275000" />
       <workItem from="1649245001164" duration="5560000" />
       <workItem from="1649256175926" duration="5003000" />
-      <workItem from="1649273379570" duration="11215000" />
+      <workItem from="1649273379570" duration="12729000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -439,7 +440,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649284653805</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="begin api...">
+      <created>1649285277829</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1649285277829</updated>
+    </task>
+    <option name="localTasksCounter" value="49" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -466,6 +474,7 @@
     <MESSAGE value="face match" />
     <MESSAGE value="completing input image with drag and drop" />
     <MESSAGE value="showing the uploaded picture..." />
-    <option name="LAST_COMMIT_MESSAGE" value="showing the uploaded picture..." />
+    <MESSAGE value="begin api..." />
+    <option name="LAST_COMMIT_MESSAGE" value="begin api..." />
   </component>
 </project>

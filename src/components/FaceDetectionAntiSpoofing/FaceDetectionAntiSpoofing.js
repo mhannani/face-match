@@ -5,7 +5,7 @@ import avatar from '../../assets/avatar.png'
 import {ArrayAvg, refreshPage, svgIcon} from "../../helpers/anti-spoofing";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
-import {make_requests} from "../../helpers/api";
+import {prepare_header_anti_spoofing, prepare_header_face_match} from "../../helpers/api";
 import Confetti from '../Confetti/Confetti'
 import {BrowserView} from 'react-device-detect';
 import {Human} from '@vladmandic/human/dist/human.esm';
@@ -156,42 +156,47 @@ const FaceDetectionAntiSpoofing = () => {
                             await capture(my_frame)
                         }
 
-                        const requestOptions = make_requests()
-                        fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
-                            .then(response => response.json())
-                            .then(result => {
-                                // set_request_as_sent(true);
-                                dispatch(setRequestSent(true))
-                                if(result.status_code !== '500'){
-                                    dispatch(setApiResponse(result.response_data));
-                                }
-
-                                else{
-                                    dispatch(setApiResponse(null));
-                                    dispatch(setApiError(result.status_label))
-
-                                }
-
-                                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                                // showing confetti
-                                if(result.response_data.face_class==='Real'){
-                                    dispatch(setShowConfetti(true))
-                                    setTimeout(() => {
-                                        dispatch(setShowConfetti(false))
-                                    }, 3000);
-                                }
-
-                                dispatch(setIsRunning(false));
-                                // set_app_as_loading(true)
-                            })
-
+                        // const requestOptions = prepare_header_anti_spoofing()
+                        // fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                        //     .then(response => response.json())
+                        //     .then(result => {
+                        //         // set_request_as_sent(true);
+                        //         dispatch(setRequestSent(true))
+                        //         if(result.status_code !== '500'){
+                        //             dispatch(setApiResponse(result.response_data));
+                        //         }
+                        //
+                        //         else{
+                        //             dispatch(setApiResponse(null));
+                        //             dispatch(setApiError(result.status_label))
+                        //
+                        //         }
+                        //
+                        //         ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        //
+                        //         // showing confetti
+                        //         if(result.response_data.face_class==='Real'){
+                        //             dispatch(setShowConfetti(true))
+                        //             setTimeout(() => {
+                        //                 dispatch(setShowConfetti(false))
+                        //             }, 3000);
+                        //         }
+                        //
+                        //         dispatch(setIsRunning(false));
+                        //         // set_app_as_loading(true)
+                        //     })
+                        //
+                        //     .catch(error => console.log('error', error));
+                        // dispatch(setRequestSent(true))
+                        // capture = () => {}
+                        // dispatch(setApiResponse(null));
+                        //
+                        // dispatch(setApiError(null))
+                        const requestOptions = prepare_header_face_match(selfie, uploaded_file, )
+                        fetch("http://demo.skyidentification.com:7002/compare_multi_doc_vs_selfie", requestOptions)
+                            .then(response => response.text())
+                            .then(result => console.log(result))
                             .catch(error => console.log('error', error));
-                        dispatch(setRequestSent(true))
-                        capture = () => {}
-                        dispatch(setApiResponse(null));
-
-                        dispatch(setApiError(null))
                         return 0;
 
                         if (decision.length === windows) {

@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 import Card from "./card.png"
 import './drag_drop.css'
 import {useDispatch, useSelector} from "react-redux";
-import {setFilename, setIsUploaded, setUploadedFile} from "../../store/uploadSlice";
+import {setFilename, setGuid, setIsUploaded, setUploadedFile} from "../../store/uploadSlice";
 import Loading from "../Loading/Loading";
 import {setIsLoading} from "../../store/uploadSlice";
 import {Button} from "@mui/material";
@@ -23,6 +23,8 @@ export const DragDrop = () => {
     const handleChange = (file) => {
         console.log(file)
         dispatch(setIsUploaded(true))
+        // console.log(file.lastModified)
+        dispatch(setGuid(file.lastModified))
         let reader  = new FileReader();
         let image = document.getElementById("uploaded-img");
         reader.onload = function () {
