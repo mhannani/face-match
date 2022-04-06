@@ -6,9 +6,13 @@ const fileTypes = ["jpg", "png", "jpeg"];
 export const DragDrop = () => {
     const [file, setFile] = useState(null);
     const handleChange = (file) => {
-        setFile(file);
-        console.log(file)
-        console.log(file.lastModified)
+        let reader  = new FileReader();
+        let image = document.getElementById("uploaded-img");
+        reader.onload = function () {
+            image.src = reader.result
+            image.alt = file.name
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
@@ -17,6 +21,8 @@ export const DragDrop = () => {
                 handleChange={handleChange}
                 name="file"
                 types={fileTypes} />
+
+            <img src={'#'} id={'uploaded-img'} alt=""/>
         </div>
     );
 }

@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/store/uploadSlice.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/DragDrop/DragDrop.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DragDrop/DragDrop.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DragDrop/drag_drop.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DragDrop/drag_drop.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +108,7 @@
       <workItem from="1649240565201" duration="2275000" />
       <workItem from="1649245001164" duration="5560000" />
       <workItem from="1649256175926" duration="5003000" />
-      <workItem from="1649273379570" duration="3212000" />
+      <workItem from="1649273379570" duration="6835000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -411,7 +411,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649274459059</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="face match">
+      <created>1649277171210</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1649277171210</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
