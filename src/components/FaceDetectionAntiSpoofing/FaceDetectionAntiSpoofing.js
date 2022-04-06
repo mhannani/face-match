@@ -20,7 +20,7 @@ import ReplayIcon from '@mui/icons-material/Replay';
 // Helpers
 import {getImage, setupCamera} from "../../helpers/camera";
 
-// components
+// Components
 import {OfflineComponent} from '../OfflineComponent/OfflineComponent'
 import Loading from "../Loading/Loading";
 import {Parameters} from "../Parameters/Parameters";
