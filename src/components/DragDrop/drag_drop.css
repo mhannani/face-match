@@ -1,0 +1,11 @@
+.drop_drag{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+label{
+    padding: 25px !important;
+}

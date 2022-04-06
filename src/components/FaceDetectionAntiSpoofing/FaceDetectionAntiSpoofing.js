@@ -370,7 +370,7 @@ const FaceDetectionAntiSpoofing = () => {
         })
     }
 
-    return(
+    return (
         <>
             <OfflineComponent/>
             <Online>
