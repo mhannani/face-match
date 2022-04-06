@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/DragDrop/card.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/DragDrop/DragDrop.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DragDrop/DragDrop.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DragDrop/drag_drop.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DragDrop/drag_drop.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/store.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/uploadSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/uploadSlice.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +110,7 @@
       <workItem from="1649240565201" duration="2275000" />
       <workItem from="1649245001164" duration="5560000" />
       <workItem from="1649256175926" duration="5003000" />
-      <workItem from="1649273379570" duration="6835000" />
+      <workItem from="1649273379570" duration="8570000" />
     </task>
     <task id="LOCAL-00001" summary="adding spinner, setting up page after starting the task">
       <created>1648598955739</created>
@@ -418,7 +420,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649277171210</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="completing input image with drag and drop">
+      <created>1649280850123</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1649280850123</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -443,6 +452,7 @@
     <MESSAGE value="adding retry button and spinner when job is running" />
     <MESSAGE value="re-performing task without reloading page." />
     <MESSAGE value="face match" />
-    <option name="LAST_COMMIT_MESSAGE" value="face match" />
+    <MESSAGE value="completing input image with drag and drop" />
+    <option name="LAST_COMMIT_MESSAGE" value="completing input image with drag and drop" />
   </component>
 </project>

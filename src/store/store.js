@@ -4,6 +4,7 @@ import AppReducer from "./AppSlice"
 import ScreenshotsReducer from "./screenshotsSlice"
 import ApiReducer from "./apiSlice"
 import ConfettiReducer from "./confettiSlice"
+import UploadReducer from "./uploadSlice";
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         app: AppReducer,
         screenshots: ScreenshotsReducer,
         api: ApiReducer,
-        confetti: ConfettiReducer
+        confetti: ConfettiReducer,
+        upload: UploadReducer
     },
 })
 
