@@ -68,7 +68,8 @@ canvas {
 }
 
 .container .column_avatar img {
-    width: 150px;
+    /*width: 150px;*/
+    max-height: 100px;
 }
 
 .container .column .row{

@@ -69,6 +69,8 @@ const FaceDetectionAntiSpoofing = () => {
     // confetti state
     const conf_is_running = useSelector((state) => state.confetti.show_confetti)
 
+    // ID card
+    const uploaded_file = useSelector((state) => state.upload.uploaded_file)
     // snack bar hock
     const { enqueueSnackbar } = useSnackbar();
 
@@ -154,43 +156,43 @@ const FaceDetectionAntiSpoofing = () => {
                             await capture(my_frame)
                         }
 
-                        // const requestOptions = make_requests()
-                        // fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
-                        //     .then(response => response.json())
-                        //     .then(result => {
-                        //         // set_request_as_sent(true);
-                        //         dispatch(setRequestSent(true))
-                        //         if(result.status_code !== '500'){
-                        //             dispatch(setApiResponse(result.response_data));
-                        //         }
-                        //
-                        //         else{
-                        //             dispatch(setApiResponse(null));
-                        //             dispatch(setApiError(result.status_label))
-                        //
-                        //         }
-                        //
-                        //         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        //
-                        //         // showing confetti
-                        //         if(result.response_data.face_class==='Real'){
-                        //             dispatch(setShowConfetti(true))
-                        //             setTimeout(() => {
-                        //                 dispatch(setShowConfetti(false))
-                        //             }, 3000);
-                        //         }
-                        //
-                        //         dispatch(setIsRunning(false));
-                        //         // set_app_as_loading(true)
-                        //     })
-                        //
-                        //     .catch(error => console.log('error', error));
-                        // dispatch(setRequestSent(true))
-                        // capture = () => {}
-                        // dispatch(setApiResponse(null));
-                        //
-                        // dispatch(setApiError(null))
-                        // return 0;
+                        const requestOptions = make_requests()
+                        fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                            .then(response => response.json())
+                            .then(result => {
+                                // set_request_as_sent(true);
+                                dispatch(setRequestSent(true))
+                                if(result.status_code !== '500'){
+                                    dispatch(setApiResponse(result.response_data));
+                                }
+
+                                else{
+                                    dispatch(setApiResponse(null));
+                                    dispatch(setApiError(result.status_label))
+
+                                }
+
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                                // showing confetti
+                                if(result.response_data.face_class==='Real'){
+                                    dispatch(setShowConfetti(true))
+                                    setTimeout(() => {
+                                        dispatch(setShowConfetti(false))
+                                    }, 3000);
+                                }
+
+                                dispatch(setIsRunning(false));
+                                // set_app_as_loading(true)
+                            })
+
+                            .catch(error => console.log('error', error));
+                        dispatch(setRequestSent(true))
+                        capture = () => {}
+                        dispatch(setApiResponse(null));
+
+                        dispatch(setApiError(null))
+                        return 0;
 
                         if (decision.length === windows) {
                             attemptCount++
@@ -412,6 +414,11 @@ const FaceDetectionAntiSpoofing = () => {
                                                 <div className={'column_avatar'}>
                                                     <img className={'frame_1'} src={selfie ? selfie : avatar} alt={'avatar'}/>
                                                     <h6>SELFIE</h6>
+                                                </div>
+
+                                                <div className={'column_avatar'}>
+                                                    <img className={'frame_1'} src={uploaded_file} alt={'avatar'}/>
+                                                    <h6>ID card</h6>
                                                 </div>
                                             </div>
 
