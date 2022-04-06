@@ -1,24 +1,22 @@
 import { FileUploader } from "react-drag-drop-files";
-import React from 'react'
+import React, {useState} from 'react'
 import './drag_drop.css'
+const fileTypes = ["jpg", "png", "jpeg"];
 
 export const DragDrop = () => {
-    const fileTypes = ["jpeg", " png", " jpg"];
+    const [file, setFile] = useState(null);
     const handleChange = (file) => {
-        // setFile(file);
+        setFile(file);
         console.log(file)
+        console.log(file.lastModified)
     };
 
-    return(
+    return (
         <div className={'drop_drag'}>
             <FileUploader
-                multiple={true}
-                label = {'Drop or Drag your CIN please'}
                 handleChange={handleChange}
                 name="file"
-                types={fileTypes}
-                maxSize={10}
-            />
+                types={fileTypes} />
         </div>
-    )
+    );
 }
