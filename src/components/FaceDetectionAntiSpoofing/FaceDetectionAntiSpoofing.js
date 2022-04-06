@@ -96,7 +96,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         // [x, y, width, height]
         const predictions = await human.detect(my_frame); // run detection
-        await human.draw.hand(canvas, predictions.hand)
+        // await human.draw.hand(canvas, predictions.hand)
         let score = 0;
 
         console.log('predictions: ', predictions)
