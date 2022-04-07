@@ -29,7 +29,13 @@ import {Parameters} from "../Parameters/Parameters";
 import {setIsLoading, setIsRunning, setMessage} from "../../store/AppSlice"
 import {setSelfie} from "../../store/screenshotsSlice";
 import {setApiError, setApiResponse, setRequestSent} from "../../store/apiSlice";
-import {setFaceMatchApiError, setFaceMatchApiResponse} from "../../store/faceMatchSlice";
+import {
+    setFaceMatchApiError,
+    setFaceMatchApiResponse,
+    setFaceMatchRequestSent,
+    setSimilarity,
+    setSkyFaceMatchDecisionLabel
+} from "../../store/faceMatchSlice";
 import {setShowConfetti} from "../../store/confettiSlice";
 import {LoadingButton} from "@mui/lab";
 
@@ -71,6 +77,8 @@ const FaceDetectionAntiSpoofing = () => {
     const face_match_request_sent = useSelector((state) => state.face_match_api.face_match_request_sent)
     const face_match_api_response = useSelector((state) => state.face_match_api.face_match_api_response)
     const face_match_api_error = useSelector((state) => state.face_match_api.face_match_api_error)
+    const similarity = useSelector((state) => state.face_match_api.similarity)
+    const sky_face_match_decision_label = useSelector((state) => state.face_match_api.sky_face_match_decision_label)
 
     // confetti state
     const conf_is_running = useSelector((state) => state.confetti.show_confetti)
@@ -79,7 +87,8 @@ const FaceDetectionAntiSpoofing = () => {
     const uploaded_file = useSelector((state) => state.upload.uploaded_file)
 
     // Guid
-    const guid = useSelector((state) => state.upload.uploaded_file)
+    const guid = useSelector((state) => state.upload.guid)
+
     // snack bar hock
     const { enqueueSnackbar } = useSnackbar();
 
@@ -202,11 +211,17 @@ const FaceDetectionAntiSpoofing = () => {
                         //
                         // dispatch(setApiError(null))
                         const requestOptions = prepare_header_face_match(guid)
-                        fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptions)
-                            .then(response => response.text())
+                        fetch("http://demo.skyidentification.com:7002/compare_multi_doc_vs_selfie", requestOptions)
+                            .then(response => response.json())
                             .then(result => {
-                                if(result.status_code !== '500'){
+                                console.log(typeof result.status_code)
+                                if(result.status_code === '000'){
                                     dispatch(setFaceMatchApiResponse(result.response_data));
+                                    console.log(result.similarity);
+                                    // console.log(result.sky_face_match_decision_label);
+                                    dispatch(setFaceMatchRequestSent(true))
+                                    dispatch(setSimilarity(result.similarity))
+                                    // dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
                                     }
 
                                 else{
@@ -440,9 +455,9 @@ const FaceDetectionAntiSpoofing = () => {
                                                     </Paper>
                                                 }
                                                 {
-                                                    face_match_api_response && <Paper key={1} elevation={4} className={'api_result ' + (face_match_api_response.face_class==='Real' ? 'real':'spoof')}>
-                                                        <h4>{face_match_api_response.face_class}</h4>
-                                                        <p>{face_match_api_response.score}</p>
+                                                    face_match_request_sent && <Paper key={1} elevation={4} className={'api_result real'}>
+                                                        {/*<h4>Decision: {sky_face_match_decision_label}</h4>*/}
+                                                        <h4>Similarity: {similarity}</h4>
                                                     </Paper>
                                                 }
                                             </>

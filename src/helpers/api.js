@@ -1,10 +1,11 @@
 function _base64ToArrayBuffer(base64) {
     let binary_string =  window.atob(base64);
     let len = binary_string.length;
-    let bytes = new Uint8Array( len );
-    for (let i = 0; i < len; i++)        {
+    let bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++){
         bytes[i] = binary_string.charCodeAt(i);
     }
+
     return bytes.buffer;
 }
 
@@ -15,7 +16,6 @@ export const prepare_header_anti_spoofing = () => {
     // const canvas_content = canvas.toDataURL('png')
     const canvas_content = document.getElementsByClassName('frame_1')[0].src;
     const cleaned_canvas_content = canvas_content.replace('data:image/png;base64,', '');
-    console.log('cleaned_canvas_content: ', cleaned_canvas_content)
     const binary_data = _base64ToArrayBuffer(cleaned_canvas_content)
 
     let img = new File([binary_data], "byts_document.jpg",{type:"application/octet-stream"})
@@ -27,15 +27,12 @@ export const prepare_header_anti_spoofing = () => {
         body: form_data,
         redirect: 'follow'
     };
-
 }
 
 export const prepare_header_face_match = (guid) => {
     const selfie__byte64 = document.getElementsByClassName('frame_1')[0].src;
     const id_card_byte64 = document.getElementsByClassName('uploaded_id_card')[0].src;
 
-    console.log('selfie__byte64: ', selfie__byte64)
-    console.log('id_card_byte64: ', id_card_byte64)
     const cleaned_id_card = id_card_byte64.replace('data:image/png;base64,', '').replace('data:image/jpeg;base64,', '').replace('data:image/jpg;base64,', '');
     const cleaned_selfie = selfie__byte64.replace('data:image/png;base64,', '');
     const binary_id_card = _base64ToArrayBuffer(cleaned_id_card)
@@ -48,12 +45,11 @@ export const prepare_header_face_match = (guid) => {
     let id_card_file = new File([binary_selfie], "id_card_file.jpg",{type:"application/octet-stream"})
     let form_data = new FormData();
 
-    console.log('selfie_file: ', selfie_file)
     form_data.append("guid", guid);
     form_data.append("token", "027874587451263596874514215647856");
     form_data.append("application_id", "idc.web.sdk");
     form_data.append("doc_1_1", selfie_file, "[PROXY]");
-    form_data.append("slf_1_1", selfie_file, "[PROXY]");
+    form_data.append("slf_1_1", id_card_file, "[PROXY]");
 
     return {
         method: 'POST',
@@ -61,3 +57,4 @@ export const prepare_header_face_match = (guid) => {
         redirect: 'follow'
     };
 }
+
