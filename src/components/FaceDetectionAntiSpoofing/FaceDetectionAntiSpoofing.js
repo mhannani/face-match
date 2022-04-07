@@ -119,7 +119,7 @@ const FaceDetectionAntiSpoofing = () => {
         // await human.draw.hand(canvas, predictions.hand)
         let score = 0;
 
-        console.log('predictions: ', predictions)
+        // console.log('predictions: ', predictions)
         if (predictions.face.length===1 && predictions.face[0].score > 0.8) {
             const faceBox = predictions.face[0].box;
             const faceScore = predictions.face[0].score
@@ -214,23 +214,23 @@ const FaceDetectionAntiSpoofing = () => {
                         fetch("http://demo.skyidentification.com:7002/compare_multi_doc_vs_selfie", requestOptions)
                             .then(response => response.json())
                             .then(result => {
-                                console.log(typeof result.status_code)
+                                // console.log(typeof result.status_code)
                                 if(result.status_code === '000'){
                                     dispatch(setFaceMatchApiResponse(result.response_data));
-                                    console.log(result.similarity);
+                                    // console.log(result.similarity);
                                     // console.log(result.sky_face_match_decision_label);
                                     dispatch(setFaceMatchRequestSent(true))
                                     dispatch(setSimilarity(result.similarity))
                                     // dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
                                     }
-
                                 else{
                                     dispatch(setFaceMatchApiResponse(null));
                                     dispatch(setFaceMatchApiError(result.status_label))
                                 }
+                                return 0;
                             })
                             .catch(error => console.log('error', error));
-                        return 0;
+
 
                         if (decision.length === windows) {
                             attemptCount++

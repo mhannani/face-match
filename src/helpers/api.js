@@ -38,8 +38,8 @@ export const prepare_header_face_match = (guid) => {
     const binary_id_card = _base64ToArrayBuffer(cleaned_id_card)
     const binary_selfie = _base64ToArrayBuffer(cleaned_selfie)
 
-    console.log('binary_id_card: ', binary_id_card)
-    console.log('binary_selfie: ', binary_selfie)
+    // console.log('binary_id_card: ', binary_id_card)
+    // console.log('binary_selfie: ', binary_selfie)
 
     let selfie_file = new File([binary_id_card], "selfie_file.jpg",{type:"application/octet-stream"})
     let id_card_file = new File([binary_selfie], "id_card_file.jpg",{type:"application/octet-stream"})
