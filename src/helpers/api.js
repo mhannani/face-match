@@ -104,12 +104,12 @@ export const prepare_header_face_match = (selfie, id_card_byte64, guid) => {
     const binary_id_card = _base64ToArrayBuffer(cleaned_id_card)
     const binary_selfie = _base64ToArrayBuffer(cleaned_selfie)
 
-    let selfie_file = new File([binary_id_card], "id_card.jpg",{type:"application/octet-stream"})
-    let id_card_file = new File([binary_selfie], "id_card.jpg",{type:"application/octet-stream"})
+    let selfie_file = new File([binary_id_card], "selfie_file.jpg",{type:"application/octet-stream"})
+    let id_card_file = new File([binary_selfie], "id_card_file.jpg",{type:"application/octet-stream"})
     let form_data = new FormData();
 
     form_data.append("guid", guid);
-    form_data.append("token", "027874587451263596874514215647856");
+    form_data.append("token", "027874587451263596874513215647856");
     form_data.append("application_id", "idc.web.sdk");
     form_data.append("doc_1_1", selfie_file, "[PROXY]");
     form_data.append("slf_1_1", id_card_file, "[PROXY]");
