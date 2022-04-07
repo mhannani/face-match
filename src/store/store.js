@@ -5,6 +5,7 @@ import ScreenshotsReducer from "./screenshotsSlice"
 import ApiReducer from "./apiSlice"
 import ConfettiReducer from "./confettiSlice"
 import UploadReducer from "./uploadSlice";
+import FaceMatchApi from "./faceMatchSlice";
 
 const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
         app: AppReducer,
         screenshots: ScreenshotsReducer,
         api: ApiReducer,
+        face_match_api: FaceMatchApi,
         confetti: ConfettiReducer,
         upload: UploadReducer
     },

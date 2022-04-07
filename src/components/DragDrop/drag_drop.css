@@ -7,13 +7,12 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-
 }
 
 label{
     padding: 25px !important;
 }
 
-.drop_drag img{
+.drop_drag img {
     max-height: 350px;
 }

@@ -29,6 +29,7 @@ import {Parameters} from "../Parameters/Parameters";
 import {setIsLoading, setIsRunning, setMessage} from "../../store/AppSlice"
 import {setSelfie} from "../../store/screenshotsSlice";
 import {setApiError, setApiResponse, setRequestSent} from "../../store/apiSlice";
+import {setFaceMatchApiError, setFaceMatchApiResponse} from "../../store/faceMatchSlice";
 import {setShowConfetti} from "../../store/confettiSlice";
 import {LoadingButton} from "@mui/lab";
 
@@ -61,16 +62,24 @@ const FaceDetectionAntiSpoofing = () => {
     // screenshots state
     const selfie = useSelector((state)=> state.screenshots.selfie_uri)
 
-    // api state
+    // anti-spoofing api state
     const request_sent = useSelector((state) => state.api.request_sent)
     const api_response = useSelector((state) => state.api.api_response)
     const api_error = useSelector((state) => state.api.api_error)
+
+    // face match api state
+    const face_match_request_sent = useSelector((state) => state.face_match_api.face_match_request_sent)
+    const face_match_api_response = useSelector((state) => state.face_match_api.face_match_api_response)
+    const face_match_api_error = useSelector((state) => state.face_match_api.face_match_api_error)
 
     // confetti state
     const conf_is_running = useSelector((state) => state.confetti.show_confetti)
 
     // ID card
     const uploaded_file = useSelector((state) => state.upload.uploaded_file)
+
+    // Guid
+    const guid = useSelector((state) => state.upload.uploaded_file)
     // snack bar hock
     const { enqueueSnackbar } = useSnackbar();
 
@@ -192,10 +201,19 @@ const FaceDetectionAntiSpoofing = () => {
                         // dispatch(setApiResponse(null));
                         //
                         // dispatch(setApiError(null))
-                        const requestOptions = prepare_header_face_match(selfie, uploaded_file, )
-                        fetch("http://demo.skyidentification.com:7002/compare_multi_doc_vs_selfie", requestOptions)
+                        const requestOptions = prepare_header_face_match(guid)
+                        fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptions)
                             .then(response => response.text())
-                            .then(result => console.log(result))
+                            .then(result => {
+                                if(result.status_code !== '500'){
+                                    dispatch(setFaceMatchApiResponse(result.response_data));
+                                    }
+
+                                else{
+                                    dispatch(setFaceMatchApiResponse(null));
+                                    dispatch(setFaceMatchApiError(result.status_label))
+                                }
+                            })
                             .catch(error => console.log('error', error));
                         return 0;
 
@@ -401,6 +419,7 @@ const FaceDetectionAntiSpoofing = () => {
                                         </div>
 
                                         <div className={'column-right-side'}>
+
                                             <>
                                                 {
                                                     api_error && <Paper key={1} elevation={4} className={'internal_error'}>
@@ -414,6 +433,19 @@ const FaceDetectionAntiSpoofing = () => {
                                                     </Paper>
                                                 }
                                             </>
+                                            <>
+                                                {
+                                                    face_match_api_error && <Paper key={1} elevation={4} className={'internal_error'}>
+                                                        <h4>{face_match_api_error}</h4>
+                                                    </Paper>
+                                                }
+                                                {
+                                                    face_match_api_response && <Paper key={1} elevation={4} className={'api_result ' + (face_match_api_response.face_class==='Real' ? 'real':'spoof')}>
+                                                        <h4>{face_match_api_response.face_class}</h4>
+                                                        <p>{face_match_api_response.score}</p>
+                                                    </Paper>
+                                                }
+                                            </>
 
                                             <div className={'row_avatar'}>
                                                 <div className={'column_avatar'}>
@@ -422,7 +454,7 @@ const FaceDetectionAntiSpoofing = () => {
                                                 </div>
 
                                                 <div className={'column_avatar'}>
-                                                    <img className={'frame_1'} src={uploaded_file} alt={'avatar'}/>
+                                                    <img className={'uploaded_id_card'} src={uploaded_file} alt={'avatar'}/>
                                                     <h6>ID card</h6>
                                                 </div>
                                             </div>
