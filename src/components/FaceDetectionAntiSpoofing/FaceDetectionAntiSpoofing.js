@@ -445,11 +445,17 @@ const FaceDetectionAntiSpoofing = () => {
                             <Loading message={message} variant={'sync'}/>:
                             <>
                                 {conf_is_running && <Confetti is_run={conf_is_running}/>}
+
                                 <div className={'container'}>
                                     <div className={'row'}>
                                         <div className={'column'}>
+
                                             <div id="main">
                                                 <div className="overlay-container">
+                                                    {!is_running && <code className={'attention'}>
+                                                        Please change the threshold to a lower value...
+                                                        Since the local model outputs always `spoof`, the request to both face match and anti-spoofing
+                                                        APIs get sent only when detecting face as real by local model...Example Threshold = 0.1</code>}
                                                     {is_running && svgIcon()}
                                                 </div>
                                                 <video preload="none" id="video" playsInline/>
