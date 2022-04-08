@@ -189,10 +189,8 @@ const FaceDetectionAntiSpoofing = () => {
                                 else{
                                     dispatch(setApiResponse(null));
                                     dispatch(setApiError(result.status_label))
-
+                                    return 0;
                                 }
-
-
 
                                 // showing confetti
                                 if(result.response_data.face_class==='Real'){
@@ -226,7 +224,7 @@ const FaceDetectionAntiSpoofing = () => {
                                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                                     dispatch(setIsRunning(false));
                                     dispatch(setRequestSent(true))
-                                    capture = () => {}
+                                    // capture = () => {}
                                     // dispatch(setApiResponse(null));
                                     // dispatch(setFaceMatchRequestSent(false))
                                     // return 0;
@@ -450,33 +448,37 @@ const FaceDetectionAntiSpoofing = () => {
                                         </div>
 
                                         <div className={'column-right-side'}>
+                                            <div className="results">
+                                                <div className="result-item">
+                                                    {
+                                                        api_error &&
+                                                        <Paper key={1} elevation={4} className={'internal_error res_paper'}>
+                                                            <h4>{api_error}</h4>
+                                                        </Paper>
+                                                    }
+                                                    {
+                                                        api_response &&
+                                                        <Paper key={1} elevation={4} className={'api_result res_paper ' + (api_response.face_class==='Real' ? 'real':'spoof')}>
+                                                            <h4>{api_response.face_class}</h4>
+                                                            <p>{api_response.score}</p>
+                                                        </Paper>
+                                                    }
+                                                </div>
+                                                <div className="result-item">
+                                                    {
+                                                        face_match_api_error && <Paper key={1} elevation={4} className={'internal_error res_paper'}>
+                                                            <h4>{face_match_api_error}</h4>
+                                                        </Paper>
+                                                    }
+                                                    {
+                                                        face_match_request_sent && <Paper key={1} elevation={4} className={'api_result res_paper ' + (similarity===0 ? 'spoof':'real')}>
+                                                            <h4>Decision: {sky_face_match_decision_label}</h4>
+                                                            <h4>Similarity: {similarity}</h4>
+                                                        </Paper>
+                                                    }
+                                                </div>
+                                            </div>
 
-                                            <>
-                                                {
-                                                    api_error && <Paper key={1} elevation={4} className={'internal_error'}>
-                                                        <h4>{api_error}</h4>
-                                                    </Paper>
-                                                }
-                                                {
-                                                    api_response && <Paper key={1} elevation={4} className={'api_result ' + (api_response.face_class==='Real' ? 'real':'spoof')}>
-                                                        <h4>{api_response.face_class}</h4>
-                                                        <p>{api_response.score}</p>
-                                                    </Paper>
-                                                }
-                                            </>
-                                            <>
-                                                {
-                                                    face_match_api_error && <Paper key={1} elevation={4} className={'internal_error'}>
-                                                        <h4>{face_match_api_error}</h4>
-                                                    </Paper>
-                                                }
-                                                {
-                                                    face_match_request_sent && <Paper key={1} elevation={4} className={'api_result ' + (similarity===0 ? 'spoof':'real')}>
-                                                        <h4>Decision: {sky_face_match_decision_label}</h4>
-                                                        <h4>Similarity: {similarity}</h4>
-                                                    </Paper>
-                                                }
-                                            </>
 
                                             <div className={'row_avatar'}>
                                                 <div className={'column_avatar'}>

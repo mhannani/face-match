@@ -198,3 +198,22 @@ canvas {
     align-items: center;
     align-content: center;
 }
+
+.results{
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.result-item{
+    flex-grow: 1;
+    height: 100%;
+}
+
+.result-item .res_paper{
+    height: 100%;
+}
