@@ -140,8 +140,8 @@ const FaceDetectionAntiSpoofing = () => {
                     // label = `FACE ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
 
                     // Rendering the bounding box
-                    ctx.strokeStyle = "blue";
-                    ctx.fillStyle = "rgb(10,236,40)";
+                    ctx.strokeStyle = "red";
+                    ctx.fillStyle = "rgb(255,0,0)";
                     ctx.strokeRect(start[0], start[1], size[0], size[1]);
                     // const textWidth = ctx.measureText(label).width;
                     // const textHeight = parseInt(font, 10); // base 10
