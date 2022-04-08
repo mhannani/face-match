@@ -171,10 +171,12 @@ const FaceDetectionAntiSpoofing = () => {
                         const labelPredict = await logits.data();
                         decision.push(labelPredict[1]);
 
-                        if (oldfaceDet < labelPredict[1]) {
-                            oldfaceDet = labelPredict[1];
-                            await capture(my_frame)
-                        }
+                        // if (oldfaceDet < labelPredict[1]) {
+                        //     oldfaceDet = labelPredict[1];
+                        //     await capture(my_frame)
+                        // } // ne capture pas de frame lors reperforming task...
+
+                        await capture(my_frame)
 
                         const requestOptions = prepare_header_anti_spoofing()
                         fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
@@ -237,7 +239,7 @@ const FaceDetectionAntiSpoofing = () => {
                             .catch(error => console.log('error', error));
                         // dispatch(setRequestSent(true))
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        capture = () => {}
+                        // capture = () => {}
                         // dispatch(setApiResponse(null));
                         dispatch(setApiError(null))
                         return 0;
@@ -378,6 +380,7 @@ const FaceDetectionAntiSpoofing = () => {
 
     let capture = async (canvas_img) => {
         let img_source = canvas_img.toDataURL();
+        console.log('capturing...')
         dispatch(setSelfie(img_source))
     };
 
@@ -419,7 +422,7 @@ const FaceDetectionAntiSpoofing = () => {
         event.preventDefault();
         dispatch(setIsRunning(true))
         setupPage().then( async() => {
-            enqueueSnackbar('Reperforming Anti-spoofing task...', { variant: 'info' })
+            enqueueSnackbar('Re-performing Anti-spoofing task...', { variant: 'info' })
             await renderPrediction();
         })
     }
@@ -552,4 +555,4 @@ const FaceDetectionAntiSpoofing = () => {
 
 export default FaceDetectionAntiSpoofing
 
-// 515
+// 203
