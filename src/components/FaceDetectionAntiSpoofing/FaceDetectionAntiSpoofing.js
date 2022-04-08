@@ -168,7 +168,7 @@ const FaceDetectionAntiSpoofing = () => {
                             }
                         );
 
-                        const labelPredict = await logits.data();
+                        let labelPredict = await logits.data();
                         decision.push(labelPredict[1]);
 
                         if (oldfaceDet < labelPredict[1]) {
@@ -178,10 +178,13 @@ const FaceDetectionAntiSpoofing = () => {
 
                         // await capture(my_frame)
 
+
                         if (decision.length === windows) {
+                            console.log('windows == win length')
                             attemptCount++
                             const meanProb = ArrayAvg(decision);
                             if (meanProb > threshold) { // real
+                                console.log('Real')
                                 // await capture(videoCrop, 2)  // to be removed
                                 // --------------------------------------------------------
 
@@ -263,6 +266,7 @@ const FaceDetectionAntiSpoofing = () => {
                                 // capture = () => {}
                                 // dispatch(setApiResponse(null));
                                 dispatch(setApiError(null))
+                                labelPredict = []
                                 return 0;
 
 
@@ -408,6 +412,7 @@ const FaceDetectionAntiSpoofing = () => {
 
         const maxAttempt=2;
         let attemptCount=0;
+
 
         dispatch(setIsRunning(false))
         dispatch(setIsLoading(false))
