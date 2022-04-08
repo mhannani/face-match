@@ -211,7 +211,7 @@ const FaceDetectionAntiSpoofing = () => {
                         //
                         // dispatch(setApiError(null))
                         const requestOptions = prepare_header_face_match(guid)
-                        fetch("http://demo.skyidentification.com:7002/compare_multi_doc_vs_selfie", requestOptions)
+                        fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptions)
                             .then(response => response.json())
                             .then(result => {
                                 // console.log(typeof result.status_code)
@@ -221,6 +221,7 @@ const FaceDetectionAntiSpoofing = () => {
                                     // console.log(result.sky_face_match_decision_label);
                                     dispatch(setFaceMatchRequestSent(true))
                                     dispatch(setSimilarity(result.similarity))
+                                    // console.log('response: ', result)
                                     // dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
                                     }
                                 else{
