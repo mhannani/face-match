@@ -105,6 +105,7 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     let renderPrediction = async () => {
+        console.log(renderPrediction)
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // console.log('renderPrediction')
         ctx.font = "18px sans-serif";
@@ -169,69 +170,79 @@ const FaceDetectionAntiSpoofing = () => {
 
                         const labelPredict = await logits.data();
                         decision.push(labelPredict[1]);
+
                         if (oldfaceDet < labelPredict[1]) {
                             oldfaceDet = labelPredict[1];
                             await capture(my_frame)
                         }
 
-                        // const requestOptions = prepare_header_anti_spoofing()
-                        // fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
-                        //     .then(response => response.json())
-                        //     .then(result => {
-                        //         // set_request_as_sent(true);
-                        //         dispatch(setRequestSent(true))
-                        //         if(result.status_code !== '500'){
-                        //             dispatch(setApiResponse(result.response_data));
-                        //         }
-                        //
-                        //         else{
-                        //             dispatch(setApiResponse(null));
-                        //             dispatch(setApiError(result.status_label))
-                        //
-                        //         }
-                        //
-                        //         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        //
-                        //         // showing confetti
-                        //         if(result.response_data.face_class==='Real'){
-                        //             dispatch(setShowConfetti(true))
-                        //             setTimeout(() => {
-                        //                 dispatch(setShowConfetti(false))
-                        //             }, 3000);
-                        //         }
-                        //
-                        //         dispatch(setIsRunning(false));
-                        //         // set_app_as_loading(true)
-                        //     })
-                        //
-                        //     .catch(error => console.log('error', error));
-                        // dispatch(setRequestSent(true))
-                        // capture = () => {}
-                        // dispatch(setApiResponse(null));
-                        //
-                        // dispatch(setApiError(null))
-                        const requestOptions = prepare_header_face_match(guid)
-                        fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptions)
+                        const requestOptions = prepare_header_anti_spoofing()
+                        fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
                             .then(response => response.json())
                             .then(result => {
-                                // console.log(typeof result.status_code)
-                                if(result.status_code === '000'){
-                                    dispatch(setFaceMatchApiResponse(result.response_data));
-                                    // console.log(result.similarity);
-                                    // console.log(result.sky_face_match_decision_label);
-                                    dispatch(setFaceMatchRequestSent(true))
-                                    dispatch(setSimilarity(result.similarity))
-                                    // console.log('response: ', result)
-                                    // dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
-                                    }
-                                else{
-                                    dispatch(setFaceMatchApiResponse(null));
-                                    dispatch(setFaceMatchApiError(result.status_label))
+                                // set_request_as_sent(true);
+                                dispatch(setRequestSent(true))
+                                if(result.status_code !== '500'){
+                                    dispatch(setApiResponse(result.response_data));
                                 }
-                                return 0;
-                            })
-                            .catch(error => console.log('error', error));
 
+                                else{
+                                    dispatch(setApiResponse(null));
+                                    dispatch(setApiError(result.status_label))
+
+                                }
+
+
+
+                                // showing confetti
+                                if(result.response_data.face_class==='Real'){
+                                    const requestOptionsFaceMatch = prepare_header_face_match(guid)
+                                    fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptionsFaceMatch)
+                                        .then(response => response.json())
+                                        .then(result => {
+                                            // console.log(typeof result.status_code)
+                                            if(result.status_code === '000'){
+                                                dispatch(setFaceMatchApiResponse(result.response_data));
+                                                // console.log(result.similarity);
+                                                // console.log(result.sky_face_match_decision_label);
+                                                dispatch(setFaceMatchRequestSent(true))
+                                                dispatch(setSimilarity(result.similarity))
+                                                // console.log('response: ', result)
+                                                dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
+
+                                                // dispatch(setShowConfetti(true))
+                                                // setTimeout(() => {
+                                                //     dispatch(setShowConfetti(false))
+                                                // }, 3000);
+
+                                            }
+                                            else{
+                                                dispatch(setFaceMatchApiResponse(null));
+                                                dispatch(setFaceMatchApiError(result.status_label))
+                                            }
+
+                                        })
+                                        .catch(error => console.log('error', error));
+                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                    dispatch(setIsRunning(false));
+                                    dispatch(setRequestSent(true))
+                                    capture = () => {}
+                                    // dispatch(setApiResponse(null));
+                                    // dispatch(setFaceMatchRequestSent(false))
+                                    // return 0;
+                                }
+
+                                dispatch(setIsRunning(false));
+                                // set_app_as_loading(true)
+                            })
+
+                            .catch(error => console.log('error', error));
+                        // dispatch(setRequestSent(true))
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        capture = () => {}
+                        // dispatch(setApiResponse(null));
+                        dispatch(setApiError(null))
+                        return 0;
 
                         if (decision.length === windows) {
                             attemptCount++
@@ -402,6 +413,10 @@ const FaceDetectionAntiSpoofing = () => {
         dispatch(setApiResponse(null))
         dispatch(setApiError(null))
         dispatch(setApiResponse(null));
+        dispatch(setFaceMatchRequestSent(false))
+        dispatch(setFaceMatchApiResponse(false))
+        dispatch(setFaceMatchApiError(false))
+
 
         event.preventDefault();
         dispatch(setIsRunning(true))
@@ -456,8 +471,8 @@ const FaceDetectionAntiSpoofing = () => {
                                                     </Paper>
                                                 }
                                                 {
-                                                    face_match_request_sent && <Paper key={1} elevation={4} className={'api_result real'}>
-                                                        {/*<h4>Decision: {sky_face_match_decision_label}</h4>*/}
+                                                    face_match_request_sent && <Paper key={1} elevation={4} className={'api_result ' + (similarity===0 ? 'spoof':'real')}>
+                                                        <h4>Decision: {sky_face_match_decision_label}</h4>
                                                         <h4>Similarity: {similarity}</h4>
                                                     </Paper>
                                                 }
