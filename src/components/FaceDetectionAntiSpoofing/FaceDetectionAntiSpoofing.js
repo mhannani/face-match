@@ -105,7 +105,7 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     let renderPrediction = async () => {
-        console.log(renderPrediction)
+        // console.log(renderPrediction)
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // console.log('renderPrediction')
         ctx.font = "18px sans-serif";
@@ -171,78 +171,12 @@ const FaceDetectionAntiSpoofing = () => {
                         const labelPredict = await logits.data();
                         decision.push(labelPredict[1]);
 
-                        // if (oldfaceDet < labelPredict[1]) {
-                        //     oldfaceDet = labelPredict[1];
-                        //     await capture(my_frame)
-                        // } // ne capture pas de frame lors reperforming task...
+                        if (oldfaceDet < labelPredict[1]) {
+                            oldfaceDet = labelPredict[1];
+                            await capture(my_frame)
+                        }
 
-                        await capture(my_frame)
-
-                        const requestOptions = prepare_header_anti_spoofing()
-                        fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
-                            .then(response => response.json())
-                            .then(result => {
-                                // set_request_as_sent(true);
-                                dispatch(setRequestSent(true))
-                                if(result.status_code !== '500'){
-                                    dispatch(setApiResponse(result.response_data));
-                                }
-
-                                else{
-                                    dispatch(setApiResponse(null));
-                                    dispatch(setApiError(result.status_label))
-                                    return 0;
-                                }
-
-                                // showing confetti
-                                if(result.response_data.face_class==='Real'){
-                                    const requestOptionsFaceMatch = prepare_header_face_match(guid)
-                                    fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptionsFaceMatch)
-                                        .then(response => response.json())
-                                        .then(result => {
-                                            // console.log(typeof result.status_code)
-                                            if(result.status_code === '000'){
-                                                dispatch(setFaceMatchApiResponse(result.response_data));
-                                                // console.log(result.similarity);
-                                                // console.log(result.sky_face_match_decision_label);
-                                                dispatch(setFaceMatchRequestSent(true))
-                                                dispatch(setSimilarity(result.similarity))
-                                                // console.log('response: ', result)
-                                                dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
-
-                                                // dispatch(setShowConfetti(true))
-                                                // setTimeout(() => {
-                                                //     dispatch(setShowConfetti(false))
-                                                // }, 3000);
-
-                                            }
-                                            else{
-                                                dispatch(setFaceMatchApiResponse(null));
-                                                dispatch(setFaceMatchApiError(result.status_label))
-                                            }
-
-                                        })
-                                        .catch(error => console.log('error', error));
-                                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                    dispatch(setIsRunning(false));
-                                    dispatch(setRequestSent(true))
-                                    // capture = () => {}
-                                    // dispatch(setApiResponse(null));
-                                    // dispatch(setFaceMatchRequestSent(false))
-                                    // return 0;
-                                }
-
-                                dispatch(setIsRunning(false));
-                                // set_app_as_loading(true)
-                            })
-
-                            .catch(error => console.log('error', error));
-                        // dispatch(setRequestSent(true))
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        // capture = () => {}
-                        // dispatch(setApiResponse(null));
-                        dispatch(setApiError(null))
-                        return 0;
+                        // await capture(my_frame)
 
                         if (decision.length === windows) {
                             attemptCount++
@@ -251,11 +185,11 @@ const FaceDetectionAntiSpoofing = () => {
                                 // await capture(videoCrop, 2)  // to be removed
                                 // --------------------------------------------------------
 
-                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                // ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 // label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
 
                                 // Rendering the bounding box
-                                ctx.strokeStyle = "green";
+                                // ctx.strokeStyle = "green";
                                 // ctx.fillStyle = "rgb(10,236,40)";
                                 // ctx.strokeRect(start[0], start[1], size[0], size[1]);
                                 // const textWidth = ctx.measureText(label).width;
@@ -265,13 +199,81 @@ const FaceDetectionAntiSpoofing = () => {
                                 // ctx.fillText(label, start[0], start[1] - 6);
                                 // ---------------------------------------------------------
 
+                                const requestOptions = prepare_header_anti_spoofing()
+                                fetch("https://skyanalytics.indatacore.com:4431/check_liveness", requestOptions)
+                                    .then(response => response.json())
+                                    .then(result => {
+                                        // set_request_as_sent(true);
+                                        dispatch(setRequestSent(true))
+                                        if(result.status_code !== '500'){
+                                            dispatch(setApiResponse(result.response_data));
+                                        }
+
+                                        else{
+                                            dispatch(setApiResponse(null));
+                                            dispatch(setApiError(result.status_label))
+                                            return 0;
+                                        }
+
+                                        // showing confetti
+                                        if(result.response_data.face_class==='Real'){
+                                            const requestOptionsFaceMatch = prepare_header_face_match(guid)
+                                            fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptionsFaceMatch)
+                                                .then(response => response.json())
+                                                .then(result => {
+                                                    // console.log(typeof result.status_code)
+                                                    if(result.status_code === '000'){
+                                                        dispatch(setFaceMatchApiResponse(result.response_data));
+                                                        // console.log(result.similarity);
+                                                        // console.log(result.sky_face_match_decision_label);
+                                                        dispatch(setFaceMatchRequestSent(true))
+                                                        dispatch(setSimilarity(result.similarity))
+                                                        // console.log('response: ', result)
+                                                        dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
+
+                                                        // dispatch(setShowConfetti(true))
+                                                        // setTimeout(() => {
+                                                        //     dispatch(setShowConfetti(false))
+                                                        // }, 3000);
+
+                                                    }
+                                                    else{
+                                                        dispatch(setFaceMatchApiResponse(null));
+                                                        dispatch(setFaceMatchApiError(result.status_label))
+                                                    }
+
+                                                })
+                                                .catch(error => console.log('error', error));
+                                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                            dispatch(setIsRunning(false));
+                                            dispatch(setRequestSent(true))
+                                            // capture = () => {}
+                                            // dispatch(setApiResponse(null));
+                                            // dispatch(setFaceMatchRequestSent(false))
+                                            // return 0;
+                                        }
+
+                                        dispatch(setIsRunning(false));
+                                        // set_app_as_loading(true)
+                                    })
+
+                                    .catch(error => console.log('error', error));
+                                // dispatch(setRequestSent(true))
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                // capture = () => {}
+                                // dispatch(setApiResponse(null));
+                                dispatch(setApiError(null))
+                                return 0;
+
+
+
 
                             } else {  // spoof
                                 // --------------------------------------------------------
-                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                // ctx.clearRect(0, 0, canvas.width, canvas.height);
                                 // label = `Spoof ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
                                 // Rendering the bounding box
-                                ctx.strokeStyle = "red";
+                                // ctx.strokeStyle = "red";
                                 // ctx.fillStyle = "rgb(10,236,40)";
                                 // ctx.strokeRect(start[0], start[1], size[0], size[1]);
                                 // const textWidth = ctx.measureText(label).width;
