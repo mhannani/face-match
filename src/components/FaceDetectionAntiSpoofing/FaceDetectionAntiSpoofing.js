@@ -425,8 +425,8 @@ const FaceDetectionAntiSpoofing = () => {
 
     return (
         <>
-            {/*<OfflineComponent/>*/}
-            <>
+            <OfflineComponent/>
+            <Online>
                 <MobileViewComponent/>
                 <BrowserView>
                     {
@@ -548,7 +548,7 @@ const FaceDetectionAntiSpoofing = () => {
                     }
                 </BrowserView>
 
-            </>
+            </Online>
         </>
 
     )
