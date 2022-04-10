@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DragDrop/drag_drop.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DragDrop/drag_drop.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DragDrop/DragDrop.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DragDrop/DragDrop.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/face_detection_anti_spoofing.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/face_detection_anti_spoofing.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Parameters/Parameters.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Parameters/Parameters.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/ParametersSlice.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/ParametersSlice.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,14 +116,7 @@
       <workItem from="1649408923106" duration="18103000" />
       <workItem from="1649430771319" duration="2709000" />
       <workItem from="1649513757343" duration="4291000" />
-      <workItem from="1649600947965" duration="8312000" />
-    </task>
-    <task id="LOCAL-00012" summary="changing styling on+mobile">
-      <created>1648656308604</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1648656308604</updated>
+      <workItem from="1649600947965" duration="10872000" />
     </task>
     <task id="LOCAL-00013" summary="adding no-mobile icon.">
       <created>1648656907607</created>
@@ -460,7 +454,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649434706264</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="wrapping up...">
+      <created>1649609350662</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1649609350678</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -490,6 +491,7 @@
     <MESSAGE value="begin api..." />
     <MESSAGE value="integrating other api" />
     <MESSAGE value="take frames when re-performing task..." />
-    <option name="LAST_COMMIT_MESSAGE" value="take frames when re-performing task..." />
+    <MESSAGE value="wrapping up..." />
+    <option name="LAST_COMMIT_MESSAGE" value="wrapping up..." />
   </component>
 </project>

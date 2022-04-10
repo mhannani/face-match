@@ -39,9 +39,7 @@ import {
 import {setShowConfetti} from "../../store/confettiSlice";
 import {LoadingButton} from "@mui/lab";
 
-const human = new Human(human_config);
-
-let classifier, ctx, videoWidth, videoHeight, video, videoCrop;
+let human, classifier, ctx, videoWidth, videoHeight, video, videoCrop;
 let canvas, label, left_min, left_max, top_min, top_max, canvas_ratio;
 let cmp=0;
 let decision=[];
@@ -105,7 +103,7 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     let renderPrediction = async () => {
-        // console.log('decision.length: ', decision.length)
+        console.log('begin render prediction function: ')
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // console.log('renderPrediction')
         ctx.font = "18px sans-serif";
@@ -117,15 +115,17 @@ const FaceDetectionAntiSpoofing = () => {
         const classifySpoof = true;
 
         // [x, y, width, height]
+        console.log('before human detect')
         const predictions = await human.detect(my_frame); // run detection
+        console.log('after human detect')
+
         // await human.draw.hand(canvas, predictions.hand)
         let score = 0;
 
         // console.log('after predictions')
         // console.log('predictions: ', predictions)
         if (predictions.face.length===1 && predictions.face[0].score > 0.8) {
-            // console.log('if predictions.face.len  == 1')
-
+            console.log('if predictions.face.len  == 1')
 
             const faceBox = predictions.face[0].box;
             const faceScore = predictions.face[0].score
@@ -212,7 +212,7 @@ const FaceDetectionAntiSpoofing = () => {
                                         }
 
                                         // showing confetti
-                                        if(result.response_data.face_class==='Real'){
+                                        if(result.response_data.face_class!=='Real'){
                                             const requestOptionsFaceMatch = prepare_header_face_match(guid)
                                             fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptionsFaceMatch)
                                                 .then(response => response.json())
@@ -358,6 +358,9 @@ const FaceDetectionAntiSpoofing = () => {
         // Loading the classifier model
         classifier = await tf.loadLayersModel('./rose_model/model.json');
 
+        human = new Human(human_config);
+        await human.detect(null); // run detection
+
         setTimeout(() => {
             dispatch(setIsLoading(false))
         }, 4000)
@@ -440,7 +443,7 @@ const FaceDetectionAntiSpoofing = () => {
                                                         <code className={'important'}>IMPORTANT:</code> Please change the threshold to a lower value...
                                                         Since the local model outputs always `spoof`, the request to both face match and anti-spoofing
                                                         APIs get sent only when detecting face as real by local model...
-                                                        <br/>Example Threshold = 0.1.</code>}
+                                                        <br/>Example Threshold = 0.1. We set it up to 0.0 to neglect local model to see the liveness and face match apis outputs</code>}
                                                     {is_running && svgIcon()}
                                                 </div>
                                                 <video preload="none" id="video" playsInline/>

@@ -80,7 +80,7 @@ export const Parameters = () => {
                         aria-label="pretto slider"
                         value={threshold}
                         onChange={handleThresholdChange}
-                        min={0.1}
+                        min={0.0}
                         max={1.0}
                         step={0.01}
                         disabled={is_running}
@@ -99,7 +99,7 @@ export const Parameters = () => {
                         value={windows}
                         onChange={handleWindowChange}
                         min={1}
-                        max={30}
+                        max={50}
                         disabled={is_running}
                     />
                 </Paper>

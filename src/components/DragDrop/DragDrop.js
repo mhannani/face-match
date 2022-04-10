@@ -21,7 +21,6 @@ export const DragDrop = () => {
     const dispatch = useDispatch()
 
     const handleChange = (file) => {
-        console.log(file)
         dispatch(setIsUploaded(true))
         // console.log(file.lastModified)
         dispatch(setGuid(file.lastModified))
