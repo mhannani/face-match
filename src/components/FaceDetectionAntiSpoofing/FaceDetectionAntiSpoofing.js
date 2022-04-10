@@ -51,7 +51,7 @@ let ellipsewarningCounter=0;
 let one_face_warningCounter = 0
 let headSizeewarningCounter=0;
 
-const maxAttempt=2;
+let maxAttempt=2;
 let attemptCount=0;
 
 const FaceDetectionAntiSpoofing = () => {
@@ -105,10 +105,11 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     let renderPrediction = async () => {
-        // console.log(renderPrediction)
+        // console.log('decision.length: ', decision.length)
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // console.log('renderPrediction')
         ctx.font = "18px sans-serif";
+        const font = "18px sans-serif";
         let my_frame = getFrame(video);
         const returnTensors = false;
         const flipHorizontal = false;
@@ -120,8 +121,12 @@ const FaceDetectionAntiSpoofing = () => {
         // await human.draw.hand(canvas, predictions.hand)
         let score = 0;
 
+        // console.log('after predictions')
         // console.log('predictions: ', predictions)
         if (predictions.face.length===1 && predictions.face[0].score > 0.8) {
+            // console.log('if predictions.face.len  == 1')
+
+
             const faceBox = predictions.face[0].box;
             const faceScore = predictions.face[0].score
             const start = [faceBox[0],faceBox[1]].map(function(x) { return x * canvas_ratio; });
@@ -131,30 +136,23 @@ const FaceDetectionAntiSpoofing = () => {
             const size = [faceBox[2], faceBox[3]].map(function(x) { return x * canvas_ratio; });
             const video_start = [faceBox[0],faceBox[1]];
             const video_size = [faceBox[2], faceBox[3]];
-            // console.log('left_min, left_max, top_min, top_max: ', left_min, left_max, top_min, top_max)
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // label = `FACE ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
+
+            // Rendering the bounding box
+            ctx.strokeStyle = "yellow";
+            ctx.fillStyle = "rgb(10,236,40)";
+            ctx.strokeRect(start[0], start[1], size[0], size[1]);
+
             if (bbx_top_left_x > left_min && bbx_top_left_x < left_max && bbx_bottom_right_y > top_min && bbx_bottom_right_y < top_max) {
+                // console.log('bbox_top_left_x ...')
                 ellipsewarningCounter=0;
                 if (bbx_w > 190) {
-                    // ------------------------------------- Face detected
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    // label = `FACE ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
-
-                    // Rendering the bounding box
-                    ctx.strokeStyle = "red";
-                    ctx.fillStyle = "rgb(255,0,0)";
-                    ctx.strokeRect(start[0], start[1], size[0], size[1]);
-                    // const textWidth = ctx.measureText(label).width;
-                    // const textHeight = parseInt(font, 10); // base 10
-                    // ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
-                    // ctx.fillStyle = "#ffffff";
-                    // ctx.fillText(label, start[0], start[1] - 6);
-
-                    // ---------------------------------------------------------
                     headSizeewarningCounter=0;
                     cmp++
                     if (classifySpoof) {
                         videoCrop = getImage(my_frame, video_size, video_start);
-                        //await capture(videoCrop, 1)
                         // check anti-spoofing
                         const logits = tf.tidy(() => {
                                 const normalizationConstant = 1.0 / 255.0;
@@ -168,7 +166,7 @@ const FaceDetectionAntiSpoofing = () => {
                             }
                         );
 
-                        let labelPredict = await logits.data();
+                        const labelPredict = await logits.data();
                         decision.push(labelPredict[1]);
 
                         if (oldfaceDet < labelPredict[1]) {
@@ -176,30 +174,24 @@ const FaceDetectionAntiSpoofing = () => {
                             await capture(my_frame)
                         }
 
-                        // await capture(my_frame)
-
-
                         if (decision.length === windows) {
-                            console.log('windows == win length')
                             attemptCount++
                             const meanProb = ArrayAvg(decision);
-                            if (meanProb > threshold) { // real
-                                console.log('Real')
-                                // await capture(videoCrop, 2)  // to be removed
-                                // --------------------------------------------------------
 
-                                // ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                // label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
+                            if (meanProb > threshold) { // real
+
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                label = `Real ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
 
                                 // Rendering the bounding box
-                                // ctx.strokeStyle = "green";
-                                // ctx.fillStyle = "rgb(10,236,40)";
-                                // ctx.strokeRect(start[0], start[1], size[0], size[1]);
-                                // const textWidth = ctx.measureText(label).width;
-                                // const textHeight = parseInt(font, 10); // base 10
-                                // ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
-                                // ctx.fillStyle = "#ffffff";
-                                // ctx.fillText(label, start[0], start[1] - 6);
+                                ctx.strokeStyle = "green";
+                                ctx.fillStyle = "rgb(10,236,40)";
+                                ctx.strokeRect(start[0], start[1], size[0], size[1]);
+                                const textWidth = ctx.measureText(label).width;
+                                const textHeight = parseInt(font, 10); // base 10
+                                ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
+                                ctx.fillStyle = "#ffffff";
+                                ctx.fillText(label, start[0], start[1] - 6);
                                 // ---------------------------------------------------------
 
                                 const requestOptions = prepare_header_anti_spoofing()
@@ -208,6 +200,7 @@ const FaceDetectionAntiSpoofing = () => {
                                     .then(result => {
                                         // set_request_as_sent(true);
                                         dispatch(setRequestSent(true))
+
                                         if(result.status_code !== '500'){
                                             dispatch(setApiResponse(result.response_data));
                                         }
@@ -225,11 +218,12 @@ const FaceDetectionAntiSpoofing = () => {
                                                 .then(response => response.json())
                                                 .then(result => {
                                                     // console.log(typeof result.status_code)
+                                                    dispatch(setFaceMatchRequestSent(true))
                                                     if(result.status_code === '000'){
                                                         dispatch(setFaceMatchApiResponse(result.response_data));
                                                         // console.log(result.similarity);
                                                         // console.log(result.sky_face_match_decision_label);
-                                                        dispatch(setFaceMatchRequestSent(true))
+
                                                         dispatch(setSimilarity(result.similarity))
                                                         // console.log('response: ', result)
                                                         dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
@@ -249,7 +243,7 @@ const FaceDetectionAntiSpoofing = () => {
                                                 .catch(error => console.log('error', error));
                                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                                             dispatch(setIsRunning(false));
-                                            dispatch(setRequestSent(true))
+                                            // dispatch(setRequestSent(true))
                                             // capture = () => {}
                                             // dispatch(setApiResponse(null));
                                             // dispatch(setFaceMatchRequestSent(false))
@@ -266,31 +260,36 @@ const FaceDetectionAntiSpoofing = () => {
                                 // capture = () => {}
                                 // dispatch(setApiResponse(null));
                                 dispatch(setApiError(null))
-                                labelPredict = []
-                                return 0;
+                                dispatch(setIsRunning(false))
+                                // dispatch(setRequestSent(true))
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                                // await capture(videoCrop, 2)  // to be removed
+                                // --------------------------------------------------------
 
 
-
-
+                                // return 0;
                             } else {  // spoof
                                 // --------------------------------------------------------
-                                // ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                // label = `Spoof ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                label = `Spoof ` + `(` + ArrayAvg(decision).toFixed(2) + `)`;
                                 // Rendering the bounding box
-                                // ctx.strokeStyle = "red";
-                                // ctx.fillStyle = "rgb(10,236,40)";
-                                // ctx.strokeRect(start[0], start[1], size[0], size[1]);
-                                // const textWidth = ctx.measureText(label).width;
-                                // const textHeight = parseInt(font, 10); // base 10
-                                // ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
-                                // ctx.fillStyle = "#ffffff";
-                                // ctx.fillText(label, start[0], start[1] - 6);
-                                // ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                ctx.strokeStyle = "red";
+                                ctx.fillStyle = "rgb(10,236,40)";
+                                ctx.strokeRect(start[0], start[1], size[0], size[1]);
+                                const textWidth = ctx.measureText(label).width;
+                                const textHeight = parseInt(font, 10); // base 10
+                                ctx.fillRect(start[0], start[1] - textHeight - 5, textWidth + 4, textHeight + 2);
+                                ctx.fillStyle = "#ffffff";
+                                ctx.fillText(label, start[0], start[1] - 6);
                                 // ---------------------------------------------------------
                             }
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
                             decision = []
                             oldfaceDet = 1
                             cmp = 0
+                            return 0;
+
                         }
                     }
                 } else { // image size
@@ -305,7 +304,6 @@ const FaceDetectionAntiSpoofing = () => {
 
             }else{ // image ellipse
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // console.log('not within the ellipse')
                 ellipsewarningCounter++
                 if(ellipsewarningCounter>10)
                 {
@@ -323,13 +321,7 @@ const FaceDetectionAntiSpoofing = () => {
             }
         }
 
-        if(!request_sent){
-            requestAnimationFrame(renderPrediction);
-        }
-
-        // else{
-        //     return 0;
-        // }
+        requestAnimationFrame(renderPrediction);
     };
 
     const setupPage = async () => {
@@ -358,11 +350,10 @@ const FaceDetectionAntiSpoofing = () => {
         ctx.scale(-1, 1);
     };
 
-    useEffect(  async () => {
+    useEffect(async () => {
         dispatch(setShowConfetti(false))
         dispatch(setIsLoading(true))
         dispatch(setMessage('Setting up environment...'))
-        // set_app_as_loading(true)
 
         // Loading the classifier model
         classifier = await tf.loadLayersModel('./rose_model/model.json');
@@ -378,15 +369,11 @@ const FaceDetectionAntiSpoofing = () => {
         setTimeout(()=>{
             dispatch(setMessage('Ready !'))
         }, 3000)
-        // setupPage().then(() => {
-        //     enqueueSnackbar('Setting up environment...', { variant: 'success' })
-        //     set_is_ready_to_spoofing_task(true)
-        // })
+
     },[])
 
     let capture = async (canvas_img) => {
         let img_source = canvas_img.toDataURL();
-        console.log('capturing...')
         dispatch(setSelfie(img_source))
     };
 
@@ -402,17 +389,16 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     const re_perform_anti_spoofing = async (event) => {
-        let cmp=0;
-        let decision=[];
-        let oldfaceDet=0;
+        cmp=0;
+        decision=[];
+        oldfaceDet=0;
 
-        let ellipsewarningCounter=0;
-        let one_face_warningCounter = 0
-        let headSizeewarningCounter=0;
+        ellipsewarningCounter=0;
+        one_face_warningCounter = 0
+        headSizeewarningCounter=0;
 
-        const maxAttempt=2;
-        let attemptCount=0;
-
+        maxAttempt=2;
+        attemptCount=0;
 
         dispatch(setIsRunning(false))
         dispatch(setIsLoading(false))
@@ -436,8 +422,8 @@ const FaceDetectionAntiSpoofing = () => {
 
     return (
         <>
-            <OfflineComponent/>
-            <Online>
+            {/*<OfflineComponent/>*/}
+            <>
                 <MobileViewComponent/>
                 <BrowserView>
                     {
@@ -445,17 +431,16 @@ const FaceDetectionAntiSpoofing = () => {
                             <Loading message={message} variant={'sync'}/>:
                             <>
                                 {conf_is_running && <Confetti is_run={conf_is_running}/>}
-
                                 <div className={'container'}>
                                     <div className={'row'}>
                                         <div className={'column'}>
-
                                             <div id="main">
                                                 <div className="overlay-container">
                                                     {!is_running && <code className={'attention'}>
-                                                        Please change the threshold to a lower value...
+                                                        <code className={'important'}>IMPORTANT:</code> Please change the threshold to a lower value...
                                                         Since the local model outputs always `spoof`, the request to both face match and anti-spoofing
-                                                        APIs get sent only when detecting face as real by local model...Example Threshold = 0.1</code>}
+                                                        APIs get sent only when detecting face as real by local model...
+                                                        <br/>Example Threshold = 0.1.</code>}
                                                     {is_running && svgIcon()}
                                                 </div>
                                                 <video preload="none" id="video" playsInline/>
@@ -560,7 +545,7 @@ const FaceDetectionAntiSpoofing = () => {
                     }
                 </BrowserView>
 
-            </Online>
+            </>
         </>
 
     )
@@ -568,4 +553,4 @@ const FaceDetectionAntiSpoofing = () => {
 
 export default FaceDetectionAntiSpoofing
 
-// 203
+// 515
