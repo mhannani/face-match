@@ -1,6 +1,7 @@
 {
   "name": "liveness-indatacore",
   "version": "1.0.0",
+  "homepage": "on-vm.mhannani.com",
   "private": false,
   "dependencies": {
     "@emotion/react": "^11.8.2",
