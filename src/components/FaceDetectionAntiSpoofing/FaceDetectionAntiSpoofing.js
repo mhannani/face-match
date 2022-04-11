@@ -212,12 +212,11 @@ const FaceDetectionAntiSpoofing = () => {
                                         }
 
                                         // showing confetti
-                                        if(result.response_data.face_class!=='Real'){
+                                        if(result.response_data.face_class==='Real'){
                                             const requestOptionsFaceMatch = prepare_header_face_match(guid)
                                             fetch("https://demo.skyidentification.com:7007/compare_multi_doc_vs_selfie", requestOptionsFaceMatch)
                                                 .then(response => response.json())
                                                 .then(result => {
-                                                    // console.log(typeof result.status_code)
                                                     dispatch(setFaceMatchRequestSent(true))
                                                     if(result.status_code === '000'){
                                                         dispatch(setFaceMatchApiResponse(result.response_data));
