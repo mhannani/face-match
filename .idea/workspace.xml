@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,14 +113,7 @@
       <workItem from="1649430771319" duration="2709000" />
       <workItem from="1649513757343" duration="4291000" />
       <workItem from="1649600947965" duration="10908000" />
-      <workItem from="1649668906147" duration="2175000" />
-    </task>
-    <task id="LOCAL-00018" summary="edited by soufiane at 5:26">
-      <created>1648667061092</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1648667061092</updated>
+      <workItem from="1649668906147" duration="2219000" />
     </task>
     <task id="LOCAL-00019" summary="using human pkg and new anti-spoofing classifier.">
       <created>1648742838597</created>
@@ -459,7 +451,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649670724800</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="adding .htaccess for deployment">
+      <created>1649671106922</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1649671106922</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
