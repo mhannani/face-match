@@ -103,9 +103,7 @@ const FaceDetectionAntiSpoofing = () => {
     }
 
     let renderPrediction = async () => {
-        console.log('begin render prediction function: ')
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // console.log('renderPrediction')
         ctx.font = "18px sans-serif";
         const font = "18px sans-serif";
         let my_frame = getFrame(video);
@@ -115,17 +113,12 @@ const FaceDetectionAntiSpoofing = () => {
         const classifySpoof = true;
 
         // [x, y, width, height]
-        console.log('before human detect')
         const predictions = await human.detect(my_frame); // run detection
-        console.log('after human detect')
 
         // await human.draw.hand(canvas, predictions.hand)
         let score = 0;
 
-        // console.log('after predictions')
-        // console.log('predictions: ', predictions)
         if (predictions.face.length===1 && predictions.face[0].score > 0.8) {
-            console.log('if predictions.face.len  == 1')
 
             const faceBox = predictions.face[0].box;
             const faceScore = predictions.face[0].score
@@ -146,7 +139,7 @@ const FaceDetectionAntiSpoofing = () => {
             ctx.strokeRect(start[0], start[1], size[0], size[1]);
 
             if (bbx_top_left_x > left_min && bbx_top_left_x < left_max && bbx_bottom_right_y > top_min && bbx_bottom_right_y < top_max) {
-                // console.log('bbox_top_left_x ...')
+
                 ellipsewarningCounter=0;
                 if (bbx_w > 190) {
                     headSizeewarningCounter=0;
@@ -220,18 +213,16 @@ const FaceDetectionAntiSpoofing = () => {
                                                     dispatch(setFaceMatchRequestSent(true))
                                                     if(result.status_code === '000'){
                                                         dispatch(setFaceMatchApiResponse(result.response_data));
-                                                        // console.log(result.similarity);
-                                                        // console.log(result.sky_face_match_decision_label);
-
                                                         dispatch(setSimilarity(result.similarity))
                                                         // console.log('response: ', result)
                                                         dispatch(setSkyFaceMatchDecisionLabel(result.sky_face_match_decision_label))
 
-                                                        // dispatch(setShowConfetti(true))
-                                                        // setTimeout(() => {
-                                                        //     dispatch(setShowConfetti(false))
-                                                        // }, 3000);
-
+                                                        if(result.similarity > 0){
+                                                            dispatch(setShowConfetti(true))
+                                                            setTimeout(() => {
+                                                                dispatch(setShowConfetti(false))
+                                                            }, 3000);
+                                                        }
                                                     }
                                                     else{
                                                         dispatch(setFaceMatchApiResponse(null));
