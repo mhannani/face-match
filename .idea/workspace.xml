@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FaceDetectionAntiSpoofing/FaceDetectionAntiSpoofing.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -114,14 +113,7 @@
       <workItem from="1649430771319" duration="2709000" />
       <workItem from="1649513757343" duration="4291000" />
       <workItem from="1649600947965" duration="10908000" />
-      <workItem from="1649668906147" duration="1460000" />
-    </task>
-    <task id="LOCAL-00015" summary="edited by soufiane at 5:26">
-      <created>1648661220449</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1648661220449</updated>
+      <workItem from="1649668906147" duration="1484000" />
     </task>
     <task id="LOCAL-00016" summary="edited by soufiane at 5:26">
       <created>1648666996426</created>
@@ -459,7 +451,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649669755055</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Last commit.">
+      <created>1649670390183</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1649670390183</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -490,6 +489,7 @@
     <MESSAGE value="integrating other api" />
     <MESSAGE value="take frames when re-performing task..." />
     <MESSAGE value="wrapping up..." />
-    <option name="LAST_COMMIT_MESSAGE" value="wrapping up..." />
+    <MESSAGE value="Last commit." />
+    <option name="LAST_COMMIT_MESSAGE" value="Last commit." />
   </component>
 </project>

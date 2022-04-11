@@ -254,11 +254,6 @@ const FaceDetectionAntiSpoofing = () => {
                                 // dispatch(setRequestSent(true))
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                                // await capture(videoCrop, 2)  // to be removed
-                                // --------------------------------------------------------
-
-
-                                // return 0;
                             } else {  // spoof
                                 // --------------------------------------------------------
                                 ctx.clearRect(0, 0, canvas.width, canvas.height);
