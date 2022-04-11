@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="895ccc8d-944b-4444-83af-ba0d2b5e6f4b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/.htaccess" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,14 +114,7 @@
       <workItem from="1649430771319" duration="2709000" />
       <workItem from="1649513757343" duration="4291000" />
       <workItem from="1649600947965" duration="10908000" />
-      <workItem from="1649668906147" duration="1780000" />
-    </task>
-    <task id="LOCAL-00017" summary="edited by soufiane at 5:26">
-      <created>1648667044240</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1648667044240</updated>
+      <workItem from="1649668906147" duration="2175000" />
     </task>
     <task id="LOCAL-00018" summary="edited by soufiane at 5:26">
       <created>1648667061092</created>
@@ -460,7 +452,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649670408625</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="adding .htaccess for deployment">
+      <created>1649670724800</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1649670724800</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -492,6 +491,7 @@
     <MESSAGE value="take frames when re-performing task..." />
     <MESSAGE value="wrapping up..." />
     <MESSAGE value="Last commit." />
-    <option name="LAST_COMMIT_MESSAGE" value="Last commit." />
+    <MESSAGE value="adding .htaccess for deployment" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding .htaccess for deployment" />
   </component>
 </project>
